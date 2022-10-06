@@ -66,10 +66,10 @@ app.use("/api/v1", demoRouter);
 app.use("/api/v1", coachRouter);
 app.use("/api/v1", consultationRouter);
 
-mongodb://127.0.0.1:27017/gym?retryWrites=true&w=majority
+// mongodb://127.0.0.1:27017/gym?retryWrites=true&w=majority
 mongoose
   // .connect("mongodb+srv://test:test@cluster0.h7sxi.mongodb.net/NewOTP_DATABASE?retryWrites=true&w=majority") Live database
-  .connect("mongodb://127.0.0.1:27017/gym?retryWrites=true&w=majority")//local database
+  .connect("mongodb+srv://bhartishivam723:Shivam123@cluster0.c1txlyk.mongodb.net/gymDb?retryWrites=true&w=majority")//local database
   .then(() => {
     console.log("Database Connected");
   })
