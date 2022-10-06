@@ -20,6 +20,9 @@ const demoRouter = require("./routes/demo");
 const coachRouter = require("./routes/coach");
 const managerRouter = require("./routes/manager");
 const packageRouter = require("./routes/package");
+
+const userRouter = require("./routes/user");
+
 const fileUpload = require("express-fileupload");
 
 const PORT = process.env.PORT || 8080;
@@ -65,6 +68,8 @@ app.use("/api/v1", supportRouter);
 app.use("/api/v1", demoRouter);
 app.use("/api/v1", coachRouter);
 app.use("/api/v1", consultationRouter);
+app.use("/api/v1", userRouter);
+
 
 // mongodb://127.0.0.1:27017/gym?retryWrites=true&w=majority
 mongoose

@@ -10,71 +10,71 @@ const bcrypt = require("bcrypt");
 const FeedBack = require("../models/userFeedBack");
 
 let OTP, user;
-authRouter.post("/signup", async (req, res) => {
-  try {
-    const { firstName, number } = req.body;
+// authRouter.post("/signup", async (req, res) => {
+//   try {
+//     const { firstName, number } = req.body;
 
-    console.log("request hit line 16 ");
+//     console.log("request hit line 16 ");
 
-    if (
-      firstName !== "" &&
-      firstName !== undefined &&
-      firstName !== null &&
-      number !== "" &&
-      number !== undefined &&
-      number !== null
-    ) {
-      const existingUser = await User.findOne({ number });
+//     if (
+//       firstName !== "" &&
+//       firstName !== undefined &&
+//       firstName !== null &&
+//       number !== "" &&
+//       number !== undefined &&
+//       number !== null
+//     ) {
+//       const existingUser = await User.findOne({ number });
 
-      if (existingUser) {
-        return res
-          .status(422)
-          .json({ msg: "User with same number already exists!" });
-      }
+//       if (existingUser) {
+//         return res
+//           .status(422)
+//           .json({ msg: "User with same number already exists!" });
+//       }
 
-      user = new User({
-        firstName,
-        number,
-      });
+//       user = new User({
+//         firstName,
+//         number,
+//       });
 
-      let digits = "0123456789";
-      OTP = "";
-      for (let i = 0; i < 4; i++) {
-        OTP += digits[Math.floor(Math.random() * 10)];
-      }
-      let response = await axios.get(
-        `http://www.smsstanch.in/API/sms.php?firstName=beats&password=123456&from=BEATSF&to=${number}&msg=Hi, Your OTP ${OTP}  to login &type=1&dnd_check=0&template_id=1007164482764680412`
-      );
+//       let digits = "0123456789";
+//       OTP = "";
+//       for (let i = 0; i < 4; i++) {
+//         OTP += digits[Math.floor(Math.random() * 10)];
+//       }
+//       let response = await axios.get(
+//         `http://www.smsstanch.in/API/sms.php?firstName=beats&password=123456&from=BEATSF&to=${number}&msg=Hi, Your OTP ${OTP}  to login &type=1&dnd_check=0&template_id=1007164482764680412`
+//       );
 
-      return res.status(200).json({
-        message: `Verify your account.Your OTP is ${OTP}`,
-        success: true,
-      });
+//       return res.status(200).json({
+//         message: `Verify your account.Your OTP is ${OTP}`,
+//         success: true,
+//       });
 
-      //   if (response.status === 200) {
-      //     console.log("Opt", OTP);
-      //     return res.status(200).json({
-      //       message: response?.data,
-      //       success: true,
-      //     });
-      //   } else {
-      //     return res.status(200).json({
-      //       message: "something went wrong",
-      //       succes: false,
-      //     });
-      //   }
-      // } else {
-      //   console.log("else hit")
-      //   return res.status(200).json({
-      //     message:"Empty Field found. All fields are required",
-      //     success:false
-      //   });
-    }
-  } catch (e) {
-    console.log("🚀 ~ file: auth.js ~ line 90 ~ authRouter.post ~ e", e);
-    res.status(500).json({ error: e.message, success: false });
-  }
-});
+//       //   if (response.status === 200) {
+//       //     console.log("Opt", OTP);
+//       //     return res.status(200).json({
+//       //       message: response?.data,
+//       //       success: true,
+//       //     });
+//       //   } else {
+//       //     return res.status(200).json({
+//       //       message: "something went wrong",
+//       //       succes: false,
+//       //     });
+//       //   }
+//       // } else {
+//       //   console.log("else hit")
+//       //   return res.status(200).json({
+//       //     message:"Empty Field found. All fields are required",
+//       //     success:false
+//       //   });
+//     }
+//   } catch (e) {
+//     console.log("🚀 ~ file: auth.js ~ line 90 ~ authRouter.post ~ e", e);
+//     res.status(500).json({ error: e.message, success: false });
+//   }
+// });
 
 authRouter.post("/signup/verify", async (req, res) => {
   try {
