@@ -4,6 +4,8 @@ const userController=require('../controllers/UserController')
 
 
 router.post('/signup',userController.signup)
+router.post('/signupVerify',userController.signupVerify)
+
 
 
 module.exports=router;
