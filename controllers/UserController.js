@@ -2,6 +2,9 @@ const express = require("express");
 const authRouter = express.Router();
 const User = require("../models/user");
 const Otp = require("../models/otp");
+const Banner = require("../models/banner");
+
+
 
 const Notification = require("../models/notification");
 const jwt = require("jsonwebtoken");
@@ -199,7 +202,7 @@ const signinVerify = async (req, res) => {
 
 }
 
-const verifytoken = (req, res) => {
+const verifytoken = (req, res,next) => {
     // console.log(token);
     //Authorization: 'Bearer TOKEN'
     if (!req.headers.authorization) {
@@ -212,9 +215,8 @@ const verifytoken = (req, res) => {
             const verified = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
             if (verified) {
-                return res.status(200)
-                .json([{ msg: "Token has been verified successfully", res: "success" }]);
-
+                return next()
+                
             } else {
                 return res.status(401)
                 .json([{ msg: error.message, res: "error" }]);
@@ -229,4 +231,26 @@ const verifytoken = (req, res) => {
 
 }
 
-module.exports = { signup, signupVerify, signin, signinVerify, verifytoken };
+const categoryBanner = async (req, res) => {
+
+    try {
+        const { category} = req.body;
+
+        if (!category) {
+            return res.status(200)
+                .json([{ msg: "Category is required", res: "error", }]);
+        }
+
+        const bannerData = await Banner.find({ category:category });
+        console.log(bannerData);
+        return res.status(200)
+        .json([{ msg: "Category Banner Data", data: bannerData, res: "success" }]);
+
+    }
+    catch (err) {
+        res.send(err)
+    }
+
+}
+
+module.exports = { signup, signupVerify, signin, signinVerify, verifytoken,categoryBanner };
