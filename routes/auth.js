@@ -96,70 +96,70 @@ authRouter.post("/signup/verify", async (req, res) => {
 
 let signinUser;
 
-authRouter.post("/signin", async (req, res) => {
-  try {
-    const { number } = req.body;
+// authRouter.post("/signin", async (req, res) => {
+//   try {
+//     const { number } = req.body;
 
-    if (number !== "" && number !== undefined && number !== null) {
-      signinUser = await User.findOne({ number });
+//     if (number !== "" && number !== undefined && number !== null) {
+//       signinUser = await User.findOne({ number });
 
-      if (!signinUser) {
-        return res.status(422).json({ msg: "This number does not Exists!!!", success: false });
-      }
-      let digits = "0123456789";
-      OTP = "";
-      for (let i = 0; i < 4; i++) {
-        OTP += digits[Math.floor(Math.random() * 10)];
-      }
+//       if (!signinUser) {
+//         return res.status(422).json({ msg: "This number does not Exists!!!", success: false });
+//       }
+//       let digits = "0123456789";
+//       OTP = "";
+//       for (let i = 0; i < 4; i++) {
+//         OTP += digits[Math.floor(Math.random() * 10)];
+//       }
 
-      let response = await axios.get(
-        `http://www.smsstanch.in/API/sms.php?firstName=beats&password=123456&from=BEATSF&to=${number}&msg=Hi, Your OTP ${OTP}  to login &type=1&dnd_check=0&template_id=1007164482764680412`
-      );
+//       let response = await axios.get(
+//         `http://www.smsstanch.in/API/sms.php?firstName=beats&password=123456&from=BEATSF&to=${number}&msg=Hi, Your OTP ${OTP}  to login &type=1&dnd_check=0&template_id=1007164482764680412`
+//       );
 
-      return res.status(200).json({
-        message: `${signinUser.firstName} verify your account.Your OTP is ${OTP}`,
-        success: true,
-      });
+//       return res.status(200).json({
+//         message: `${signinUser.firstName} verify your account.Your OTP is ${OTP}`,
+//         success: true,
+//       });
 
-      // if (response.status === 200) {
-      //   console.log("Opt", OTP);
-      //   return res.status(200).json({
-      //     message: response?.data,
-      //     success: true,
-      //   });
-      // } else {
-      //   return res.status(200).json({
-      //     message: "something went wrong",
-      //     succes: false,
-      //   });
-      // }
-    } else {
-      return res.status(422).json({
-        message: "Empty Field found",
-        success: false,
-      });
-    }
-  } catch (e) {
-    res.status(500).json({ error: e.message, succes: false });
-  }
-});
+//       // if (response.status === 200) {
+//       //   console.log("Opt", OTP);
+//       //   return res.status(200).json({
+//       //     message: response?.data,
+//       //     success: true,
+//       //   });
+//       // } else {
+//       //   return res.status(200).json({
+//       //     message: "something went wrong",
+//       //     succes: false,
+//       //   });
+//       // }
+//     } else {
+//       return res.status(422).json({
+//         message: "Empty Field found",
+//         success: false,
+//       });
+//     }
+//   } catch (e) {
+//     res.status(500).json({ error: e.message, succes: false });
+//   }
+// });
 
-authRouter.post("/signin/verify", async (req, res) => {
-  try {
-    const { otp } = req.body;
-    if (otp != OTP) {
-      return res.status(422).json({ msg: "Incorrect Otp.", success: false });
-    }
-    const token = jwt.sign({ id: signinUser._id }, process.env.JWT_SECRET_KEY);
+// authRouter.post("/signin/verify", async (req, res) => {
+//   try {
+//     const { otp } = req.body;
+//     if (otp != OTP) {
+//       return res.status(422).json({ msg: "Incorrect Otp.", success: false });
+//     }
+//     const token = jwt.sign({ id: signinUser._id }, process.env.JWT_SECRET_KEY);
 
-    // await helper.sendEmail(res,signinUser.email,"Check Otp Server","Dummy Message body");
+//     // await helper.sendEmail(res,signinUser.email,"Check Otp Server","Dummy Message body");
 
-    res.status(200).json({ token, ...signinUser._doc, success: true });
-    OTP = "";
-  } catch (e) {
-    res.status(500).json({ error: e.message, success: false });
-  }
-});
+//     res.status(200).json({ token, ...signinUser._doc, success: true });
+//     OTP = "";
+//   } catch (e) {
+//     res.status(500).json({ error: e.message, success: false });
+//   }
+// });
 
 authRouter.put("/editUser", async (req, res) => {
   try {
