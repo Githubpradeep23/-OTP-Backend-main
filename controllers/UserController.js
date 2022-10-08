@@ -6,8 +6,8 @@ const Banner = require("../models/banner");
 const Testimonial = require("../models/testimonial");
 const Service = require("../models/services");
 const TrackWeight = require("../models/trackWeight");
-
-
+const GYM_SERVICE = require("../models/gymServices");
+const GYM_BRANCH = require("../models/gymBranch");
 const Notification = require("../models/notification");
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
@@ -46,7 +46,6 @@ const signup = async (req, res) => {
         const otp = new Otp({
             number: number,
             otp: OTP,
-
         })
 
         await otp.save()
@@ -56,9 +55,9 @@ const signup = async (req, res) => {
             res: "success",
         }]);
 
-
     } catch (err) {
-        res.send(err)
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
     }
 };
 const signupVerify = async (req, res) => {
@@ -113,8 +112,9 @@ const signupVerify = async (req, res) => {
 
         // res.status(200).json({ token, ...user._doc, success: true });
         // OTP = "";
-    } catch (e) {
-        res.status(500).json({ error: e.message, success: false });
+    } catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
     }
 }
 
@@ -154,7 +154,8 @@ const signin = async (req, res) => {
             res: "success",
         }]);
     } catch (err) {
-        res.send(err)
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
     }
 }
 const signinVerify = async (req, res) => {
@@ -172,9 +173,7 @@ const signinVerify = async (req, res) => {
                 .json([{ msg: "Otp is required", res: "error", }]);
         }
 
-
         const userData = await User.findOne({ number });
-
 
         if (!userData) {
             return res.status(200)
@@ -199,7 +198,8 @@ const signinVerify = async (req, res) => {
 
     }
     catch (err) {
-        res.send(err)
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
     }
 
 }
@@ -222,7 +222,8 @@ const categoryBanner = async (req, res) => {
 
     }
     catch (err) {
-        res.send(err)
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
     }
 
 }
@@ -237,7 +238,8 @@ const allTestimonials = async (req, res) => {
 
     }
     catch (err) {
-        res.send(err)
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
     }
 
 }
@@ -251,7 +253,8 @@ const allBanners = async (req, res) => {
             .json([{ msg: "All Banners Data", data: bannersData, res: "success" }]);
     }
     catch (err) {
-        res.send(err)
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
     }
 
 }
@@ -265,7 +268,29 @@ const allServices = async (req, res) => {
             .json([{ msg: "All Services Data", data: servicesData, res: "success" }]);
     }
     catch (err) {
-        res.send(err)
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
+
+}
+const categoryServices = async (req, res) => {
+
+    try {
+        const { category } = req.body;
+
+        if (!category) {
+            return res.status(200)
+                .json([{ msg: "Category is required", res: "error", }]);
+        }
+
+        const serviceData = await GYM_SERVICE.find({ category: category });
+        return res.status(200)
+            .json([{ msg: "Category Service Data", data: serviceData, res: "success" }]);
+
+    }
+    catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
     }
 
 }
@@ -319,7 +344,6 @@ const addTrackTrace = async (req, res) => {
         return res.status(200)
             .json([{ msg: "Track & Trace data added sucessfully!!", data: trackTracedata, res: "success" }]);
 
-
     }
     catch (err) {
         // res.send(err)
@@ -353,5 +377,68 @@ const userTrackTraceList = async (req, res) => {
 
 }
 
+// get user profile
+const getUserProfile = async (req, res) => {
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, allBanners, allServices, addTrackTrace ,userTrackTraceList};
+    try {
+        const { userID } = req.body;
+
+        if (!userID) {
+            return res.status(200)
+                .json([{ msg: "User ID is required", res: "error", }]);
+        }
+
+
+        const userData = await User.findOne({ _id: userID });
+        if (!userData) {
+            return res.status(200)
+                .json([{ msg: "User not found!!!", res: "error", }]);
+        }
+
+        return res.status(200)
+            .json([{ msg: "User Proile Data", data: userData, res: "success" }]);
+
+    }
+    catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
+
+}
+//GetBranch Detials by Service Name
+
+const branchDetailsBySerivceName = async (req, res) => {
+
+    try {
+        const { serviceTitle } = req.body;
+        if (!serviceTitle) {
+            return res.status(200)
+                .json([{ msg: "Service Title is required", res: "error", }]);
+        }
+
+        const singleServiceDetials = await GYM_SERVICE.find({ title: serviceTitle }).populate("branch_id")
+        if (singleServiceDetials === null || singleServiceDetials === undefined || singleServiceDetials === "" || singleServiceDetials.length === 0) {
+            return res.status(200)
+                .json([{ msg: "Service Not found", res: "error", }]);
+        } else {
+            return res.status(200).json({
+                singleServiceDetials,
+                message: "Service Details",
+                success: true
+              });
+            // return res.status(200)
+            // .json([{ msg: "Service Details Data", data: singleServiceDetials, res: "success" }]);
+        }
+
+
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+            success: false
+        });
+    }
+
+}
+
+
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName,categoryServices };

@@ -9,7 +9,7 @@ const helper = require("../utils/helper");
 const bcrypt = require("bcrypt");
 const FeedBack = require("../models/userFeedBack");
 
-let OTP, user;
+// let OTP, user;
 // authRouter.post("/signup", async (req, res) => {
 //   try {
 //     const { firstName, number } = req.body;
@@ -76,25 +76,25 @@ let OTP, user;
 //   }
 // });
 
-authRouter.post("/signup/verify", async (req, res) => {
-  try {
-    const { otp } = req.body;
-    if (otp != OTP) {
-      return res.status(422).json({ msg: "Incorrect Otp.", success: false });
-    }
-    user = await user.save();
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY);
+// authRouter.post("/signup/verify", async (req, res) => {
+//   try {
+//     const { otp } = req.body;
+//     if (otp != OTP) {
+//       return res.status(422).json({ msg: "Incorrect Otp.", success: false });
+//     }
+//     user = await user.save();
+//     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY);
 
-    // await helper.sendEmail(res,user.email,"Check Otp Server","Dummy Message body");
+//     // await helper.sendEmail(res,user.email,"Check Otp Server","Dummy Message body");
 
-    res.status(200).json({ token, ...user._doc, success: true });
-    OTP = "";
-  } catch (e) {
-    res.status(500).json({ error: e.message, success: false });
-  }
-});
+//     res.status(200).json({ token, ...user._doc, success: true });
+//     OTP = "";
+//   } catch (e) {
+//     res.status(500).json({ error: e.message, success: false });
+//   }
+// });
 
-let signinUser;
+// let signinUser;
 
 // authRouter.post("/signin", async (req, res) => {
 //   try {
