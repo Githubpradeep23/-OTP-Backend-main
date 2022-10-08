@@ -421,13 +421,9 @@ const branchDetailsBySerivceName = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "Service Not found", res: "error", }]);
         } else {
-            return res.status(200).json({
-                singleServiceDetials,
-                message: "Service Details",
-                success: true
-              });
-            // return res.status(200)
-            // .json([{ msg: "Service Details Data", data: singleServiceDetials, res: "success" }]);
+            
+            return res.status(200)
+            .json([{ msg: "Service Details Data", data: singleServiceDetials, res: "success" }]);
         }
 
 
