@@ -5,6 +5,8 @@ const Otp = require("../models/otp");
 const Banner = require("../models/banner");
 const Testimonial = require("../models/testimonial");
 const Service = require("../models/services");
+const TrackWeight = require("../models/trackWeight");
+
 
 const Notification = require("../models/notification");
 const jwt = require("jsonwebtoken");
@@ -231,7 +233,7 @@ const allTestimonials = async (req, res) => {
         const testimonialsData = await Testimonial.find();
         console.log(testimonialsData);
         return res.status(200)
-        .json([{ msg: "All testimonials Data", data: testimonialsData, res: "success" }]);
+            .json([{ msg: "All testimonials Data", data: testimonialsData, res: "success" }]);
 
     }
     catch (err) {
@@ -246,7 +248,7 @@ const allBanners = async (req, res) => {
         const bannersData = await Banner.find();
         console.log(bannersData);
         return res.status(200)
-        .json([{ msg: "All Banners Data", data: bannersData, res: "success" }]);
+            .json([{ msg: "All Banners Data", data: bannersData, res: "success" }]);
     }
     catch (err) {
         res.send(err)
@@ -260,7 +262,7 @@ const allServices = async (req, res) => {
         const servicesData = await Service.find();
         console.log(servicesData);
         return res.status(200)
-        .json([{ msg: "All Services Data", data: servicesData, res: "success" }]);
+            .json([{ msg: "All Services Data", data: servicesData, res: "success" }]);
     }
     catch (err) {
         res.send(err)
@@ -268,5 +270,65 @@ const allServices = async (req, res) => {
 
 }
 
+const trackTrace = async (req, res) => {
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner,allTestimonials,allBanners,allServices };
+    try {
+        const { userID, weight, to, from, ht, PBF, SMM, Waist, PushUp, PullUps } =
+            req.body;
+
+        if (!userID) {
+            return res.status(200)
+                .json([{ msg: "User ID is required", res: "error", }]);
+        }
+        if (!weight) {
+            return res.status(200)
+                .json([{ msg: "Weight is required", res: "error", }]);
+        }
+
+        if (!from) {
+            return res.status(200)
+                .json([{ msg: "From Date is required", res: "error", }]);
+        }
+        if (!to) {
+            return res.status(200)
+                .json([{ msg: "To Date is required", res: "error", }]);
+        }
+        console.log("userID, weight, date ", userID, weight, to, from);
+        // try {
+
+        const userData = await User.findOne({ _id: userID });
+        if (!userData) {
+            return res.status(200)
+                .json([{ msg: "User not found!!!", res: "error", }]);
+        }
+
+        const trackTracedata = await TrackWeight.create({
+            userID,
+            weight,
+            to,
+            from,
+            ht,
+            PBF,
+            SMM,
+            Waist,
+            PushUp,
+            PullUps,
+        });
+        // console.log('track',trackTracedata);
+
+        return res.status(200)
+            .json([{ msg: "Track & Trace data added sucessfully!!", data: trackTracedata, res: "success" }]);
+
+
+    }
+    catch (err) {
+        // res.send(err)
+        console.log(err)
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
+
+}
+
+
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, allBanners, allServices, trackTrace };

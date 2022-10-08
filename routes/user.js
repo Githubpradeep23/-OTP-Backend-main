@@ -8,11 +8,14 @@ router.post('/signupVerify',userController.signupVerify)
 router.post('/signin',userController.signin)
 router.post('/signinVerify',userController.signinVerify)
 
+// ****************Home Page Api start*******************
 router.post('/categoryBanner',auth.verifytoken,userController.categoryBanner)
 router.get('/allTestimonials',auth.verifytoken,userController.allTestimonials)
 router.get('/allBanners',auth.verifytoken,userController.allBanners)
 router.get('/allServices',auth.verifytoken,userController.allServices)
+router.post('/trackTrace',auth.verifytoken,userController.trackTrace)
 
 
+// ****************Home Page Api end*******************
 
 module.exports=router;
