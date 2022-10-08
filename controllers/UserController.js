@@ -270,7 +270,7 @@ const allServices = async (req, res) => {
 
 }
 
-const trackTrace = async (req, res) => {
+const addTrackTrace = async (req, res) => {
 
     try {
         const { userID, weight, to, from, ht, PBF, SMM, Waist, PushUp, PullUps } =
@@ -330,5 +330,28 @@ const trackTrace = async (req, res) => {
 
 }
 
+const userTrackTraceList = async (req, res) => {
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, allBanners, allServices, trackTrace };
+    try {
+        const { userID } = req.body;
+
+        if (!userID) {
+            return res.status(200)
+                .json([{ msg: "User ID is required", res: "error", }]);
+        }
+
+        const trackTraceData = await TrackWeight.find({ userID: userID });
+        // console.log(trackTraceData);
+        return res.status(200)
+            .json([{ msg: "User Track & Trace Data !!", data: trackTraceData, res: "success" }]);
+
+    }
+    catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
+
+}
+
+
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, allBanners, allServices, addTrackTrace ,userTrackTraceList};

@@ -13,7 +13,9 @@ router.post('/categoryBanner',auth.verifytoken,userController.categoryBanner)
 router.get('/allTestimonials',auth.verifytoken,userController.allTestimonials)
 router.get('/allBanners',auth.verifytoken,userController.allBanners)
 router.get('/allServices',auth.verifytoken,userController.allServices)
-router.post('/trackTrace',auth.verifytoken,userController.trackTrace)
+router.post('/addTrackTrace',auth.verifytoken,userController.addTrackTrace)
+router.post('/userTrackTraceList',auth.verifytoken,userController.userTrackTraceList)
+
 
 
 // ****************Home Page Api end*******************
