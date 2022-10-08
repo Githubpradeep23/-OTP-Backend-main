@@ -458,7 +458,9 @@ gymServiceRouter.delete("/deleteGymSevice", async (req, res) => {
 // Get All Gym Service
 gymServiceRouter.get("/getAllGymService", async (req, res) => {
   try {
-    let getAllGymService = await GYM_SERVICE.find().populate("branch_id").exec();
+    let getAllGymService = await GYM_SERVICE.find().populate("branch_id")
+    // const singleServiceDetials = await GYM_SERVICE.find({ title: serviceTitle }).populate("branch_id")
+
     if (
       getAllGymService !== undefined &&
       getAllGymService.length !== 0 &&
@@ -468,7 +470,7 @@ gymServiceRouter.get("/getAllGymService", async (req, res) => {
       const Services = [...new Map(getAllGymService.map(item =>
         [item[key], item])).values()];
       return res.status(200).send({
-        Services,
+        getAllGymService,
         messge: "All Gym Service",
         success: true,
       });

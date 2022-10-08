@@ -52,6 +52,8 @@ const signup = async (req, res) => {
 
         return res.status(200).json([{
             message: `Verify your account.Your OTP is ${OTP}`,
+            number:number,
+            otp:OTP,
             res: "success",
         }]);
 
@@ -151,6 +153,8 @@ const signin = async (req, res) => {
         await otp.save()
         return res.status(200).json([{
             message: `Your login verfication. OTP is ${OTP}`,
+            number:number,
+            otp:OTP,
             res: "success",
         }]);
     } catch (err) {
@@ -203,7 +207,20 @@ const signinVerify = async (req, res) => {
     }
 
 }
+const allBanners = async (req, res) => {
 
+    try {
+        const bannersData = await Banner.find();
+        console.log(bannersData);
+        return res.status(200)
+            .json([{ msg: "All Banners Data", data: bannersData, res: "success" }]);
+    }
+    catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
+
+}
 
 const categoryBanner = async (req, res) => {
 
@@ -244,13 +261,20 @@ const allTestimonials = async (req, res) => {
 
 }
 
-const allBanners = async (req, res) => {
+const categoryTestimonials = async (req, res) => {
 
     try {
-        const bannersData = await Banner.find();
-        console.log(bannersData);
+        const { category } = req.body;
+
+        if (!category) {
+            return res.status(200)
+                .json([{ msg: "Category is required", res: "error", }]);
+        }
+
+        const testimonialsData = await Testimonial.find({ category: category });
         return res.status(200)
-            .json([{ msg: "All Banners Data", data: bannersData, res: "success" }]);
+            .json([{ msg: "Category Testimonial Data", data: testimonialsData, res: "success" }]);
+
     }
     catch (err) {
         return res.status(200)
@@ -258,6 +282,8 @@ const allBanners = async (req, res) => {
     }
 
 }
+
+
 
 const allServices = async (req, res) => {
 
@@ -405,8 +431,8 @@ const getUserProfile = async (req, res) => {
     }
 
 }
-//GetBranch Detials by Service Name
 
+//GetBranch Detials by Service Name
 const branchDetailsBySerivceName = async (req, res) => {
 
     try {
@@ -421,20 +447,66 @@ const branchDetailsBySerivceName = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "Service Not found", res: "error", }]);
         } else {
-            
+
             return res.status(200)
-            .json([{ msg: "Service Details Data", data: singleServiceDetials, res: "success" }]);
+                .json([{ msg: "Service Details Data", data: singleServiceDetials, res: "success" }]);
         }
 
+    }
+    catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
 
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message,
-            success: false
+}
+
+const addPersonalInfo = async (req, res) => {
+    try {
+
+        const { heightInFit, heightInINCH, previous_injury, health_Detials, weight, userID, DOB, age } = req.body;
+        if (!userID) {
+            return res.status(200)
+                .json([{ msg: "User ID is required", res: "error", }]);
+        }
+        const userData = await User.findOne({ _id: userID });
+        if (!userData) {
+            return res.status(200)
+                .json([{ msg: "User not found!!!", res: "error", }]);
+        }
+
+        // const userData = await employeeModel.findOne({email:req.body.email}) 
+        // userData.heightInFit = heightInFit
+        // const a1 = await userData.save()
+        // const updatePersonalInfo = await User.updateOne(
+        //     {
+        //         heightInFit,
+        //         heightInINCH,
+        //         health_Detials,
+        //         weight,
+        //         previous_injury,
+        //         DOB,
+        //         age
+        //     }
+        // )
+
+        const updatedData = req.body;
+        const options = { new: true };
+
+        const result = await User.findByIdAndUpdate(
+            userID, updatedData, options
+        )
+        return res.status(200).json({
+            message: "Add Personal Info",
+            success: true
         });
+
+    }
+    catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
     }
 
 }
 
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName,categoryServices };
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo };

@@ -11,6 +11,7 @@ router.post('/signinVerify',userController.signinVerify)
 // ****************Home Page Api start*******************
 router.post('/categoryBanner',auth.verifytoken,userController.categoryBanner)
 router.get('/allTestimonials',auth.verifytoken,userController.allTestimonials)
+router.post('/categoryTestimonials',auth.verifytoken,userController.categoryTestimonials)
 router.get('/allBanners',auth.verifytoken,userController.allBanners)
 router.get('/allServices',auth.verifytoken,userController.allServices)
 router.post('/categoryServices',auth.verifytoken,userController.categoryServices)
@@ -24,5 +25,7 @@ router.post('/getUserProfile',auth.verifytoken,userController.getUserProfile)
 
 // ****************Fitness Page Api start*****************
 router.post('/branchDetailsBySerivceName',auth.verifytoken,userController.branchDetailsBySerivceName)
+router.post('/addPersonalInfo',auth.verifytoken,userController.addPersonalInfo)
+
 // ****************Fitness Page Api end*******************
 module.exports=router;
