@@ -468,26 +468,33 @@ const addPersonalInfo = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "User ID is required", res: "error", }]);
         }
+        if (!DOB) {
+            return res.status(200)
+                .json([{ msg: "DOB is required", res: "error", }]);
+        }
+
+        if (!age) {
+            return res.status(200)
+                .json([{ msg: "age is required", res: "error", }]);
+        }
+
+        if (!weight) {
+            return res.status(200)
+                .json([{ msg: "weight is required", res: "error", }]);
+        }
+        if (!heightInFit) {
+            return res.status(200)
+                .json([{ msg: "heightInFit is required", res: "error", }]);
+        }
+        if (!heightInINCH) {
+            return res.status(200)
+                .json([{ msg: "heightInINCH is required", res: "error", }]);
+        }
         const userData = await User.findOne({ _id: userID });
         if (!userData) {
             return res.status(200)
                 .json([{ msg: "User not found!!!", res: "error", }]);
         }
-
-        // const userData = await employeeModel.findOne({email:req.body.email}) 
-        // userData.heightInFit = heightInFit
-        // const a1 = await userData.save()
-        // const updatePersonalInfo = await User.updateOne(
-        //     {
-        //         heightInFit,
-        //         heightInINCH,
-        //         health_Detials,
-        //         weight,
-        //         previous_injury,
-        //         DOB,
-        //         age
-        //     }
-        // )
 
         const updatedData = req.body;
         const options = { new: true };
@@ -496,7 +503,7 @@ const addPersonalInfo = async (req, res) => {
             userID, updatedData, options
         )
         return res.status(200).json({
-            message: "Add Personal Info",
+            message: "Added Personal Info Successfully!!",
             success: true
         });
 
