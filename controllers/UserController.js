@@ -3,8 +3,8 @@ const authRouter = express.Router();
 const User = require("../models/user");
 const Otp = require("../models/otp");
 const Banner = require("../models/banner");
-
-
+const Testimonial = require("../models/testimonial");
+const Service = require("../models/services");
 
 const Notification = require("../models/notification");
 const jwt = require("jsonwebtoken");
@@ -191,7 +191,7 @@ const signinVerify = async (req, res) => {
 
             return res.status(200)
 
-            .json([{ msg: "Otp has been verified successfully", data: userData, token: token, res: "success" }]);
+                .json([{ msg: "Otp has been verified successfully", data: userData, token: token, res: "success" }]);
 
         }
 
@@ -202,49 +202,21 @@ const signinVerify = async (req, res) => {
 
 }
 
-const verifytoken = (req, res,next) => {
-    // console.log(token);
-    //Authorization: 'Bearer TOKEN'
-    if (!req.headers.authorization) {
-        res.status(200).
-            json({ success: false, message: "Token has not been provided." });
-    } else {
-        try {
-            const token = req.headers.authorization.split(' ')[1];
-
-            const verified = jwt.verify(token, process.env.JWT_SECRET_KEY);
-
-            if (verified) {
-                return next()
-                
-            } else {
-                return res.status(401)
-                .json([{ msg: error.message, res: "error" }]);
-            }
-        } catch (error) {
-            return res.status(401)
-            .json([{ msg: error.message, res: "error" }]);
-        }
-
-    }
-
-
-}
 
 const categoryBanner = async (req, res) => {
 
     try {
-        const { category} = req.body;
+        const { category } = req.body;
 
         if (!category) {
             return res.status(200)
                 .json([{ msg: "Category is required", res: "error", }]);
         }
 
-        const bannerData = await Banner.find({ category:category });
+        const bannerData = await Banner.find({ category: category });
         console.log(bannerData);
         return res.status(200)
-        .json([{ msg: "Category Banner Data", data: bannerData, res: "success" }]);
+            .json([{ msg: "Category Banner Data", data: bannerData, res: "success" }]);
 
     }
     catch (err) {
@@ -253,4 +225,48 @@ const categoryBanner = async (req, res) => {
 
 }
 
-module.exports = { signup, signupVerify, signin, signinVerify, verifytoken,categoryBanner };
+const allTestimonials = async (req, res) => {
+
+    try {
+        const testimonialsData = await Testimonial.find();
+        console.log(testimonialsData);
+        return res.status(200)
+        .json([{ msg: "All testimonials Data", data: testimonialsData, res: "success" }]);
+
+    }
+    catch (err) {
+        res.send(err)
+    }
+
+}
+
+const allBanners = async (req, res) => {
+
+    try {
+        const bannersData = await Banner.find();
+        console.log(bannersData);
+        return res.status(200)
+        .json([{ msg: "All Banners Data", data: bannersData, res: "success" }]);
+    }
+    catch (err) {
+        res.send(err)
+    }
+
+}
+
+const allServices = async (req, res) => {
+
+    try {
+        const servicesData = await Service.find();
+        console.log(servicesData);
+        return res.status(200)
+        .json([{ msg: "All Services Data", data: servicesData, res: "success" }]);
+    }
+    catch (err) {
+        res.send(err)
+    }
+
+}
+
+
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner,allTestimonials,allBanners,allServices };
