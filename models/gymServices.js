@@ -20,6 +20,17 @@ const gymServicesSchema = new mongoose.Schema({
   category: {
     type: String,
   },
+
+  category: {
+    type: String,
+  },
+  duration:{
+    type:String
+  },
+  slotTime:{
+    type:String
+  },
+
   delievrables: String,
   consultationDate: String,
   consultationTime: String,

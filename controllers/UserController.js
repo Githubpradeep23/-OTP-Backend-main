@@ -8,6 +8,9 @@ const Service = require("../models/services");
 const TrackWeight = require("../models/trackWeight");
 const GYM_SERVICE = require("../models/gymServices");
 const GYM_BRANCH = require("../models/gymBranch");
+const demoBooking = require("../models/demoBooking");
+const bookPackage = require("../models/bookPackage");
+
 const Notification = require("../models/notification");
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
@@ -15,6 +18,8 @@ const fs = require("fs");
 const helper = require("../utils/helper");
 const bcrypt = require("bcrypt");
 const FeedBack = require("../models/userFeedBack");
+const mongoose = require('mongoose');
+const Razorpay = require("razorpay");
 
 const signup = async (req, res) => {
     try {
@@ -52,8 +57,8 @@ const signup = async (req, res) => {
 
         return res.status(200).json([{
             message: `Verify your account.Your OTP is ${OTP}`,
-            number:number,
-            otp:OTP,
+            number: number,
+            otp: OTP,
             res: "success",
         }]);
 
@@ -153,8 +158,8 @@ const signin = async (req, res) => {
         await otp.save()
         return res.status(200).json([{
             message: `Your login verfication. OTP is ${OTP}`,
-            number:number,
-            otp:OTP,
+            number: number,
+            otp: OTP,
             res: "success",
         }]);
     } catch (err) {
@@ -440,7 +445,53 @@ const branchDetailsBySerivceName = async (req, res) => {
         if (!serviceTitle) {
             return res.status(200)
                 .json([{ msg: "Service Title is required", res: "error", }]);
+
         }
+        // *****************Collection Relation QUERY Start************
+
+        // const data = await demoBooking.aggregate([
+        //     {
+        //         $match: {
+        //             "title": serviceTitle
+        //         }
+        //     },
+
+        //     {
+        //         $lookup: {
+        //             from: 'users', localField: 'user_id',
+        //             foreignField: '_id', as: 'userData'
+        //         }
+        //     },
+
+        //     {
+        //         $lookup: {
+        //             from: 'gym_services', localField: 'service_id',
+        //             foreignField: '_id', as: 'serviceData'
+        //         }
+        //     },
+        // ]).exec((err, result) => {
+        //     if (err) {
+        //         console.log("error", err)
+        //         return res.status(200)
+        //             .json([{ msg: err.message, res: "error" }]);
+        //     }
+        //     if (result) {
+        //         if (result === null || result === undefined || result === "" || result.length === 0) {
+
+        //             return res.status(200)
+        //                 .json([{ msg: "Service Not found", res: "error" }]);
+        //         } else {
+
+        //             return res.status(200)
+        //                 .json([{ msg: "Service Details Data", data: result, res: "success" }]);
+        //         }
+        //     }
+        // });
+
+        // *****************Collection Relation QUERY End****************
+
+
+
 
         const singleServiceDetials = await GYM_SERVICE.find({ title: serviceTitle }).populate("branch_id")
         if (singleServiceDetials === null || singleServiceDetials === undefined || singleServiceDetials === "" || singleServiceDetials.length === 0) {
@@ -459,7 +510,7 @@ const branchDetailsBySerivceName = async (req, res) => {
     }
 
 }
-
+// Add personal Info
 const addPersonalInfo = async (req, res) => {
     try {
 
@@ -514,6 +565,210 @@ const addPersonalInfo = async (req, res) => {
     }
 
 }
+// All Gym Branches
+const allGymBranches = async (req, res) => {
+
+    try {
+        const gymBranchesData = await GYM_BRANCH.find();
+        console.log(gymBranchesData);
+        return res.status(200)
+            .json([{ msg: "All Gym Branch Data", data: gymBranchesData, res: "success" }]);
+    }
+    catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
+
+}
+
+// book Demo by User
+const bookingDemoByUser = async (req, res) => {
+    try {
+
+        const { category, service_id, userID, Date, TimeSlot } = req.body;
+        if (!userID) {
+            return res.status(200)
+                .json([{ msg: "userID is required", res: "error", }]);
+        }
+
+        if (!category) {
+            return res.status(200)
+                .json([{ msg: "category is required", res: "error", }]);
+        }
+        if (!service_id) {
+            return res.status(200)
+                .json([{ msg: "service_id is required", res: "error", }]);
+        }
+
+        if (!Date) {
+            return res.status(200)
+                .json([{ msg: "Date is required", res: "error", }]);
+        }
+
+        if (!TimeSlot) {
+            return res.status(200)
+                .json([{ msg: "TimeSlot is required", res: "error", }]);
+        }
+        const userData = await User.findOne({ _id: mongoose.Types.ObjectId(userID) });
+        if (!userData) {
+            return res.status(200)
+                .json([{ msg: "User not found!!!", res: "error", }]);
+        }
+
+        const demodata = await demoBooking.create({
+            user_id: mongoose.Types.ObjectId(userID),
+            service_id: mongoose.Types.ObjectId(service_id),
+            category,
+            Date,
+            TimeSlot,
+
+        });
+        return res.status(200).json({
+            message: "You have booked demo Successfully!!",
+            data: demodata,
+            success: true
+        });
+
+    }
+    catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
+
+}
+
+// book Package by User
+const bookingPackageByUser = async (req, res) => {
+    try {
+
+        const { category, service_id, userID, Date, TimeSlot, duration, price } = req.body;
+        if (!userID) {
+            return res.status(200)
+                .json([{ msg: "userID is required", res: "error", }]);
+        }
+
+        if (!category) {
+            return res.status(200)
+                .json([{ msg: "category is required", res: "error", }]);
+        }
+
+        if (!price) {
+            return res.status(200)
+                .json([{ msg: "Price is required", res: "error", }]);
+        }
+        if (!service_id) {
+            return res.status(200)
+                .json([{ msg: "service_id is required", res: "error", }]);
+        }
+
+        if (!Date) {
+            return res.status(200)
+                .json([{ msg: "Date is required", res: "error", }]);
+        }
+
+        if (!TimeSlot) {
+            return res.status(200)
+                .json([{ msg: "TimeSlot is required", res: "error", }]);
+        }
+        if (!duration) {
+            return res.status(200)
+                .json([{ msg: "Duration is required", res: "error", }]);
+        }
+        const userData = await User.findOne({ _id: mongoose.Types.ObjectId(userID) });
+        if (!userData) {
+            return res.status(200)
+                .json([{ msg: "User not found!!!", res: "error", }]);
+        }
+
+        const bookPackagedata = await bookPackage.create({
+            user_id: mongoose.Types.ObjectId(userID),
+            service_id: mongoose.Types.ObjectId(service_id),
+            category,
+            Date,
+            TimeSlot,
+            duration,
+            price
+
+        });
+        return res.status(200).json({
+            message: "Now please do payment!!",
+            data: bookPackagedata,
+            success: true
+        });
+
+    }
+    catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
+
+}
+
+const paymentBuyUser = async (req, res) => {
+
+//     key id:rzp_test_B25v8VQUM86aO2
+
+// key secrate:CvIX87XzyJbtsZ7CaekLkPat
+    try {
+        let instance = new Razorpay({
+            key_id: "rzp_test_B25v8VQUM86aO2",
+            key_secret: "CvIX87XzyJbtsZ7CaekLkPat",
+        });
+
+        // let order = await instance.orders.create({
+        //     // amount: amount * 100,
+        //     amount: 500,
+        //     currency: "INR",
+        //     receipt: "receipt#1",
+        // });
+
+        var options = {
+            amount: 50000,  // amount in the smallest currency unit
+            currency: "INR",
+            receipt: "order_rcptid_11"
+          };
+          instance.orders.create(options, function(err, order) {
+            // console.log(order);
+            return res.status(200).json({
+                message: "Now please do payment!!",
+                data: order,
+                success: true
+            });
+          });
+
+       
+
+        
+
+        // let response = await axios.post("https://candidateapp.herokuapp.com/api/v1/addCoin", {
+        //     id: user_id,
+        //     coin: discount_coins
+        // });
+        
+
+        // let paymentDoc = await Payment.create({
+        //     voucher_id,
+        //     orderDetials: order,
+        // });
+
+        // console.log(
+        //     "🚀 ~ file: payment.js ~ line 22 ~ paymentRouter.post ~ order",
+        //     order
+        // );
+        // return res.status(200).json({
+        //     paymentDoc,
+        //     amount,
+        //     message: "Payment Succ Successfully",
+        //     success: true,
+        // });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+            success: false,
+        });
+    }
+}
 
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo };
+
+    module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser,paymentBuyUser };

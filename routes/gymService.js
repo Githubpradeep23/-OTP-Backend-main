@@ -14,8 +14,10 @@ const Package = require("../models/bookPackage");
 gymServiceRouter.post("/addGymSevice", async (req, res) => {
   try {
     console.log("Start Add Service Api At line 16");
+    console.log('body',req.body);
+    // return false;
 
-    const { title, description, price, category, branchesID_Array, demoDate, demoTime, packageDate, packageTime, packageDuration, manager_contact_no, working_hours, coachName, contact_no, delievrables, consultationDate, consultationTime } = req.body;
+    const { title, description, price, category, branchesID_Array, demoDate, demoTime, packageDate, packageTime, packageDuration, manager_contact_no, working_hours, coachName, contact_no, delievrables, consultationDate, consultationTime, slotTime } = req.body;
     const image = req?.files?.image?.tempFilePath;
 
     if (
@@ -73,7 +75,9 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
                   price,
                   image: imageURL,
                   category,
-                  branch_id
+                  branch_id,
+                  slotTime,
+                  duration: packageDuration
                 }
               })
 
@@ -101,9 +105,9 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
               // }
 
               if (
-                working_hours !== null &&
-                working_hours !== "" &&
-                working_hours !== undefined &&
+                // working_hours !== null &&
+                // working_hours !== "" &&
+                // working_hours !== undefined &&
                 manager_contact_no !== null &&
                 manager_contact_no !== "" &&
                 manager_contact_no !== undefined
@@ -113,7 +117,7 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
                   console.log("🚀 ~ file: gymService.js ~ line 113 ~ allManagersData ~ value", value)
                   return {
                     service_id: value["_id"],
-                    working_hours,
+                    // working_hours,
                     manager_contact_no
                   }
                 });
@@ -121,33 +125,35 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
                 let TalkToManagers = await Manager.insertMany(allManagersData);
                 console.log("🚀 ~ file: gymService.js ~ line 121 ~ gymServiceRouter.post ~ TalkToManagers In Fitness Category", TalkToManagers)
               }
-
-              if (
-                packageDate !== null &&
-                packageDate !== "" &&
-                packageDate !== undefined &&
-                packageTime !== null &&
-                packageTime !== "" &&
-                packageTime !== undefined
-              ) {
-
-                let duration = packageDuration ? packageDuration : null;
-                let packageData = gymServiceData.map((value, index) => {
-                  return {
-                    service_id: value["_id"],
-                    Date: packageDate,
-                    Time: packageTime,
-                    Durataion: duration
-                  }
-                });
-
-                let AllPackages = await Package.insertMany(packageData);
-                console.log("🚀 ~ file: gymService.js ~ line 144 ~ gymServiceRouter.post ~ AllPackages In fitnes", AllPackages);
-              }
+              console.log('hi')
               return res.status(200).json({
                 message: "Service Added Successfully In Fitness Section",
                 success: true
               });
+
+              // if (
+              //   packageDate !== null &&
+              //   packageDate !== "" &&
+              //   packageDate !== undefined &&
+              //   packageTime !== null &&
+              //   packageTime !== "" &&
+              //   packageTime !== undefined
+              // ) {
+
+              // let duration = packageDuration ? packageDuration : null;
+              // let packageData = gymServiceData.map((value, index) => {
+              //   return {
+              //     service_id: value["_id"],
+              //     // Date: packageDate,
+              //     // Time: packageTime,
+              //     Durataion: duration
+              //   }
+              // });
+
+              // let AllPackages = await Package.insertMany(packageData);
+              // console.log("🚀 ~ file: gymService.js ~ line 144 ~ gymServiceRouter.post ~ AllPackages In fitnes", AllPackages);
+              // }
+
 
             } catch (error) {
 

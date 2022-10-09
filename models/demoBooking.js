@@ -1,36 +1,27 @@
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
+const { mongoose, Schema } = require("mongoose");
+
 
 const demoBookingSchema = new mongoose.Schema({
-  user_id: {
+
+  user_id: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  service_id: [{ type: Schema.Types.ObjectId, ref: 'GYM_SERVICE' }],
+
+  category:{
     type: String,
-    required: true,
-  },
-  demo_id: {
-    type: String,
-    required: true,
-  },
-  username: {
-    type: String,
-    required: true,
-  },
-  number: {
-    type: String,
-    required: true,
-  },
-  title: {
-    type: String,
-    required: true,
-  },
-  branch: {
-    type: String,
-    required: true,
-  },
-  category: {
-    type: String,
-    required: true,
+    required: true
   },
   demo_status: {
     type: Boolean,
+    default: true
+
+  },
+  Date: {
+    type: String,
+    required: true
+  },
+  TimeSlot: {
+    type: String,
     required: true
   },
   createdAt: {
