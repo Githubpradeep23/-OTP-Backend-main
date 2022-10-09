@@ -9,27 +9,27 @@ router.post('/signin', userController.signin)
 router.post('/signinVerify', userController.signinVerify)
 
 // ****************Home Page Api start*******************
-router.post('/categoryBanner', auth.verifytoken, userController.categoryBanner)
-router.get('/allTestimonials', auth.verifytoken, userController.allTestimonials)
-router.post('/categoryTestimonials', auth.verifytoken, userController.categoryTestimonials)
-router.get('/allBanners', auth.verifytoken, userController.allBanners)
-router.get('/allServices', auth.verifytoken, userController.allServices)
-router.post('/categoryServices', auth.verifytoken, userController.categoryServices)
-router.post('/addTrackTrace', auth.verifytoken, userController.addTrackTrace)
-router.post('/userTrackTraceList', auth.verifytoken, userController.userTrackTraceList)
+router.post('/categoryBanner',  userController.categoryBanner)
+router.get('/allTestimonials',  userController.allTestimonials)
+router.post('/categoryTestimonials',  userController.categoryTestimonials)
+router.get('/allBanners',  userController.allBanners)
+router.get('/allServices',  userController.allServices)
+router.post('/categoryServices',  userController.categoryServices)
+router.post('/addTrackTrace',  userController.addTrackTrace)
+router.post('/userTrackTraceList',  userController.userTrackTraceList)
 // ****************Home Page Api end*********************
 
 // ****************Account Page Api start*****************
-router.post('/getUserProfile', auth.verifytoken, userController.getUserProfile)
+router.post('/getUserProfile',  userController.getUserProfile)
 // ****************Account Page Api end*******************
 
 // ****************Fitness Page Api start*****************
-router.post('/branchDetailsBySerivceName', auth.verifytoken, userController.branchDetailsBySerivceName)
-router.get('/allGymBranches', auth.verifytoken, userController.allGymBranches)
-router.post('/addPersonalInfo', auth.verifytoken, userController.addPersonalInfo)
-router.post('/bookingDemoByUser', auth.verifytoken, userController.bookingDemoByUser)
-router.post('/bookingPackageByUser', auth.verifytoken, userController.bookingPackageByUser)
-router.post('/paymentBuyUser', auth.verifytoken, userController.paymentBuyUser)
+router.post('/branchDetailsBySerivceName',  userController.branchDetailsBySerivceName)
+router.get('/allGymBranches',  userController.allGymBranches)
+router.post('/addPersonalInfo',  userController.addPersonalInfo)
+router.post('/bookingDemoByUser',  userController.bookingDemoByUser)
+router.post('/bookingPackageByUser',  userController.bookingPackageByUser)
+router.post('/paymentBuyUser',  userController.paymentBuyUser)
 
 
 // ****************Fitness Page Api end*******************
