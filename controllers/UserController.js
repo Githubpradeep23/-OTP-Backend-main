@@ -418,6 +418,55 @@ const userTrackTraceList = async (req, res) => {
 
 }
 
+const userTrackTraceListGraph = async (req, res) => {
+
+    try {
+        const { userID } = req.body;
+
+        if (!userID) {
+            return res.status(200)
+                .json([{ msg: "User ID is required", res: "error", }]);
+        }
+
+        const trackTraceData = await TrackWeight.find({ userID: userID });
+        console.log(trackTraceData);
+
+        const weight=[];
+        const SMM=[];
+        const Waist=[];
+        const PushUp=[];
+        const PullUps=[];
+
+        const PBF=[];
+        const ht=[];
+
+
+
+        trackTraceData.map((item) => 
+        weight.push(item.weight) &&
+        SMM.push(item.SMM)&&
+        Waist.push(item.Waist)&&
+        PushUp.push(item.PushUp)&&
+        PullUps.push(item.PullUps)&&
+        PBF.push(item.PBF)&&
+        ht.push(item.ht)
+
+
+
+
+        );
+        // console.log(trackTraceData);
+        return res.status(200)
+            .json([{ msg: "User Track & Trace Data !!", weight: weight,SMM:SMM,PushUp:PushUp,PullUps:PullUps,Waist:Waist,PBF:PBF,ht:ht, res: "success" }]);
+
+    }
+    catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
+
+}
+
 // get user profile
 const getUserProfile = async (req, res) => {
 
@@ -781,4 +830,4 @@ const paymentBuyUser = async (req, res) => {
 
 
 
-    module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser,paymentBuyUser };
+    module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser,paymentBuyUser,userTrackTraceListGraph };

@@ -17,6 +17,8 @@ router.get('/allServices',  userController.allServices)
 router.post('/categoryServices',  userController.categoryServices)
 router.post('/addTrackTrace',  userController.addTrackTrace)
 router.post('/userTrackTraceList',  userController.userTrackTraceList)
+router.post('/userTrackTraceListGraph',  userController.userTrackTraceListGraph)
+
 // ****************Home Page Api end*********************
 
 // ****************Account Page Api start*****************
