@@ -164,7 +164,7 @@ const signin = async (req, res) => {
             number: number,
             otp: OTP,
             res: "success",
-            sms:response
+            // sms:response
         }]);
     } catch (err) {
         return res.status(200)
