@@ -145,9 +145,12 @@ const signin = async (req, res) => {
         for (let i = 0; i < 4; i++) {
             OTP += digits[Math.floor(Math.random() * 10)];
         }
-        // let response = await axios.get(
-        //     `http://www.smsstanch.in/API/sms.php?firstName=beats&password=123456&from=BEATSF&to=${number}&msg=Hi, Your OTP ${OTP}  to login &type=1&dnd_check=0&template_id=1007164482764680412`
-        // );
+        let response = await axios.get(
+            `http://www.smsstanch.in/API/sms.php?firstName=beats&password=123456&from=BEATSF&to=${number}&msg=Hi, Your OTP ${OTP}  to login &type=1&dnd_check=0&template_id=1007164482764680412`
+
+            // http://www.smsstanch.in/API/sms.php?username=beats&password=123456&from=BEATSF&to=9576470337&msg=hi%20your%20name%20is%20shiam&template_id=OTP%20MESSAGE%20-%201007164482764680412
+        );
+        console.log('sms',response)
         await Otp.deleteOne({ number: number })
 
         const otp = new Otp({
@@ -161,10 +164,11 @@ const signin = async (req, res) => {
             number: number,
             otp: OTP,
             res: "success",
+            sms:response
         }]);
     } catch (err) {
         return res.status(200)
-            .json([{ msg: err.message, res: "error" }]);
+            .json([{ msg: err.message, res: "errors" }]);
     }
 }
 const signinVerify = async (req, res) => {
