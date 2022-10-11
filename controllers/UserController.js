@@ -575,6 +575,8 @@ const updateUserProfile = async (req, res) => {
         };
 
         let imageURL = await helper.get(options);
+
+    
         let updateUser = await User.findOneAndUpdate(
             { _id: userID },
             {
@@ -597,8 +599,9 @@ const updateUserProfile = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "User not found!!!", res: "error", }]);
         } else {
+            const userData = await User.findOne({ _id: userID}) 
             return res.status(200)
-                .json([{ msg: "User Profile updated successflly", data: updateUser, res: "success" }]);
+                .json([{ msg: "User Profile updated successflly", data: userData, res: "success",iamge:imageURL }]);
         }
 
     } catch (err) {
