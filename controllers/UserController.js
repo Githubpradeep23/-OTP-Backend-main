@@ -601,7 +601,7 @@ const updateUserProfile = async (req, res) => {
         } else {
             const userData = await User.findOne({ _id: userID}) 
             return res.status(200)
-                .json([{ msg: "User Profile updated successflly", data: userData, res: "success",iamge:imageURL }]);
+                .json([{ msg: "User Profile updated successflly", data: userData, res: "success" }]);
         }
 
     } catch (err) {
