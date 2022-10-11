@@ -521,6 +521,8 @@ const updateUserProfile = async (req, res) => {
         const { userID, firstName, lastName, DOB, gender, number, email } = req.body;
         let image = req?.files?.profilePicture?.tempFilePath;
 
+        console.log('image', image)
+
         if (!userID) {
             return res.status(200)
                 .json([{ msg: "User ID is required", res: "error", }]);
@@ -550,33 +552,49 @@ const updateUserProfile = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "email is required", res: "error", }]);
         }
-        if (!image) {
-            return res.status(200)
-                .json([{ msg: "profilePicture is required", res: "error", }]);
+
+
+        if (image !== "" &&
+            image !== undefined &&
+            image !== null) {
+
+            var options = {
+                method: "POST",
+                url: "https://api.cloudinary.com/v1_1/bng/image/upload",
+                headers: {
+                    "cache-control": "no-cache",
+                    "content-type":
+                        "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
+                },
+                formData: {
+                    file: {
+                        value: fs.readFileSync(image),
+                        options: { filename: "r.png", contentType: null },
+                    },
+                    upload_preset: "uploadApi",
+                    cloud_name: "bng",
+                },
+            };
+
+            var imageURL = await helper.get(options);
+
+            console.log('yes')
+
+        } else {
+
+            var dataimage = await User.findOne({ _id: userID })
+            var imageURL = dataimage.profilePicture
+
+            console.log('no')
         }
 
 
-        let options = {
-            method: "POST",
-            url: "https://api.cloudinary.com/v1_1/bng/image/upload",
-            headers: {
-                "cache-control": "no-cache",
-                "content-type":
-                    "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
-            },
-            formData: {
-                file: {
-                    value: fs.readFileSync(image),
-                    options: { filename: "r.png", contentType: null },
-                },
-                upload_preset: "uploadApi",
-                cloud_name: "bng",
-            },
-        };
+        console.log('imageurl', imageURL)
 
-        let imageURL = await helper.get(options);
 
-    
+
+
+
         let updateUser = await User.findOneAndUpdate(
             { _id: userID },
             {
@@ -599,7 +617,7 @@ const updateUserProfile = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "User not found!!!", res: "error", }]);
         } else {
-            const userData = await User.findOne({ _id: userID}) 
+            const userData = await User.findOne({ _id: userID })
             return res.status(200)
                 .json([{ msg: "User Profile updated successflly", data: userData, res: "success" }]);
         }
