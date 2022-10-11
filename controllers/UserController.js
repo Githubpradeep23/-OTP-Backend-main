@@ -518,10 +518,10 @@ const getUserProfile = async (req, res) => {
 }
 const updateUserProfile = async (req, res) => {
     try {
-        const { UserId, firstName, lastName, DOB, gender, number, email } = req.body;
+        const { userID, firstName, lastName, DOB, gender, number, email } = req.body;
         let image = req?.files?.profilePicture?.tempFilePath;
 
-        if (!UserId) {
+        if (!userID) {
             return res.status(200)
                 .json([{ msg: "User ID is required", res: "error", }]);
         }
@@ -576,7 +576,7 @@ const updateUserProfile = async (req, res) => {
 
         let imageURL = await helper.get(options);
         let updateUser = await User.findOneAndUpdate(
-            { _id: UserId },
+            { _id: userID },
             {
                 firstName,
                 lastName,
@@ -598,7 +598,7 @@ const updateUserProfile = async (req, res) => {
                 .json([{ msg: "User not found!!!", res: "error", }]);
         } else {
             return res.status(200)
-                .json([{ msg: "User Proile update successflly", data: updateUser, res: "success" }]);
+                .json([{ msg: "User Profile updated successflly", data: updateUser, res: "success" }]);
         }
 
     } catch (err) {
