@@ -23,6 +23,8 @@ router.post('/userTrackTraceListGraph',  userController.userTrackTraceListGraph)
 
 // ****************Account Page Api start*****************
 router.post('/getUserProfile',  userController.getUserProfile)
+router.post('/updateUserProfile',  userController.updateUserProfile)
+
 // ****************Account Page Api end*******************
 
 // ****************Fitness Page Api start*****************

@@ -186,7 +186,11 @@ trackWeightRouter.delete("/deleteWeight", async (req, res) => {
 //GetAll
 trackWeightRouter.get("/getAllWeight", async (req, res) => {
   try {
-    let getAllRecords = await TrackWeight.find();
+    // let getAllRecords = await TrackWeight.find().populate("userId");
+    const getAllRecords = await TrackWeight.find().populate("userID")
+
+    // console.log('ss',getAllRecords);
+    // return false;
     if (
       getAllRecords !== undefined &&
       getAllRecords !== "" &&
@@ -207,6 +211,7 @@ trackWeightRouter.get("/getAllWeight", async (req, res) => {
   } catch (error) {
     return res.status(200).json({
       message: "Something Went Wrong !!",
+      res:error,
       success: false,
     });
   }

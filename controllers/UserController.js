@@ -145,12 +145,29 @@ const signin = async (req, res) => {
         for (let i = 0; i < 4; i++) {
             OTP += digits[Math.floor(Math.random() * 10)];
         }
-        let response = await axios.get(
-            `http://www.smsstanch.in/API/sms.php?firstName=beats&password=123456&from=BEATSF&to=${number}&msg=Hi, Your OTP ${OTP}  to login &type=1&dnd_check=0&template_id=1007164482764680412`
+        // try{
+        //     let response = await axios.get(
+        //         `http://www.smsstanch.in/API/sms.php?username=beats&password=123456&from=BEATSF&to=${number}&msg=Hi, Your OTP to login Beats Fitness App is 565555 This OTP can be used only once and is valid for 10 min only.Thank you. 
+        //         #TeamBeatsFitness&dnd_check=0&template_id=1007164482764680412`
+        //         // <option value="1007164482764680412">OTP MESSAGE
+        //         // - 1007164482764680412</option>
+        //         // // http://www.smsstanch.in/API/sms.php?username=beats&password=123456&from=BEATSF&to=9576470337&msg=hi%20your%20name%20is%20shiam&template_id=OTP%20MESSAGE%20-%201007164482764680412
+        //         // http://www.smsstanch.in/API/sms.php?username=[xxxxxx]&password=[xxxxxx]&from=[xxxxxxxx]&to=[xxxxxxxxxx]&msg=[xxxx]&type=1&dnd_check=0&template_id=[xxxxxxxx]
+        //     );
+        //     console.log(response)
+        //     return res.status(200).json([{
+        //         message: `Your login verfication. OTP is ${OTP}`,
+        //         number: number,
+        //         otp: OTP,
+        //         res: "success",
+        //         // sms:response
+        //     }]);
+        // } catch (err) {
+        //     return res.status(200)
+        //         .json([{ msg: err.message, res: "errors",sms:'testing' }]);
+        // }
 
-            // http://www.smsstanch.in/API/sms.php?username=beats&password=123456&from=BEATSF&to=9576470337&msg=hi%20your%20name%20is%20shiam&template_id=OTP%20MESSAGE%20-%201007164482764680412
-        );
-        console.log('sms',response)
+        console.log('sms', response)
         await Otp.deleteOne({ number: number })
 
         const otp = new Otp({
@@ -168,7 +185,7 @@ const signin = async (req, res) => {
         }]);
     } catch (err) {
         return res.status(200)
-            .json([{ msg: err.message, res: "errors" }]);
+            .json([{ msg: err.message, res: "error" }]);
     }
 }
 const signinVerify = async (req, res) => {
@@ -220,12 +237,12 @@ const allBanners = async (req, res) => {
 
     try {
         const bannersData = await Banner.find();
-        const bannerImage=[];
+        const bannerImage = [];
 
-        bannersData.map((item) => 
+        bannersData.map((item) =>
             bannerImage.push(item.bannerImage)
         );
-       
+
         return res.status(200)
             .json([{ msg: "All Banners Data", images: bannerImage, res: "success" }]);
     }
@@ -247,9 +264,9 @@ const categoryBanner = async (req, res) => {
         }
 
         const bannerData = await Banner.find({ category: category });
-        const bannerImage=[];
+        const bannerImage = [];
 
-        bannerData.map((item) => 
+        bannerData.map((item) =>
             bannerImage.push(item.bannerImage)
         );
         // console.log(bannerData);
@@ -373,7 +390,7 @@ const addTrackTrace = async (req, res) => {
         }
 
         const trackTracedata = await TrackWeight.create({
-            userID,
+            userID: mongoose.Types.ObjectId(userID),
             weight,
             to,
             from,
@@ -435,25 +452,25 @@ const userTrackTraceListGraph = async (req, res) => {
         const trackTraceData = await TrackWeight.find({ userID: userID });
         console.log(trackTraceData);
 
-        const weight=[];
-        const SMM=[];
-        const Waist=[];
-        const PushUp=[];
-        const PullUps=[];
+        const weight = [];
+        const SMM = [];
+        const Waist = [];
+        const PushUp = [];
+        const PullUps = [];
 
-        const PBF=[];
-        const ht=[];
+        const PBF = [];
+        const ht = [];
 
 
 
-        trackTraceData.map((item) => 
-        weight.push(item.weight) &&
-        SMM.push(item.SMM)&&
-        Waist.push(item.Waist)&&
-        PushUp.push(item.PushUp)&&
-        PullUps.push(item.PullUps)&&
-        PBF.push(item.PBF)&&
-        ht.push(item.ht)
+        trackTraceData.map((item) =>
+            weight.push(item.weight) &&
+            SMM.push(item.SMM) &&
+            Waist.push(item.Waist) &&
+            PushUp.push(item.PushUp) &&
+            PullUps.push(item.PullUps) &&
+            PBF.push(item.PBF) &&
+            ht.push(item.ht)
 
 
 
@@ -461,7 +478,7 @@ const userTrackTraceListGraph = async (req, res) => {
         );
         // console.log(trackTraceData);
         return res.status(200)
-            .json([{ msg: "User Track & Trace Data !!", weight: weight,SMM:SMM,PushUp:PushUp,PullUps:PullUps,Waist:Waist,PBF:PBF,ht:ht, res: "success" }]);
+            .json([{ msg: "User Track & Trace Data !!", weight: weight, SMM: SMM, PushUp: PushUp, PullUps: PullUps, Waist: Waist, PBF: PBF, ht: ht, res: "success" }]);
 
     }
     catch (err) {
@@ -498,6 +515,96 @@ const getUserProfile = async (req, res) => {
             .json([{ msg: err.message, res: "error" }]);
     }
 
+}
+const updateUserProfile = async (req, res) => {
+    try {
+        const { UserId, firstName, lastName, DOB, gender, number, email } = req.body;
+        let image = req?.files?.profilePicture?.tempFilePath;
+
+        if (!UserId) {
+            return res.status(200)
+                .json([{ msg: "User ID is required", res: "error", }]);
+        }
+
+        if (!firstName) {
+            return res.status(200)
+                .json([{ msg: "firstName is required", res: "error", }]);
+        }
+        if (!lastName) {
+            return res.status(200)
+                .json([{ msg: "lastName is required", res: "error", }]);
+        }
+        if (!DOB) {
+            return res.status(200)
+                .json([{ msg: "DOB is required", res: "error", }]);
+        }
+        if (!gender) {
+            return res.status(200)
+                .json([{ msg: "gender is required", res: "error", }]);
+        }
+        if (!number) {
+            return res.status(200)
+                .json([{ msg: "number is required", res: "error", }]);
+        }
+        if (!email) {
+            return res.status(200)
+                .json([{ msg: "email is required", res: "error", }]);
+        }
+        if (!image) {
+            return res.status(200)
+                .json([{ msg: "profilePicture is required", res: "error", }]);
+        }
+
+
+        let options = {
+            method: "POST",
+            url: "https://api.cloudinary.com/v1_1/bng/image/upload",
+            headers: {
+                "cache-control": "no-cache",
+                "content-type":
+                    "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
+            },
+            formData: {
+                file: {
+                    value: fs.readFileSync(image),
+                    options: { filename: "r.png", contentType: null },
+                },
+                upload_preset: "uploadApi",
+                cloud_name: "bng",
+            },
+        };
+
+        let imageURL = await helper.get(options);
+        let updateUser = await User.findOneAndUpdate(
+            { _id: UserId },
+            {
+                firstName,
+                lastName,
+                DOB,
+                gender,
+                number,
+                email,
+                profilePicture: imageURL,
+            }
+        );
+
+        if (
+            updateUser.length === 0 ||
+            updateUser === undefined ||
+            updateUser === null ||
+            updateUser === ""
+        ) {
+            return res.status(200)
+                .json([{ msg: "User not found!!!", res: "error", }]);
+        } else {
+            return res.status(200)
+                .json([{ msg: "User Proile update successflly", data: updateUser, res: "success" }]);
+        }
+
+    } catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
 }
 
 //GetBranch Detials by Service Name
@@ -769,9 +876,9 @@ const bookingPackageByUser = async (req, res) => {
 
 const paymentBuyUser = async (req, res) => {
 
-//     key id:rzp_test_B25v8VQUM86aO2
+    //     key id:rzp_test_B25v8VQUM86aO2
 
-// key secrate:CvIX87XzyJbtsZ7CaekLkPat
+    // key secrate:CvIX87XzyJbtsZ7CaekLkPat
     try {
         let instance = new Razorpay({
             key_id: "rzp_test_B25v8VQUM86aO2",
@@ -789,25 +896,25 @@ const paymentBuyUser = async (req, res) => {
             amount: 50000,  // amount in the smallest currency unit
             currency: "INR",
             receipt: "order_rcptid_11"
-          };
-          instance.orders.create(options, function(err, order) {
+        };
+        instance.orders.create(options, function (err, order) {
             // console.log(order);
             return res.status(200).json({
                 message: "Now please do payment!!",
                 data: order,
                 success: true
             });
-          });
+        });
 
-       
 
-        
+
+
 
         // let response = await axios.post("https://candidateapp.herokuapp.com/api/v1/addCoin", {
         //     id: user_id,
         //     coin: discount_coins
         // });
-        
+
 
         // let paymentDoc = await Payment.create({
         //     voucher_id,
@@ -834,4 +941,4 @@ const paymentBuyUser = async (req, res) => {
 
 
 
-    module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser,paymentBuyUser,userTrackTraceListGraph };
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile };

@@ -1,10 +1,8 @@
-const mongoose = require("mongoose");
+const { mongoose, Schema } = require("mongoose");
+
 
 const weightSchema = new mongoose.Schema({
-  userID: {
-    type: String,
-    required: true,
-  },
+  userID: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   weight: {
     type: Number,
     required: true,
