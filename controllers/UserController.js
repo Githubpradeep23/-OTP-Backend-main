@@ -237,14 +237,14 @@ const allBanners = async (req, res) => {
 
     try {
         const bannersData = await Banner.find();
-        const bannerImage = [];
+        // const bannerImage = [];
 
-        bannersData.map((item) =>
-            bannerImage.push(item.bannerImage)
-        );
+        // bannersData.map((item) =>
+        //     bannerImage.push(item.bannerImage)
+        // );
 
         return res.status(200)
-            .json([{ msg: "All Banners Data", images: bannerImage, res: "success" }]);
+            .json([{ msg: "All Banners Data", data: bannersData, res: "success" }]);
     }
     catch (err) {
         return res.status(200)
@@ -264,14 +264,14 @@ const categoryBanner = async (req, res) => {
         }
 
         const bannerData = await Banner.find({ category: category });
-        const bannerImage = [];
+        // const bannerImage = [];
 
-        bannerData.map((item) =>
-            bannerImage.push(item.bannerImage)
-        );
+        // bannerData.map((item) =>
+        //     bannerImage.push(item.bannerImage)
+        // );
         // console.log(bannerData);
         return res.status(200)
-            .json([{ msg: "Category Banner Data", images: bannerImage, res: "success" }]);
+            .json([{ msg: "Category Banner Data", data: bannerData, res: "success" }]);
 
     }
     catch (err) {
