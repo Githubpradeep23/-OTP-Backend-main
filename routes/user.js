@@ -38,6 +38,15 @@ router.post('/paymentBuyUser',  userController.paymentBuyUser)
 
 // ****************Fitness Page Api end*******************
 
+// ****************Support Page Api start*****************
+router.get('/allFaqs',  userController.allFaqs)
+router.post('/createFaq', userController.createFaq)
+router.get('/termCondtionAndPrivacyPolicy',  userController.termCondtionAndPrivacyPolicy)
+router.post('/createTermCondtionAndPrivacyPolicy', userController.createTermCondtionAndPrivacyPolicy)
+
+
+// ****************Support Page Api end*****************
+
 router.post('/test', userController.test)
 
 module.exports = router;

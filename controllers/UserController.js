@@ -10,6 +10,10 @@ const GYM_SERVICE = require("../models/gymServices");
 const GYM_BRANCH = require("../models/gymBranch");
 const demoBooking = require("../models/demoBooking");
 const bookPackage = require("../models/bookPackage");
+const FAQ = require("../models/faq");
+const SETTING = require("../models/setting");
+
+
 
 const Notification = require("../models/notification");
 const jwt = require("jsonwebtoken");
@@ -952,11 +956,10 @@ const paymentBuyUser = async (req, res) => {
         //     message: "Payment Succ Successfully",
         //     success: true,
         // });
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message,
-            success: false,
-        });
+    } catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+
     }
 }
 
@@ -999,6 +1002,97 @@ const test = async (req, res) => {
 
 }
 
+const allFaqs = async (req, res) => {
+    try {
+        const faqsData = await FAQ.find();
+        console.log(faqsData);
+        return res.status(200)
+            .json([{ msg: "All Faq Data", data: faqsData, res: "success" }]);
+
+    } catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+
+    }
+
+}
+
+const createFaq = async (req, res) => {
+    try {
+        const { question, answer } = req.body;
+        if (!question) {
+            return res.status(200)
+                .json([{ msg: "question is required", res: "error", }]);
+        }
+
+        if (!answer) {
+            return res.status(200)
+                .json([{ msg: "answer is required", res: "error", }]);
+        }
+
+        const faqData = await FAQ.create({
+            question,
+            answer
+
+        });
+        return res.status(200).json([{
+            message: "Faq has been created successfully!!",
+            data: faqData,
+            success: true
+        }]);
+
+    } catch (err) {
+        return res.status(200).json([{ msg: err.message, res: "error" }]);
+
+    }
+
+}
+
+const termCondtionAndPrivacyPolicy = async (req, res) => {
+    try {
+        const settingData = await SETTING.find();
+        return res.status(200)
+            .json([{ msg: "Term & Condition and Privacy Policy Data", data: settingData, res: "success" }]);
+
+    } catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+
+    }
+
+}
+
+const createTermCondtionAndPrivacyPolicy = async (req, res) => {
+    try {
+        const { termCondition, privacyPolicy } = req.body;
+        if (!termCondition) {
+            return res.status(200)
+                .json([{ msg: "termCondition is required", res: "error", }]);
+        }
+
+        if (!privacyPolicy) {
+            return res.status(200)
+                .json([{ msg: "privacyPolicy is required", res: "error", }]);
+        }
+
+        const settingData = await SETTING.create({
+            termCondition,
+            privacyPolicy
+
+        });
+        return res.status(200).json([{
+            message: "Term & Condition and Privacy Policy have been created successfully!!",
+            data: settingData,
+            success: true
+        }]);
+
+    } catch (err) {
+        return res.status(200).json([{ msg: err.message, res: "error" }]);
+
+    }
+
+}
 
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test };
+
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy };
