@@ -37,4 +37,7 @@ router.post('/paymentBuyUser',  userController.paymentBuyUser)
 
 
 // ****************Fitness Page Api end*******************
+
+router.post('/test', userController.test)
+
 module.exports = router;

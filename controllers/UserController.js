@@ -43,18 +43,26 @@ const signup = async (req, res) => {
         for (let i = 0; i < 4; i++) {
             OTP += digits[Math.floor(Math.random() * 10)];
         }
-        // let response = await axios.get(
-        //     `http://www.smsstanch.in/API/sms.php?firstName=beats&password=123456&from=BEATSF&to=${number}&msg=Hi, Your OTP ${OTP}  to login &type=1&dnd_check=0&template_id=1007164482764680412`
-        // );
-        await Otp.deleteOne({ number: number })
+        try {
 
-        const otp = new Otp({
-            number: number,
-            otp: OTP,
-        })
+            var msg = `Hi, Your OTP to login Beats Fitness App is ${OTP} This OTP can be used only once and is valid for 10 min only.Thank you.       TeamBeatsFitness`;
 
-        await otp.save()
+            let response = await axios.get(
+                `http://www.smsstanch.in/API/sms.php?username=beats&password=123456&from=BEATSF&to=${number}&msg=${msg}&dnd_check=0&template_id=1007164482764680412`
 
+            );
+            await Otp.deleteOne({ number: number })
+
+            const otp = new Otp({
+                number: number,
+                otp: OTP,
+            })
+
+            await otp.save()
+        } catch (err) {
+            return res.status(200)
+                .json([{ msg: err.message, res: "error" }]);
+        }
         return res.status(200).json([{
             message: `Verify your account.Your OTP is ${OTP}`,
             number: number,
@@ -66,7 +74,7 @@ const signup = async (req, res) => {
         return res.status(200)
             .json([{ msg: err.message, res: "error" }]);
     }
-};
+}
 const signupVerify = async (req, res) => {
 
     try {
@@ -135,7 +143,6 @@ const signin = async (req, res) => {
         }
         signinUser = await User.findOne({ number });
 
-
         if (!signinUser) {
             return res.status(200)
                 .json([{ msg: "This number does not Exists!!!", res: "error", }]);
@@ -145,44 +152,37 @@ const signin = async (req, res) => {
         for (let i = 0; i < 4; i++) {
             OTP += digits[Math.floor(Math.random() * 10)];
         }
-        // try{
-        //     let response = await axios.get(
-        //         `http://www.smsstanch.in/API/sms.php?username=beats&password=123456&from=BEATSF&to=${number}&msg=Hi, Your OTP to login Beats Fitness App is 565555 This OTP can be used only once and is valid for 10 min only.Thank you. 
-        //         #TeamBeatsFitness&dnd_check=0&template_id=1007164482764680412`
-        //         // <option value="1007164482764680412">OTP MESSAGE
-        //         // - 1007164482764680412</option>
-        //         // // http://www.smsstanch.in/API/sms.php?username=beats&password=123456&from=BEATSF&to=9576470337&msg=hi%20your%20name%20is%20shiam&template_id=OTP%20MESSAGE%20-%201007164482764680412
-        //         // http://www.smsstanch.in/API/sms.php?username=[xxxxxx]&password=[xxxxxx]&from=[xxxxxxxx]&to=[xxxxxxxxxx]&msg=[xxxx]&type=1&dnd_check=0&template_id=[xxxxxxxx]
-        //     );
-        //     console.log(response)
-        //     return res.status(200).json([{
-        //         message: `Your login verfication. OTP is ${OTP}`,
-        //         number: number,
-        //         otp: OTP,
-        //         res: "success",
-        //         // sms:response
-        //     }]);
-        // } catch (err) {
-        //     return res.status(200)
-        //         .json([{ msg: err.message, res: "errors",sms:'testing' }]);
-        // }
 
-        console.log('sms', response)
-        await Otp.deleteOne({ number: number })
 
-        const otp = new Otp({
-            number: number,
-            otp: OTP,
-        })
+        try {
+            var msg = `Hi, Your OTP to login Beats Fitness App is ${OTP} This OTP can be used only once and is valid for 10 min only.Thank you.       TeamBeatsFitness`;
 
-        await otp.save()
-        return res.status(200).json([{
-            message: `Your login verfication. OTP is ${OTP}`,
-            number: number,
-            otp: OTP,
-            res: "success",
-            // sms:response
-        }]);
+            let response = await axios.get(
+                `http://www.smsstanch.in/API/sms.php?username=beats&password=123456&from=BEATSF&to=${number}&msg=${msg}&dnd_check=0&template_id=1007164482764680412`
+
+            );
+
+            await Otp.deleteOne({ number: number })
+
+            const otp = new Otp({
+                number: number,
+                otp: OTP,
+            })
+
+            await otp.save()
+            return res.status(200).json([{
+                message: `Your login verfication. OTP is ${OTP}`,
+                number: number,
+                otp: OTP,
+                res: "success",
+            }]);
+
+        } catch (err) {
+            return res.status(200)
+                .json([{ msg: err.message, res: "errors", }]);
+        }
+
+
     } catch (err) {
         return res.status(200)
             .json([{ msg: err.message, res: "error" }]);
@@ -960,6 +960,45 @@ const paymentBuyUser = async (req, res) => {
     }
 }
 
+const test = async (req, res) => {
+
+    const { number } = req.body;
+
+    if (!number) {
+        return res.status(200)
+            .json([{ msg: "Number is required", res: "error", }]);
+    }
+    try {
+        let digits = "0123456789";
+        var OTP = "";
+        for (let i = 0; i < 4; i++) {
+            OTP += digits[Math.floor(Math.random() * 10)];
+        }
+
+        var msg = `Hi, Your OTP to login Beats Fitness App is ${OTP} This OTP can be used only once and is valid for 10 min only.Thank you.       TeamBeatsFitness`;
+
+        console.log('msg', msg.length)
+        let response = await axios.get(
+            `http://www.smsstanch.in/API/sms.php?username=beats&password=123456&from=BEATSF&to=${number}&msg=${msg}&dnd_check=0&template_id=1007164482764680412`
+
+        );
+        console.log(response)
+        return res.status(200).json([{
+            // message: `Your login verfication. OTP is ${OTP}`,
+            number: number,
+            otp: OTP,
+            res: "success",
+            msg: msg,
+            lenght: msg.length
+            // sms:response
+        }]);
+    } catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "errors", sms: 'testing' }]);
+    }
+
+}
 
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile };
+
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test };
