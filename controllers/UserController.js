@@ -1133,7 +1133,7 @@ const allUserQueries = async (req,res) => {
                 .json([{ msg: "userID is required", res: "error" }]);
         }
 
-        const queryData = await QUERY.findOne({ user_id: mongoose.Types.ObjectId(userID) })
+        const queryData = await QUERY.find({ user_id: mongoose.Types.ObjectId(userID) })
 
         return res.status(200).json([{
             message: "User All queris!!",
