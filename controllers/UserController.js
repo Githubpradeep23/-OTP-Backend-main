@@ -532,30 +532,30 @@ const updateUserProfile = async (req, res) => {
                 .json([{ msg: "User ID is required", res: "error", }]);
         }
 
-        if (!firstName) {
-            return res.status(200)
-                .json([{ msg: "firstName is required", res: "error", }]);
-        }
-        if (!lastName) {
-            return res.status(200)
-                .json([{ msg: "lastName is required", res: "error", }]);
-        }
-        if (!DOB) {
-            return res.status(200)
-                .json([{ msg: "DOB is required", res: "error", }]);
-        }
-        if (!gender) {
-            return res.status(200)
-                .json([{ msg: "gender is required", res: "error", }]);
-        }
-        if (!number) {
-            return res.status(200)
-                .json([{ msg: "number is required", res: "error", }]);
-        }
-        if (!email) {
-            return res.status(200)
-                .json([{ msg: "email is required", res: "error", }]);
-        }
+        // if (!firstName) {
+        //     return res.status(200)
+        //         .json([{ msg: "firstName is required", res: "error", }]);
+        // }
+        // if (!lastName) {
+        //     return res.status(200)
+        //         .json([{ msg: "lastName is required", res: "error", }]);
+        // }
+        // if (!DOB) {
+        //     return res.status(200)
+        //         .json([{ msg: "DOB is required", res: "error", }]);
+        // }
+        // if (!gender) {
+        //     return res.status(200)
+        //         .json([{ msg: "gender is required", res: "error", }]);
+        // }
+        // if (!number) {
+        //     return res.status(200)
+        //         .json([{ msg: "number is required", res: "error", }]);
+        // }
+        // if (!email) {
+        //     return res.status(200)
+        //         .json([{ msg: "email is required", res: "error", }]);
+        // }
 
 
         if (image !== "" &&
