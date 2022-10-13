@@ -43,6 +43,8 @@ router.get('/allFaqs',  userController.allFaqs)
 router.post('/createFaq', userController.createFaq)
 router.get('/termCondtionAndPrivacyPolicy',  userController.termCondtionAndPrivacyPolicy)
 router.post('/createTermCondtionAndPrivacyPolicy', userController.createTermCondtionAndPrivacyPolicy)
+router.post('/allUserQueries',  userController.allUserQueries)
+router.post('/createUserQuery',  userController.createUserQuery)
 
 
 // ****************Support Page Api end*****************

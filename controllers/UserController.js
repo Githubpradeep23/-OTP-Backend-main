@@ -12,6 +12,8 @@ const demoBooking = require("../models/demoBooking");
 const bookPackage = require("../models/bookPackage");
 const FAQ = require("../models/faq");
 const SETTING = require("../models/setting");
+const QUERY = require("../models/query");
+
 
 
 
@@ -1093,6 +1095,59 @@ const createTermCondtionAndPrivacyPolicy = async (req, res) => {
 
 }
 
+const createUserQuery = async (req, res) => {
+    try {
+        const { query, userID } = req.body;
+        if (!userID) {
+            return res.status(200)
+                .json([{ msg: "userID is required", res: "error", }]);
+        }
+
+        if (!query) {
+            return res.status(200)
+                .json([{ msg: "query is required", res: "error", }]);
+        }
+
+        const queryData = await QUERY.create({
+            query,
+            user_id: mongoose.Types.ObjectId(userID),
+        });
+        return res.status(200).json([{
+            message: "Your query has been submited,we will give you answer shortly!!",
+            data: queryData,
+            success: true
+        }]);
+
+    } catch (err) {
+        return res.status(200).json([{ msg: err.message, res: "error" }]);
+
+    }
+
+}
+
+const allUserQueries = async (req,res) => {
+    try {
+        const { userID } = req.body;
+        if (!userID) {
+            return res.status(200)
+                .json([{ msg: "userID is required", res: "error" }]);
+        }
+
+        const queryData = await QUERY.findOne({ user_id: mongoose.Types.ObjectId(userID) })
+
+        return res.status(200).json([{
+            message: "User All queris!!",
+            data: queryData,
+            success: true
+        }]);
+
+    } catch (err) {
+        return res.status(200).json([{ msg: err.message, res: "error" }]);
+
+    }
+
+}
 
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy };
+
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries };
