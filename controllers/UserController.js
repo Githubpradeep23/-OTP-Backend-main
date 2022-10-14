@@ -778,6 +778,46 @@ const allGymBranches = async (req, res) => {
 
 }
 
+//User Activity & Records
+const UserActivityAndRecords = async (req, res) => {
+    try {
+
+        const { userID } = req.body;
+        if (!userID) {
+            return res.status(200)
+                .json([{ msg: "userID is required", res: "error", }]);
+        }
+
+       
+        const userData = await User.findOne({ _id: mongoose.Types.ObjectId(userID) });
+        if (!userData) {
+            return res.status(200)
+                .json([{ msg: "User not found!!!", res: "error", }]);
+        }
+
+        const demoData = await demoBooking.find({ user_id: mongoose.Types.ObjectId(userID) }).populate("service_id");
+
+        const packageData = await bookPackage.find({ user_id: mongoose.Types.ObjectId(userID) }).populate("service_id");
+
+        const trackTraceData = await TrackWeight.find({ userID: mongoose.Types.ObjectId(userID) });
+        
+        return res.status(200).json([{
+            message: "User All Activity & Records!!",
+            demoData: demoData,
+            packageData:packageData,
+            trackTraceData:trackTraceData,
+            success: true
+        }]);
+
+    }
+    catch (err) {
+        return res.status(200).json([{ 
+            msg: err.message, res: "error" 
+        }]);
+    }
+
+}
+
 // book Demo by User
 const bookingDemoByUser = async (req, res) => {
     try {
@@ -820,11 +860,11 @@ const bookingDemoByUser = async (req, res) => {
             TimeSlot,
 
         });
-        return res.status(200).json({
+        return res.status(200).json([{
             message: "You have booked demo Successfully!!",
             data: demodata,
             success: true
-        });
+        }]);
 
     }
     catch (err) {
@@ -1150,4 +1190,4 @@ const allUserQueries = async (req,res) => {
 
 
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries };
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries,UserActivityAndRecords };

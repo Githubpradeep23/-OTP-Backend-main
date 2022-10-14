@@ -45,6 +45,8 @@ router.get('/termCondtionAndPrivacyPolicy',  userController.termCondtionAndPriva
 router.post('/createTermCondtionAndPrivacyPolicy', userController.createTermCondtionAndPrivacyPolicy)
 router.post('/allUserQueries',  userController.allUserQueries)
 router.post('/createUserQuery',  userController.createUserQuery)
+router.post('/UserActivityAndRecords',  userController.UserActivityAndRecords)
+
 
 
 // ****************Support Page Api end*****************
