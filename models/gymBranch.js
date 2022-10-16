@@ -40,6 +40,10 @@ const gymBranchSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  image: {
+    type: String,
+    default: null,
+  },
 });
 
 const GYM_BRANCH = new mongoose.model("GYM_BRANCH", gymBranchSchema);

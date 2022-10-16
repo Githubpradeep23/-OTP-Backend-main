@@ -21,8 +21,9 @@ const gymServicesSchema = new mongoose.Schema({
     type: String,
   },
 
-  category: {
+  bannerImage: {
     type: String,
+    default:null
   },
   duration:{
     type:String

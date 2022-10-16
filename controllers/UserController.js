@@ -1226,6 +1226,95 @@ const serviceSlottimeById = async (req, res) => {
 
 }
 
+const updateGymBranches = async (req, res) => {
+
+    try {
+       
+        const { title } = req.body;
+        let image = req?.files?.image?.tempFilePath;
+
+        console.log('image', image)
+
+        if (!title) {
+            return res.status(200)
+                .json([{ msg: "title is required", res: "error" }]);
+        }
+
+      
 
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries,UserActivityAndRecords,serviceSlottimeById };
+        if (image !== "" &&
+            image !== undefined &&
+            image !== null) {
+
+            var options = {
+                method: "POST",
+                url: "https://api.cloudinary.com/v1_1/bng/image/upload",
+                headers: {
+                    "cache-control": "no-cache",
+                    "content-type":
+                        "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
+                },
+                formData: {
+                    file: {
+                        value: fs.readFileSync(image),
+                        options: { filename: "r.png", contentType: null },
+                    },
+                    upload_preset: "uploadApi",
+                    cloud_name: "bng",
+                },
+            };
+
+            var imageURL = await helper.get(options);
+
+            console.log('yes')
+
+        } else {
+
+            var dataimage = await GYM_SERVICE.findOne({title: title })
+            var imageURL = dataimage.bannerImage
+
+            console.log('no')
+        }
+
+
+        console.log('imageurl', imageURL)
+
+
+
+
+
+        let updatebranch = await GYM_SERVICE.findAndUpdate(
+            {title: title },
+            {
+               
+                bannerImage: imageURL,
+            }
+        );
+
+        // comnsole
+
+        if (
+            updatebranch.length === 0 ||
+            updatebranch === undefined ||
+            updatebranch === null ||
+            updatebranch === ""
+        ) {
+            return res.status(200)
+                .json([{ msg: "Branch not found!!!", res: "error", }]);
+        } else {
+            const userData = await GYM_SERVICE.findOne({ title: title })
+            return res.status(200)
+                .json([{ msg: "Branch  updated successflly", data: userData, res: "success" }]);
+        }
+    }
+    catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
+
+}
+
+
+
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries,UserActivityAndRecords,serviceSlottimeById,updateGymBranches };
