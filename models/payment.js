@@ -2,7 +2,9 @@ const { mongoose, Schema } = require("mongoose");
 
 const paymentSchema = mongoose.Schema({
   voucher_id : [{ type: Schema.Types.ObjectId, ref: 'Voucher' }],
-  orderDetials: {
+  userId: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  packageId: [{ type: Schema.Types.ObjectId, ref: 'Package' }],
+  orderDetails: {
     type: Object,
     required: true,
   },
@@ -11,6 +13,8 @@ const paymentSchema = mongoose.Schema({
     default: Date.now(),
   },
 });
+
+
 
 const Payment = new mongoose.model("Payment", paymentSchema);
 

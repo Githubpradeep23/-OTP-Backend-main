@@ -13,6 +13,8 @@ const bookPackage = require("../models/bookPackage");
 const FAQ = require("../models/faq");
 const SETTING = require("../models/setting");
 const QUERY = require("../models/query");
+const PAYMENT = require("../models/payment");
+
 
 
 
@@ -750,10 +752,10 @@ const addPersonalInfo = async (req, res) => {
         const result = await User.findByIdAndUpdate(
             userID, updatedData, options
         )
-        return res.status(200).json({
+        return res.status(200).json([{
             message: "Added Personal Info Successfully!!",
             success: true
-        });
+        }]);
 
     }
     catch (err) {
@@ -788,7 +790,7 @@ const UserActivityAndRecords = async (req, res) => {
                 .json([{ msg: "userID is required", res: "error", }]);
         }
 
-       
+
         const userData = await User.findOne({ _id: mongoose.Types.ObjectId(userID) });
         if (!userData) {
             return res.status(200)
@@ -800,19 +802,19 @@ const UserActivityAndRecords = async (req, res) => {
         const packageData = await bookPackage.find({ user_id: mongoose.Types.ObjectId(userID) }).populate("service_id");
 
         const trackTraceData = await TrackWeight.find({ userID: mongoose.Types.ObjectId(userID) });
-        
+
         return res.status(200).json([{
             message: "User All Activity & Records!!",
             demoData: demoData,
-            packageData:packageData,
-            trackTraceData:trackTraceData,
+            packageData: packageData,
+            trackTraceData: trackTraceData,
             success: true
         }]);
 
     }
     catch (err) {
-        return res.status(200).json([{ 
-            msg: err.message, res: "error" 
+        return res.status(200).json([{
+            msg: err.message, res: "error"
         }]);
     }
 
@@ -927,11 +929,11 @@ const bookingPackageByUser = async (req, res) => {
             price
 
         });
-        return res.status(200).json({
+        return res.status(200).json([{
             message: "Now please do payment!!",
             data: bookPackagedata,
             success: true
-        });
+        }]);
 
     }
     catch (err) {
@@ -947,57 +949,60 @@ const paymentBuyUser = async (req, res) => {
 
     // key secrate:CvIX87XzyJbtsZ7CaekLkPat
     try {
-        let instance = new Razorpay({
-            key_id: "rzp_test_B25v8VQUM86aO2",
-            key_secret: "CvIX87XzyJbtsZ7CaekLkPat",
-        });
 
-        // let order = await instance.orders.create({
-        //     // amount: amount * 100,
-        //     amount: 500,
-        //     currency: "INR",
-        //     receipt: "receipt#1",
-        // });
 
-        var options = {
-            amount: 50000,  // amount in the smallest currency unit
-            currency: "INR",
-            receipt: "order_rcptid_11"
-        };
-        instance.orders.create(options, function (err, order) {
-            // console.log(order);
-            return res.status(200).json({
-                message: "Now please do payment!!",
-                data: order,
-                success: true
+        const { packageId, orderDetails, userID, } = req.body;
+        if (!userID) {
+            return res.status(200)
+                .json([{ msg: "userID is required", res: "error", }]);
+        }
+
+        if (!packageId) {
+            return res.status(200)
+                .json([{ msg: "packageId is required", res: "error", }]);
+        }
+
+        if (!orderDetails) {
+            return res.status(200)
+                .json([{ msg: "orderDetails is required", res: "error", }]);
+        }
+
+
+        let bookPackagedata = await bookPackage.findOneAndUpdate(
+            { _id: mongoose.Types.ObjectId(packageId),user_id:mongoose.Types.ObjectId(userID) },
+            {
+                package_status: true
+            }
+        );
+
+        // console.log('boosk',bookPackagedata)
+
+        if (
+            bookPackagedata === undefined ||
+            bookPackagedata === null ||
+            bookPackagedata === "" ||
+            bookPackagedata.length === 0 
+
+        ) {
+            return res.status(200)
+                .json([{ msg: "Booking Package not found!!!", res: "error", }]);
+
+        } else {
+            
+            const paymentData = await PAYMENT.create({
+                userID,
+                packageId,
+                orderDetails
+    
             });
-        });
+            return res.status(200).json([{
+                message: "Pyament data has been stored successfully!!",
+                data: paymentData,
+                success: true
+            }]);
+        }
 
 
-
-
-
-        // let response = await axios.post("https://candidateapp.herokuapp.com/api/v1/addCoin", {
-        //     id: user_id,
-        //     coin: discount_coins
-        // });
-
-
-        // let paymentDoc = await Payment.create({
-        //     voucher_id,
-        //     orderDetials: order,
-        // });
-
-        // console.log(
-        //     "🚀 ~ file: payment.js ~ line 22 ~ paymentRouter.post ~ order",
-        //     order
-        // );
-        // return res.status(200).json({
-        //     paymentDoc,
-        //     amount,
-        //     message: "Payment Succ Successfully",
-        //     success: true,
-        // });
     } catch (err) {
         return res.status(200)
             .json([{ msg: err.message, res: "error" }]);
@@ -1165,7 +1170,7 @@ const createUserQuery = async (req, res) => {
 
 }
 
-const allUserQueries = async (req,res) => {
+const allUserQueries = async (req, res) => {
     try {
         const { userID } = req.body;
         if (!userID) {
@@ -1199,13 +1204,13 @@ const serviceSlottimeById = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "barcnchID is required", res: "error" }]);
         }
-        
+
 
 
         const singleServiceDetials = await GYM_SERVICE.find({ _id: mongoose.Types.ObjectId(barcnchID) }).populate("branch_id")
 
-       
-        
+
+
 
         if (singleServiceDetials === null || singleServiceDetials === undefined || singleServiceDetials === "" || singleServiceDetials.length === 0) {
             return res.status(200)
@@ -1215,7 +1220,7 @@ const serviceSlottimeById = async (req, res) => {
 
             console.log(array[0])
             return res.status(200)
-                .json([{ msg: "Slot Time Data ", time: array, res: "success",}]);
+                .json([{ msg: "Slot Time Data ", time: array, res: "success", }]);
         }
 
     }
@@ -1226,9 +1231,9 @@ const serviceSlottimeById = async (req, res) => {
 
 }
 
-const GymBranchesByServiceName=async(req,res)=>{
+const GymBranchesByServiceName = async (req, res) => {
 
-    
+
     try {
         const { serviceTitle } = req.body;
         if (!serviceTitle) {
@@ -1236,7 +1241,7 @@ const GymBranchesByServiceName=async(req,res)=>{
                 .json([{ msg: "Service Title is required", res: "error", }]);
 
         }
-        
+
 
 
         const gymBranchService = await GYM_SERVICE.find({ title: serviceTitle }).populate("branch_id")
@@ -1260,7 +1265,7 @@ const GymBranchesByServiceName=async(req,res)=>{
 const updateGymBranches = async (req, res) => {
 
     try {
-       
+
         const { title } = req.body;
         let image = req?.files?.image?.tempFilePath;
 
@@ -1271,7 +1276,7 @@ const updateGymBranches = async (req, res) => {
                 .json([{ msg: "title is required", res: "error" }]);
         }
 
-      
+
 
 
         if (image !== "" &&
@@ -1302,7 +1307,7 @@ const updateGymBranches = async (req, res) => {
 
         } else {
 
-            var dataimage = await GYM_SERVICE.findOne({title: title })
+            var dataimage = await GYM_SERVICE.findOne({ title: title })
             var imageURL = dataimage.bannerImage
 
             console.log('no')
@@ -1316,9 +1321,9 @@ const updateGymBranches = async (req, res) => {
 
 
         let updatebranch = await GYM_SERVICE.update(
-            {title: title },
+            { title: title },
             {
-               
+
                 bannerImage: imageURL,
             }
         );
@@ -1348,4 +1353,4 @@ const updateGymBranches = async (req, res) => {
 
 
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries,UserActivityAndRecords,serviceSlottimeById,GymBranchesByServiceName,updateGymBranches };
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches };
