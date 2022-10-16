@@ -1189,5 +1189,43 @@ const allUserQueries = async (req,res) => {
 }
 
 
+//GetBranch Detials by Service Name
+const serviceSlottimeById = async (req, res) => {
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries,UserActivityAndRecords };
+    try {
+
+        const { barcnchID } = req.body;
+        if (!barcnchID) {
+            return res.status(200)
+                .json([{ msg: "barcnchID is required", res: "error" }]);
+        }
+        
+
+
+        const singleServiceDetials = await GYM_SERVICE.find({ _id: mongoose.Types.ObjectId(barcnchID) }).populate("branch_id")
+
+       
+        var array = singleServiceDetials[0].slotTime.split(',');
+
+        console.log(array[0])
+
+        if (singleServiceDetials === null || singleServiceDetials === undefined || singleServiceDetials === "" || singleServiceDetials.length === 0) {
+            return res.status(200)
+                .json([{ msg: "Service Not found", res: "error", }]);
+        } else {
+
+            return res.status(200)
+                .json([{ msg: "Slot Time Data ", data: array, res: "success",}]);
+        }
+
+    }
+    catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
+
+}
+
+
+
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries,UserActivityAndRecords,serviceSlottimeById };

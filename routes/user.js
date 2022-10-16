@@ -51,6 +51,6 @@ router.post('/UserActivityAndRecords',  userController.UserActivityAndRecords)
 
 // ****************Support Page Api end*****************
 
-router.post('/test', userController.test)
+router.post('/serviceSlottimeById', userController.serviceSlottimeById)
 
 module.exports = router;
