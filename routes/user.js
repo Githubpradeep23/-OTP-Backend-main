@@ -34,6 +34,8 @@ router.post('/addPersonalInfo',  userController.addPersonalInfo)
 router.post('/bookingDemoByUser',  userController.bookingDemoByUser)
 router.post('/bookingPackageByUser',  userController.bookingPackageByUser)
 router.post('/paymentBuyUser',  userController.paymentBuyUser)
+router.post('/GymBranchesByServiceName',  userController.GymBranchesByServiceName)
+
 
 
 // ****************Fitness Page Api end*******************

@@ -1226,6 +1226,37 @@ const serviceSlottimeById = async (req, res) => {
 
 }
 
+const GymBranchesByServiceName=async(req,res)=>{
+
+    
+    try {
+        const { serviceTitle } = req.body;
+        if (!serviceTitle) {
+            return res.status(200)
+                .json([{ msg: "Service Title is required", res: "error", }]);
+
+        }
+        
+
+
+        const gymBranchService = await GYM_SERVICE.find({ title: serviceTitle }).populate("branch_id")
+        if (gymBranchService === null || gymBranchService === undefined || gymBranchService === "" || gymBranchService.length === 0) {
+            return res.status(200)
+                .json([{ msg: "Gym Banche found", res: "error", }]);
+        } else {
+
+            return res.status(200)
+                .json([{ msg: "Gym Banches bases on service", data: gymBranchService, res: "success" }]);
+        }
+
+    }
+    catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
+
+}
+
 const updateGymBranches = async (req, res) => {
 
     try {
@@ -1284,7 +1315,7 @@ const updateGymBranches = async (req, res) => {
 
 
 
-        let updatebranch = await GYM_SERVICE.findAndUpdate(
+        let updatebranch = await GYM_SERVICE.update(
             {title: title },
             {
                
@@ -1317,4 +1348,4 @@ const updateGymBranches = async (req, res) => {
 
 
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries,UserActivityAndRecords,serviceSlottimeById,updateGymBranches };
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries,UserActivityAndRecords,serviceSlottimeById,GymBranchesByServiceName,updateGymBranches };
