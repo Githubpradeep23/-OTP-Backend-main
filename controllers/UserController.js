@@ -1205,15 +1205,15 @@ const serviceSlottimeById = async (req, res) => {
         const singleServiceDetials = await GYM_SERVICE.find({ _id: mongoose.Types.ObjectId(barcnchID) }).populate("branch_id")
 
        
-        var array = singleServiceDetials[0].slotTime.split(',');
-
-        console.log(array[0])
+        
 
         if (singleServiceDetials === null || singleServiceDetials === undefined || singleServiceDetials === "" || singleServiceDetials.length === 0) {
             return res.status(200)
-                .json([{ msg: "Service Not found", res: "error", }]);
+                .json([{ msg: "Time slot Not found", res: "error", }]);
         } else {
+            var array = singleServiceDetials[0].slotTime.split(',');
 
+            console.log(array[0])
             return res.status(200)
                 .json([{ msg: "Slot Time Data ", time: array, res: "success",}]);
         }
