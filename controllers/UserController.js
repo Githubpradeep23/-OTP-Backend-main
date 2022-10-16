@@ -1215,7 +1215,7 @@ const serviceSlottimeById = async (req, res) => {
         } else {
 
             return res.status(200)
-                .json([{ msg: "Slot Time Data ", data: array, res: "success",}]);
+                .json([{ msg: "Slot Time Data ", time: array, res: "success",}]);
         }
 
     }
