@@ -1216,11 +1216,23 @@ const serviceSlottimeById = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "Time slot Not found", res: "error", }]);
         } else {
-            var array = singleServiceDetials[0].slotTime.split(',');
+            const data=[];
 
-            console.log(array[0])
+            const arrayTime= singleServiceDetials[0].slotTime.split(',');
+
+            arrayTime.map((item)=>{
+            var obj = {};
+
+                obj["time"]=item
+                data.push(obj);
+
+
+            })
+
+
+            // console.log(array[0])
             return res.status(200)
-                .json([{ msg: "Slot Time Data ", time: array, res: "success", }]);
+                .json([{ msg: "Slot Time Data ", time: data, res: "success", }]);
         }
 
     }
