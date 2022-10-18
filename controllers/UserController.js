@@ -14,9 +14,11 @@ const FAQ = require("../models/faq");
 const SETTING = require("../models/setting");
 const QUERY = require("../models/query");
 const PAYMENT = require("../models/payment");
-const Consultation=require("../models/Consultaion")
+const Consultation = require("../models/Consultaion")
 
+const Coach = require("../models/coach");
 
+const TalkToCoach = require("../models/talkToCoach");
 
 
 const Notification = require("../models/notification");
@@ -711,7 +713,7 @@ const branchDetailsBySerivceName = async (req, res) => {
 
 
 
-            
+
         //     // datats.push(obj)
         //     item.branch_id.map((branch)=>{
         //         // push (datats,item.title)
@@ -744,15 +746,15 @@ const branchDetailsBySerivceName = async (req, res) => {
 
         // console.log(datats);
 
-//         const traverse = singleServiceDetials => 
-//   (singleServiceDetials?[]:[[singleServiceDetials.item]]).concat(...singleServiceDetials.branch_id.map(child => 
-//      traverse(child).map(arr => 
-//          [singleServiceDetials.item].concat(arr)
-//       )
-//   ));
+        //         const traverse = singleServiceDetials => 
+        //   (singleServiceDetials?[]:[[singleServiceDetials.item]]).concat(...singleServiceDetials.branch_id.map(child => 
+        //      traverse(child).map(arr => 
+        //          [singleServiceDetials.item].concat(arr)
+        //       )
+        //   ));
 
-//   console.log(traverse(singleServiceDetials))
-        
+        //   console.log(traverse(singleServiceDetials))
+
         if (singleServiceDetials === null || singleServiceDetials === undefined || singleServiceDetials === "" || singleServiceDetials.length === 0) {
             return res.status(200)
                 .json([{ msg: "Service Not found", res: "error", }]);
@@ -1029,7 +1031,7 @@ const paymentBuyUser = async (req, res) => {
 
 
         let bookPackagedata = await bookPackage.findOneAndUpdate(
-            { _id: mongoose.Types.ObjectId(packageId),user_id:mongoose.Types.ObjectId(userID) },
+            { _id: mongoose.Types.ObjectId(packageId), user_id: mongoose.Types.ObjectId(userID) },
             {
                 package_status: true
             }
@@ -1041,19 +1043,19 @@ const paymentBuyUser = async (req, res) => {
             bookPackagedata === undefined ||
             bookPackagedata === null ||
             bookPackagedata === "" ||
-            bookPackagedata.length === 0 
+            bookPackagedata.length === 0
 
         ) {
             return res.status(200)
                 .json([{ msg: "Booking Package not found!!!", res: "error", }]);
 
         } else {
-            
+
             const paymentData = await PAYMENT.create({
                 userID,
                 packageId,
                 orderDetails
-    
+
             });
             return res.status(200).json([{
                 message: "Pyament data has been stored successfully!!",
@@ -1276,40 +1278,40 @@ const serviceSlottimeById = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "Time slot Not found", res: "error", }]);
         } else {
-            const data=[];
+            const data = [];
 
             // if(singleServiceDetials[0].slotTime)
-            if(singleServiceDetials[0].slotTime===undefined){
+            if (singleServiceDetials[0].slotTime === undefined) {
                 return res.status(200)
-                .json([{ msg: "Time slot Not found", res: "error", }]);
+                    .json([{ msg: "Time slot Not found", res: "error", }]);
 
             }
 
             // }else{
 
-                const arrayTime= singleServiceDetials[0].slotTime.split(',');
+            const arrayTime = singleServiceDetials[0].slotTime.split(',');
 
-                arrayTime.map((item)=>{
+            arrayTime.map((item) => {
                 var obj = {};
 
-                    obj["time"]=item
-                    data.push(obj);
+                obj["time"] = item
+                data.push(obj);
 
-                })
+            })
 
             // }
 
             return res.status(200)
-            .json([{ msg: "Slot Time Data ", time: data, res: "success", }]);
-            
-                // console.log(singleServiceDetials[0].slotTime)
+                .json([{ msg: "Slot Time Data ", time: data, res: "success", }]);
 
-               
-           
+            // console.log(singleServiceDetials[0].slotTime)
+
+
+
 
 
             // console.log(array[0])
-       
+
         }
 
     }
@@ -1355,7 +1357,7 @@ const GymBranchesByServiceName = async (req, res) => {
 const bookingConsultantByUser = async (req, res) => {
     try {
 
-        const { category, service_id, userID, Date, Time,firstFree } = req.body;
+        const { category, service_id, userID, Date, Time, firstFree } = req.body;
         if (!userID) {
             return res.status(200)
                 .json([{ msg: "userID is required", res: "error", }]);
@@ -1413,12 +1415,80 @@ const bookingConsultantByUser = async (req, res) => {
 
 }
 
+const addCoach = async (req, res) => {
+
+    const { name, contact_no, service_id } = req.body;
+    if (!name) {
+        return res.status(200)
+            .json([{ msg: "name is required", res: "error", }]);
+    }
+    if (!contact_no) {
+        return res.status(200)
+            .json([{ msg: "contact_no is required", res: "error", }]);
+    }
+    if (!service_id) {
+        return res.status(200)
+            .json([{ msg: "service_id is required", res: "error", }]);
+    }
+
+    const coachdata = await Coach.create({
+        name,
+        contact_no,
+        service_id: mongoose.Types.ObjectId(service_id)
+
+    });
+    return res.status(200).json([{
+        message: "Coach Created  Successfully Successfully!!",
+        data: coachdata,
+        success: true
+    }]);
+
+}
+
+const bookingCoach = async (req, res) => {
+
+    try {
+        const { coach_id, user_id, service_id } = req.body;
+        if (!coach_id) {
+            return res.status(200)
+                .json([{ msg: "coach_id is required", res: "error", }]);
+        }
+        if (!user_id) {
+            return res.status(200)
+                .json([{ msg: "user_id is required", res: "error", }]);
+        }
+        if (!service_id) {
+            return res.status(200)
+                .json([{ msg: "service_id is required", res: "error", }]);
+        }
+
+        const coachdata = await TalkToCoach.create({
+            coach_id: mongoose.Types.ObjectId(coach_id),
+            user_id: mongoose.Types.ObjectId(user_id),
+            service_id: mongoose.Types.ObjectId(service_id)
+
+        });
+        return res.status(200).json([{
+            message: "You have booked coach Successfully!!",
+            data: coachdata,
+            success: true
+        }]);
+    }
+    catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
+
+
+
+}
+
 
 const updateGymBranches = async (req, res) => {
 
     try {
 
-        const { barcnchID,title,description } = req.body;
+        const { barcnchID, title, description } = req.body;
         let image = req?.files?.image?.tempFilePath;
 
         console.log('image', image)
@@ -1459,7 +1529,7 @@ const updateGymBranches = async (req, res) => {
 
         } else {
 
-            var dataimage = await GYM_SERVICE.findOne({ _id: mongoose.Types.ObjectId(barcnchID)  })
+            var dataimage = await GYM_SERVICE.findOne({ _id: mongoose.Types.ObjectId(barcnchID) })
             var imageURL = dataimage.bannerImage
 
             console.log('no')
@@ -1473,12 +1543,12 @@ const updateGymBranches = async (req, res) => {
 
 
         let updatebranch = await GYM_SERVICE.update(
-            { _id: mongoose.Types.ObjectId(barcnchID)  },
+            { _id: mongoose.Types.ObjectId(barcnchID) },
             {
 
                 bannerImage: imageURL,
-                title:title,
-                description:description
+                title: title,
+                description: description
             }
         );
 
@@ -1493,7 +1563,7 @@ const updateGymBranches = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "Branch not found!!!", res: "error", }]);
         } else {
-            const userData = await GYM_SERVICE.findOne({ _id: mongoose.Types.ObjectId(barcnchID)  })
+            const userData = await GYM_SERVICE.findOne({ _id: mongoose.Types.ObjectId(barcnchID) })
             return res.status(200)
                 .json([{ msg: "Branch  updated successflly", data: userData, res: "success" }]);
         }
@@ -1507,4 +1577,4 @@ const updateGymBranches = async (req, res) => {
 
 
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches ,bookingConsultantByUser};
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach };

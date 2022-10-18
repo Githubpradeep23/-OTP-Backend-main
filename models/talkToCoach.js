@@ -1,17 +1,15 @@
-const mongoose = require("mongoose");
+const {mongoose ,Schema} = require("mongoose");
+
 
 const talkToCoachSchema = new mongoose.Schema({
-  coachID: {
-    type: String,
-    required: true,
-  },
-  userID: {
-    type: String,
-    required: true,
-  },
+  
+
+  coach_id: [{ type: Schema.Types.ObjectId, ref: 'Coach' }],
+  user_id: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  service_id: [{ type: Schema.Types.ObjectId, ref: 'GYM_SERVICE' }],
   request: {
     type: String,
-    required: true,
+    // required: true,
   },
   createdAt: {
     type: Date,

@@ -61,4 +61,16 @@ router.post('/updateGymBranches', userController.updateGymBranches)
 router.post('/bookingConsultantByUser',  userController.bookingConsultantByUser)
 
 
+router.post('/addCoachTest', userController.addCoach)
+
+router.post('/bookingCoach', userController.bookingCoach)
+
+
+
+
+
+
+
+
+
 module.exports = router;
