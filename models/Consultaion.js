@@ -1,6 +1,15 @@
-const mongoose = require("mongoose");
+const { mongoose, Schema } = require("mongoose");
+
 
 const consultationSchema = new mongoose.Schema({
+
+    user_id: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    service_id: [{ type: Schema.Types.ObjectId, ref: 'GYM_SERVICE' }],
+
+    category:{
+        type: String,
+        required: true
+    },
     Date: {
         type: String,
     },
@@ -9,17 +18,23 @@ const consultationSchema = new mongoose.Schema({
     },
     paid: {
         type: Boolean,
+        default: false
     },
+
+    firstFree:{
+        type: Boolean,
+
+    },
+
+   
     CreatedAt: {
         type: Date,
         default: Date.now()
     },
-    firstFee: Boolean,
-    serviceId: String,
-    userID: String,
 });
 
 
 const Consultation = new mongoose.model("Consultation", consultationSchema);
 
 module.exports = Consultation;
+

@@ -58,5 +58,7 @@ router.post('/serviceSlottimeById', userController.serviceSlottimeById)
 router.post('/updateGymBranches', userController.updateGymBranches)
 
 
+router.post('/bookingConsultantByUser',  userController.bookingConsultantByUser)
+
 
 module.exports = router;

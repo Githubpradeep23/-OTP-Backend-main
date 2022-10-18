@@ -14,7 +14,7 @@ const FAQ = require("../models/faq");
 const SETTING = require("../models/setting");
 const QUERY = require("../models/query");
 const PAYMENT = require("../models/payment");
-
+const Consultation=require("../models/Consultaion")
 
 
 
@@ -693,6 +693,66 @@ const branchDetailsBySerivceName = async (req, res) => {
 
 
         const singleServiceDetials = await GYM_SERVICE.find({ title: serviceTitle }).populate("branch_id")
+        // var datats=[];
+        // console.log()
+        // singleServiceDetials.map((item)=>{
+        //     // push (datats,item.title)
+        //     var obj = {};
+        //     obj['serviceId']=item._id
+        //     obj["title"]=item.title
+        //     obj["description"]=item.description
+        //     obj["bannerImage"]=item.bannerImage
+        //     obj["category"]=item.category
+        //     obj["price"]=item.price
+        //     obj["duration"]=item.duration!=undefined?item.duration:''
+
+
+        //     // 6320350963e172a6eea28c15
+
+
+
+            
+        //     // datats.push(obj)
+        //     item.branch_id.map((branch)=>{
+        //         // push (datats,item.title)
+        //         // datats.push(branch.managerName)
+        //     // var obj = {};
+
+        //     obj["MangerName"]=branch.managerName
+        //     obj["manager_Phone_Number"]=branch.manager_Phone_Number
+        //     obj["branchName"]=branch.branchName
+        //     obj["branchCode"]=branch.branchCode
+        //     obj["branchCity"]=branch.branchCity
+        //     obj["branchPhoneNumber"]=branch.branchPhoneNumber
+        //     obj["opening_branchTiming"]=branch.opening_branchTiming
+        //     obj["closing_branchTiming"]=branch.closing_branchTiming
+        //     obj["location"]=branch.location
+        //     obj["image"]=branch.image
+
+
+
+
+
+        //     // manager_Phone_Number
+
+        //         // console.log(branch);
+
+        //     })
+        //     datats.push(obj)
+
+        // })
+
+        // console.log(datats);
+
+//         const traverse = singleServiceDetials => 
+//   (singleServiceDetials?[]:[[singleServiceDetials.item]]).concat(...singleServiceDetials.branch_id.map(child => 
+//      traverse(child).map(arr => 
+//          [singleServiceDetials.item].concat(arr)
+//       )
+//   ));
+
+//   console.log(traverse(singleServiceDetials))
+        
         if (singleServiceDetials === null || singleServiceDetials === undefined || singleServiceDetials === "" || singleServiceDetials.length === 0) {
             return res.status(200)
                 .json([{ msg: "Service Not found", res: "error", }]);
@@ -1218,21 +1278,38 @@ const serviceSlottimeById = async (req, res) => {
         } else {
             const data=[];
 
-            const arrayTime= singleServiceDetials[0].slotTime.split(',');
+            // if(singleServiceDetials[0].slotTime)
+            if(singleServiceDetials[0].slotTime===undefined){
+                return res.status(200)
+                .json([{ msg: "Time slot Not found", res: "error", }]);
 
-            arrayTime.map((item)=>{
-            var obj = {};
+            }
 
-                obj["time"]=item
-                data.push(obj);
+            // }else{
 
+                const arrayTime= singleServiceDetials[0].slotTime.split(',');
 
-            })
+                arrayTime.map((item)=>{
+                var obj = {};
+
+                    obj["time"]=item
+                    data.push(obj);
+
+                })
+
+            // }
+
+            return res.status(200)
+            .json([{ msg: "Slot Time Data ", time: data, res: "success", }]);
+            
+                // console.log(singleServiceDetials[0].slotTime)
+
+               
+           
 
 
             // console.log(array[0])
-            return res.status(200)
-                .json([{ msg: "Slot Time Data ", time: data, res: "success", }]);
+       
         }
 
     }
@@ -1274,18 +1351,81 @@ const GymBranchesByServiceName = async (req, res) => {
 
 }
 
+// book Consultat by User
+const bookingConsultantByUser = async (req, res) => {
+    try {
+
+        const { category, service_id, userID, Date, Time,firstFree } = req.body;
+        if (!userID) {
+            return res.status(200)
+                .json([{ msg: "userID is required", res: "error", }]);
+        }
+
+        if (!category) {
+            return res.status(200)
+                .json([{ msg: "category is required", res: "error", }]);
+        }
+        if (!service_id) {
+            return res.status(200)
+                .json([{ msg: "service_id is required", res: "error", }]);
+        }
+
+        if (!Date) {
+            return res.status(200)
+                .json([{ msg: "Date is required", res: "error", }]);
+        }
+
+        if (!Time) {
+            return res.status(200)
+                .json([{ msg: "Time is required", res: "error", }]);
+        }
+
+        if (!firstFree) {
+            return res.status(200)
+                .json([{ msg: "firstFree is required", res: "error", }]);
+        }
+        const userData = await User.findOne({ _id: mongoose.Types.ObjectId(userID) });
+        if (!userData) {
+            return res.status(200)
+                .json([{ msg: "User not found!!!", res: "error", }]);
+        }
+
+        const demodata = await Consultation.create({
+            user_id: mongoose.Types.ObjectId(userID),
+            service_id: mongoose.Types.ObjectId(service_id),
+            category,
+            Date,
+            Time,
+            firstFree
+
+        });
+        return res.status(200).json([{
+            message: "You have booked consultant Successfully!!",
+            data: demodata,
+            success: true
+        }]);
+
+    }
+    catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
+
+}
+
+
 const updateGymBranches = async (req, res) => {
 
     try {
 
-        const { title } = req.body;
+        const { barcnchID,title,description } = req.body;
         let image = req?.files?.image?.tempFilePath;
 
         console.log('image', image)
 
-        if (!title) {
+        if (!barcnchID) {
             return res.status(200)
-                .json([{ msg: "title is required", res: "error" }]);
+                .json([{ msg: "barcnchID is required", res: "error" }]);
         }
 
 
@@ -1319,7 +1459,7 @@ const updateGymBranches = async (req, res) => {
 
         } else {
 
-            var dataimage = await GYM_SERVICE.findOne({ title: title })
+            var dataimage = await GYM_SERVICE.findOne({ _id: mongoose.Types.ObjectId(barcnchID)  })
             var imageURL = dataimage.bannerImage
 
             console.log('no')
@@ -1333,10 +1473,12 @@ const updateGymBranches = async (req, res) => {
 
 
         let updatebranch = await GYM_SERVICE.update(
-            { title: title },
+            { _id: mongoose.Types.ObjectId(barcnchID)  },
             {
 
                 bannerImage: imageURL,
+                title:title,
+                description:description
             }
         );
 
@@ -1351,7 +1493,7 @@ const updateGymBranches = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "Branch not found!!!", res: "error", }]);
         } else {
-            const userData = await GYM_SERVICE.findOne({ title: title })
+            const userData = await GYM_SERVICE.findOne({ _id: mongoose.Types.ObjectId(barcnchID)  })
             return res.status(200)
                 .json([{ msg: "Branch  updated successflly", data: userData, res: "success" }]);
         }
@@ -1365,4 +1507,4 @@ const updateGymBranches = async (req, res) => {
 
 
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches };
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches ,bookingConsultantByUser};
