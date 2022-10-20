@@ -12,6 +12,7 @@ const testimonialSchema = new mongoose.Schema({
     testimonialImage:{
         type:String,
         required:true
+        
         // data: Buffer,
         // contentType: String
     },
@@ -30,7 +31,11 @@ const testimonialSchema = new mongoose.Schema({
     youtube_link:{
         type:String,
         default:null
-    }
+    },
+    CreatedAt: {
+        type: Date,
+        default: Date.now()
+    },
 });
 
 const Testimonial = new mongoose.model("Testimonial",testimonialSchema);

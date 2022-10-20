@@ -43,10 +43,10 @@ const signup = async (req, res) => {
 
         const existingUser = await User.findOne({ number });
 
-        if (existingUser) {
-            return res.status(200)
-                .json([{ msg: "User with same number already exists!", res: "error", }]);
-        }
+        // if (existingUser) {
+        //     return res.status(200)
+        //         .json([{ msg: "User with same number already exists!", res: "error", }]);
+        // }
 
         let digits = "0123456789";
         var OTP = "";
@@ -73,10 +73,16 @@ const signup = async (req, res) => {
             return res.status(200)
                 .json([{ msg: err.message, res: "error" }]);
         }
+        // return res.status(200).json([{
+        //     message: `Verify your account.Your OTP is ${OTP}`,
+        //     number: number,
+        //     otp: OTP,
+        //     res: "success",
+        // }]);
+
         return res.status(200).json([{
-            message: `Verify your account.Your OTP is ${OTP}`,
+            message: `Verification otp has sent`,
             number: number,
-            otp: OTP,
             res: "success",
         }]);
 
@@ -99,46 +105,46 @@ const signupVerify = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "Otp is required", res: "error", }]);
         }
-        if (!firstname) {
-            return res.status(200)
-                .json([{ msg: "First Name is required", res: "error", }]);
-        }
+        
 
         const existingUser = await User.findOne({ number });
 
-        if (existingUser) {
-            return res.status(200)
-                .json([{ msg: "User with same number already exists!", res: "error", }]);
-        }
+
 
         const otpData = await Otp.findOne({ number: number })
-        console.log(otpData)
+        // console.log(otpData)
 
         if (otpData === null || otpData.otp != otp) {
             return res.status(200)
                 .json([{ msg: "Incorrect Otp", res: "error", }]);
         } else {
-            const user = new User({
-                number: number,
-                firstName: firstname,
-            })
-            const userData = await user.save()
-            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY);
-            await Otp.deleteOne({ number: number })
+            // await Otp.deleteOne({ number: number })
 
-            return res.status(200)
+            if (existingUser) {
+                return res.status(200)
+                    .json([{ msg: "User with same number already exists & otp has verified & now redirect to homepage!", data: existingUser, res: "success" }]);
 
-                .json([{ msg: "Otp has been verified successfully", data: userData, res: "success" }]);
+            } else {
+                if (!firstname) {
+                    return res.status(200)
+                        .json([{ msg: "First Name is required", res: "error", }]);
+                }
+                const user = new User({
+                    number: number,
+                    firstName: firstname,
+                })
+                const userData = await user.save()
+                // await Otp.deleteOne({ number: number })
+
+                return res.status(201)
+                    .json([{ msg: "User registred successfully & otp verified", data: userData, res: "success" }]);
+
+            }
+
         }
-        // user = await user.save();
-        // const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY);
 
-        // // await helper.sendEmail(res,user.email,"Check Otp Server","Dummy Message body");
-
-        // res.status(200).json({ token, ...user._doc, success: true });
-        // OTP = "";
     } catch (err) {
-        return res.status(200)
+        return res.status(202)
             .json([{ msg: err.message, res: "error" }]);
     }
 }

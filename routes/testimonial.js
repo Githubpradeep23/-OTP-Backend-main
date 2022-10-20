@@ -5,6 +5,7 @@ const helper = require("../utils/helper");
 const fs = require("fs");
 
 testimaonialRouter.post("/testimonial", async (req, res) => {
+
   try {
     const { title, description, category, rating, customerName, youtube_link } = req.body;
     const image = req?.files?.image?.tempFilePath;
@@ -29,27 +30,40 @@ testimaonialRouter.post("/testimonial", async (req, res) => {
       customerName !== null &&
       customerName !== ""
     ) {
+
       let checkTestimonial = await Testimonial.find({ title });
-      let options = {
-        method: "POST",
-        url: "https://api.cloudinary.com/v1_1/bng/image/upload",
-        headers: {
-          "cache-control": "no-cache",
-          "content-type":
-            "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
-        },
-        formData: {
-          file: {
-            value: fs.readFileSync(image),
-            options: { filename: "r.png", contentType: null },
+
+      if (checkTestimonial.length > 0) {
+        return res.status(202).json({
+          message: "Testimonial Already Exists!!!",
+          success: false,
+        });
+
+      } else {
+        var options = {
+          method: "POST",
+          url: "https://api.cloudinary.com/v1_1/bng/image/upload",
+          headers: {
+            "cache-control": "no-cache",
+            "content-type":
+              "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
           },
-          upload_preset: "uploadApi",
-          cloud_name: "bng",
-        },
-      };
-      let imageURL = await helper.get(options);
-      let link = youtube_link ? youtube_link : null
-      if (checkTestimonial.length === 0 || checkTestimonial === null) {
+          formData: {
+            file: {
+              value: fs.readFileSync(image),
+              options: { filename: "r.png", contentType: null },
+            },
+            upload_preset: "uploadApi",
+            cloud_name: "bng",
+          },
+        };
+
+        var imageURL = await helper.get(options);
+
+
+        let link = youtube_link ? youtube_link : null
+
+
         let testimonialData = await Testimonial.create({
           title,
           description,
@@ -59,27 +73,22 @@ testimaonialRouter.post("/testimonial", async (req, res) => {
           customerName,
           youtube_link: link
         });
-        let id = testimonialData["_id"];
-        return res.status(200).json({
-          id,
+        return res.status(201).json({
           message: "Add Successfully Testimonial Content",
           success: true,
         });
-      } else {
-        return res.status(200).json({
-          message: "Testimonial Alread Exists!!!",
-          success: false,
-        });
+
       }
+
     } else {
-      return res.status(200).json({
+      return res.status(203).json({
         message: "Empty Field found. All field are required !!!",
         success: false,
       });
     }
   } catch (error) {
     return res.status(200).json({
-      message: "Something went wrong!!!",
+      message: error.message,
       success: false,
     });
   }
@@ -97,12 +106,6 @@ testimaonialRouter.put("/updateTestimonial", async (req, res) => {
       description !== "" &&
       description !== null &&
       description !== undefined &&
-      id !== undefined &&
-      id !== "" &&
-      id !== null &&
-      image !== undefined &&
-      image !== null &&
-      image !== "" &&
       category !== undefined &&
       category !== null &&
       category !== "" &&
@@ -114,24 +117,36 @@ testimaonialRouter.put("/updateTestimonial", async (req, res) => {
       customerName !== ""
     ) {
 
-      let options = {
-        method: "POST",
-        url: "https://api.cloudinary.com/v1_1/bng/image/upload",
-        headers: {
-          "cache-control": "no-cache",
-          "content-type":
-            "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
-        },
-        formData: {
-          file: {
-            value: fs.readFileSync(image),
-            options: { filename: "r.png", contentType: null },
+      if (image !== undefined && image !== null && image !== "") {
+
+        let options = {
+          method: "POST",
+          url: "https://api.cloudinary.com/v1_1/bng/image/upload",
+          headers: {
+            "cache-control": "no-cache",
+            "content-type":
+              "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
           },
-          upload_preset: "uploadApi",
-          cloud_name: "bng",
-        },
-      };
-      let imageURL = await helper.get(options);
+          formData: {
+            file: {
+              value: fs.readFileSync(image),
+              options: { filename: "r.png", contentType: null },
+            },
+            upload_preset: "uploadApi",
+            cloud_name: "bng",
+          },
+        };
+        var imageURL = await helper.get(options);
+
+      } else {
+
+      let checkTestimonial = await Testimonial.findOne({ _id: id });
+
+        var imageURL = checkTestimonial.testimonialImage;
+
+      }
+
+
       let link = youtube_link ? youtube_link : null
       let updateTestimonial = await Testimonial.findOneAndUpdate(
         { _id: id },
@@ -152,7 +167,7 @@ testimaonialRouter.put("/updateTestimonial", async (req, res) => {
         updateTestimonial === null ||
         updateTestimonial === ""
       ) {
-        return res.status(200).json({
+        return res.status(202).json({
           id,
           message: "Testimonial Not Found !!!",
           success: false,
@@ -165,13 +180,13 @@ testimaonialRouter.put("/updateTestimonial", async (req, res) => {
         });
       }
     } else {
-      return res.status(200).json({
+      return res.status(203).json({
         message: "Empty Field found",
         success: false,
       });
     }
   } catch (error) {
-    return res.status(200).json({
+    return res.status(203).json({
       message: "Something went wrong!!!",
       success: false,
     });
