@@ -40,19 +40,12 @@ const signup = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "Number is required", res: "error", }]);
         }
-
-        const existingUser = await User.findOne({ number });
-
-        // if (existingUser) {
-        //     return res.status(200)
-        //         .json([{ msg: "User with same number already exists!", res: "error", }]);
-        // }
-
         let digits = "0123456789";
         var OTP = "";
         for (let i = 0; i < 4; i++) {
             OTP += digits[Math.floor(Math.random() * 10)];
         }
+
         try {
 
             var msg = `Hi, Your OTP to login Beats Fitness App is ${OTP} This OTP can be used only once and is valid for 10 min only.Thank you.       TeamBeatsFitness`;
@@ -73,18 +66,17 @@ const signup = async (req, res) => {
             return res.status(200)
                 .json([{ msg: err.message, res: "error" }]);
         }
-        // return res.status(200).json([{
-        //     message: `Verify your account.Your OTP is ${OTP}`,
-        //     number: number,
-        //     otp: OTP,
-        //     res: "success",
-        // }]);
 
-        return res.status(200).json([{
-            message: `Verification otp has sent`,
-            number: number,
-            res: "success",
-        }]);
+        const existingUser = await User.findOne({ number });
+
+        if (existingUser) {
+            return res.status(200)
+                .json([{ msg: "User with same number already exists!",number: number, res: "success", }]);
+        }else{
+            return res.status(200)
+                .json([{ msg: "New User!",number: number, res: "success", }]);
+
+        }
 
     } catch (err) {
         return res.status(200)
@@ -94,7 +86,7 @@ const signup = async (req, res) => {
 const signupVerify = async (req, res) => {
 
     try {
-        const { otp, number, firstname } = req.body;
+        const { otp, number } = req.body;
 
         if (!number) {
             return res.status(200)
@@ -125,23 +117,49 @@ const signupVerify = async (req, res) => {
                     .json([{ msg: "User with same number already exists & otp has verified & now redirect to homepage!", data: existingUser, res: "success" }]);
 
             } else {
-                if (!firstname) {
-                    return res.status(200)
-                        .json([{ msg: "First Name is required", res: "error", }]);
-                }
-                const user = new User({
-                    number: number,
-                    firstName: firstname,
-                })
-                const userData = await user.save()
-                // await Otp.deleteOne({ number: number })
+                
+                // const user = new User({
+                //     number: number,
+                // })
+                // const userData = await user.save()
+                // // await Otp.deleteOne({ number: number })
 
-                return res.status(201)
-                    .json([{ msg: "User registred successfully & otp verified", data: userData, res: "success" }]);
+                return res.status(200)
+                    .json([{ msg: "New user & otp verified", data: [], res: "success" }]);
 
             }
 
         }
+
+    } catch (err) {
+        return res.status(202)
+            .json([{ msg: err.message, res: "error" }]);
+    }
+}
+
+const registerUser=async(req,res)=>{
+    
+    try {
+        const { number,firstname } = req.body;
+
+        if (!number) {
+            return res.status(200)
+                .json([{ msg: "Number is required", res: "error", }]);
+        }
+
+        if (!firstname) {
+            return res.status(200)
+                .json([{ msg: "firstname is required", res: "error", }]);
+        }
+
+        const user = new User({
+            number: number,
+            firstName: firstname,
+        })
+        const userData = await user.save()
+
+        return res.status(201)
+            .json([{ msg: "User registred successfully", data: userData, res: "success" }]);
 
     } catch (err) {
         return res.status(202)
@@ -1583,4 +1601,4 @@ const updateGymBranches = async (req, res) => {
 
 
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach };
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach,registerUser };

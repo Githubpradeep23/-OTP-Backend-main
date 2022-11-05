@@ -7,6 +7,10 @@ router.post('/signup', userController.signup)
 router.post('/signupVerify', userController.signupVerify)
 router.post('/signin', userController.signin)
 router.post('/signinVerify', userController.signinVerify)
+router.post('/registerUser', userController.registerUser)
+
+
+
 
 // ****************Home Page Api start*******************
 router.post('/categoryBanner',  userController.categoryBanner)
