@@ -140,26 +140,42 @@ const signupVerify = async (req, res) => {
 const registerUser=async(req,res)=>{
     
     try {
-        const { number,firstname } = req.body;
+        const { userID,firstName } = req.body;
 
-        if (!number) {
+        if (!userID) {
             return res.status(200)
-                .json([{ msg: "Number is required", res: "error", }]);
+                .json([{ msg: "userID is required", res: "error", }]);
         }
 
-        if (!firstname) {
+        if (!firstName) {
             return res.status(200)
-                .json([{ msg: "firstname is required", res: "error", }]);
+                .json([{ msg: "firstName is required", res: "error", }]);
         }
 
-        const user = new User({
-            number: number,
-            firstName: firstname,
-        })
-        const userData = await user.save()
+     
 
-        return res.status(201)
+        let updateUser = await User.findOneAndUpdate(
+            { _id: mongoose.Types.ObjectId(userID) },
+            {
+                firstName,
+            }
+        );
+
+        if (
+            updateUser === undefined ||
+            updateUser === null ||
+            updateUser.length === 0 ||
+            updateUser === ""
+        ) {
+            return res.status(200)
+                .json([{ msg: "User not found!!!", res: "error", }]);
+        } else {
+            const userData = await User.findOne({ _id: mongoose.Types.ObjectId(userID) })
+            return res.status(200)
             .json([{ msg: "User registred successfully", data: userData, res: "success" }]);
+        }
+
+        
 
     } catch (err) {
         return res.status(202)
