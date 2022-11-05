@@ -118,14 +118,14 @@ const signupVerify = async (req, res) => {
 
             } else {
                 
-                // const user = new User({
-                //     number: number,
-                // })
-                // const userData = await user.save()
+                const user = new User({
+                    number: number,
+                })
+                const userData = await user.save()
                 // // await Otp.deleteOne({ number: number })
 
                 return res.status(200)
-                    .json([{ msg: "New user & otp verified", data: [], res: "success" }]);
+                    .json([{ msg: "New user & otp verified", data:userData, res: "success" }]);
 
             }
 
