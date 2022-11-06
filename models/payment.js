@@ -2,7 +2,7 @@ const { mongoose, Schema } = require("mongoose");
 
 const paymentSchema = mongoose.Schema({
   voucher_id : [{ type: Schema.Types.ObjectId, ref: 'Voucher' }],
-  userId: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  userID: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   packageId: [{ type: Schema.Types.ObjectId, ref: 'Package' }],
   orderDetails: {
     type: Object,

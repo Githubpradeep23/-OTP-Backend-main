@@ -71,10 +71,10 @@ const signup = async (req, res) => {
 
         if (existingUser) {
             return res.status(200)
-                .json([{ msg: "User with same number already exists!",number: number, res: "success", }]);
-        }else{
+                .json([{ msg: "User with same number already exists!", number: number, res: "success", }]);
+        } else {
             return res.status(200)
-                .json([{ msg: "New User!",number: number, res: "success", }]);
+                .json([{ msg: "New User!", number: number, res: "success", }]);
 
         }
 
@@ -97,7 +97,7 @@ const signupVerify = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "Otp is required", res: "error", }]);
         }
-        
+
 
         const existingUser = await User.findOne({ number });
 
@@ -117,7 +117,7 @@ const signupVerify = async (req, res) => {
                     .json([{ msg: "User with same number already exists & otp has verified & now redirect to homepage!", data: existingUser, res: "success" }]);
 
             } else {
-                
+
                 const user = new User({
                     number: number,
                 })
@@ -125,7 +125,7 @@ const signupVerify = async (req, res) => {
                 // // await Otp.deleteOne({ number: number })
 
                 return res.status(200)
-                    .json([{ msg: "New user & otp verified", data:userData, res: "success" }]);
+                    .json([{ msg: "New user & otp verified", data: userData, res: "success" }]);
 
             }
 
@@ -137,10 +137,10 @@ const signupVerify = async (req, res) => {
     }
 }
 
-const registerUser=async(req,res)=>{
-    
+const registerUser = async (req, res) => {
+
     try {
-        const { userID,firstName } = req.body;
+        const { userID, firstName } = req.body;
 
         if (!userID) {
             return res.status(200)
@@ -152,7 +152,7 @@ const registerUser=async(req,res)=>{
                 .json([{ msg: "firstName is required", res: "error", }]);
         }
 
-     
+
 
         let updateUser = await User.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(userID) },
@@ -172,10 +172,10 @@ const registerUser=async(req,res)=>{
         } else {
             const userData = await User.findOne({ _id: mongoose.Types.ObjectId(userID) })
             return res.status(200)
-            .json([{ msg: "User registred successfully", data: userData, res: "success" }]);
+                .json([{ msg: "User registred successfully", data: userData, res: "success" }]);
         }
 
-        
+
 
     } catch (err) {
         return res.status(202)
@@ -1112,6 +1112,76 @@ const paymentBuyUser = async (req, res) => {
     }
 }
 
+const userOrderAndSubscription = async (req, res) => {
+
+    try {
+
+
+        const { userID, } = req.body;
+        if (!userID) {
+            return res.status(200)
+                .json([{ msg: "userID is required", res: "error", }]);
+        }
+
+        const data = await PAYMENT.aggregate([
+            {
+                $match: {
+                    // "title": serviceTitle
+                    "userID": mongoose.Types.ObjectId(userID) 
+                }
+            },
+
+            {
+                $lookup: {
+                    from: 'users', localField: 'userID',
+                    foreignField: '_id', as: 'userData'
+                }
+            },
+
+            {
+                $lookup: {
+                    from: 'Package', localField: 'packageId',
+                    foreignField: '_id', as: 'packageData'
+                }
+            },
+        ]).exec((err, result) => {
+            if (err) {
+                console.log("error", err)
+                return res.status(200)
+                    .json([{ msg: err.message, res: "error" }]);
+            }
+            if (result) {
+                if (result === null || result === undefined || result === "" || result.length === 0) {
+
+                    return res.status(200)
+                        .json([{ msg: "Data Not found", res: "error" }]);
+                } else {
+
+                    return res.status(200)
+                        .json([{ msg: "Order and subscription Data!!", data: result, res: "success" }]);
+                }
+            }
+        });
+
+        // const subscriptionData = await PAYMENT.findOne({ userID: mongoose.Types.ObjectId(userID) });
+        // if (!subscriptionData) {
+        //     return res.status(200)
+        //         .json([{ msg: "No data found!!!", res: "error", }]);
+        // }
+        // return res.status(200).json([{
+        //     message: "Order and subscription Data!!",
+        //     data: subscriptionData,
+        //     success: true
+        // }]);
+
+    } catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+
+    }
+
+}
+
 const test = async (req, res) => {
 
     const { number } = req.body;
@@ -1617,4 +1687,4 @@ const updateGymBranches = async (req, res) => {
 
 
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach,registerUser };
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach, registerUser,userOrderAndSubscription };
