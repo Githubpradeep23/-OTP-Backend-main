@@ -1122,6 +1122,8 @@ const userOrderAndSubscription = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "userID is required", res: "error", }]);
         }
+        // const demoData = await demoBooking.find({ userID: mongoose.Types.ObjectId(userID) }).populate("service_id");
+
 
         const data = await PAYMENT.aggregate([
             {
@@ -1140,7 +1142,7 @@ const userOrderAndSubscription = async (req, res) => {
 
             {
                 $lookup: {
-                    from: 'Package', localField: 'packageId',
+                    from: 'bookpackages', localField: 'packageId',
                     foreignField: '_id', as: 'packageData'
                 }
             },
