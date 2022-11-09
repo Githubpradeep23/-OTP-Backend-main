@@ -417,10 +417,10 @@ const addTrackTrace = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "User ID is required", res: "error", }]);
         }
-        if (!weight) {
-            return res.status(200)
-                .json([{ msg: "Weight is required", res: "error", }]);
-        }
+        // if (!weight) {
+        //     return res.status(200)
+        //         .json([{ msg: "Weight is required", res: "error", }]);
+        // }
 
         if (!from) {
             return res.status(200)
@@ -438,18 +438,66 @@ const addTrackTrace = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "User not found!!!", res: "error", }]);
         }
+        if (!weight || weight==null) {
+            var weights=0;
+        }else{
+            var weights=weight;
+
+        }
+
+        if (!ht || ht==null) {
+            var hts=0;
+        }else{
+            var hts=ht;
+
+        }
+
+        if (!PBF || PBF==null) {
+            var PBFs=0;
+        }else{
+            var PBFs=PBF;
+
+        }
+
+        if (!SMM || SMM==null) {
+            var SMMs=0;
+        }else{
+            var SMMs=SMM;
+
+        }
+        if (!Waist || Waist==null) {
+            var Waists=0;
+        }else{
+            var Waists=Waist;
+
+        }
+
+        if (!PushUp || PushUp==null) {
+            var PushUps=0;
+        }else{
+            var PushUps=PushUp;
+
+        }
+
+        if (!PullUps || PullUps==null) {
+            var PullUpss=0;
+        }else{
+            var PullUpss=PullUps;
+
+        }
+
 
         const trackTracedata = await TrackWeight.create({
             userID: mongoose.Types.ObjectId(userID),
-            weight,
+            weight:weights,
             to,
             from,
-            ht,
-            PBF,
-            SMM,
-            Waist,
-            PushUp,
-            PullUps,
+            ht:hts,
+            PBF:PBFs,
+            SMM:SMMs,
+            Waist:Waists,
+            PushUp:PushUps,
+            PullUps:PullUpss,
         });
         // console.log('track',trackTracedata);
 
