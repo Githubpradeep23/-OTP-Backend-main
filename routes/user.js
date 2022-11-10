@@ -8,6 +8,8 @@ router.post('/signupVerify', userController.signupVerify)
 router.post('/signin', userController.signin)
 router.post('/signinVerify', userController.signinVerify)
 router.post('/registerUser', userController.registerUser)
+router.post('/resendOtp', userController.signup)
+
 
 
 
