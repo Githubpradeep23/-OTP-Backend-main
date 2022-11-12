@@ -1766,7 +1766,7 @@ const getPushNotificationData=async(req,res)=>{
 
 }
 
-const updatePushNotification=async (req, res) => {
+const updatePushNotificationToken=async (req, res) => {
 
     try {
 
@@ -1792,7 +1792,7 @@ const updatePushNotification=async (req, res) => {
         });
         
         return res.status(200).json([{
-            message: "Push Notification  data updated Successfully!!",
+            message: "Push Notification Token updated Successfully!!",
             data: pushNotificationData,
             success: true
         }]);
@@ -1806,6 +1806,64 @@ const updatePushNotification=async (req, res) => {
 
 }
 
+const updatePushNotificationData=async(req,res)=>{
+
+    try {
+
+        const { userID, push_notification,service_notification } = req.body;
+       
+        if (!userID) {
+            return res.status(200)
+                .json([{ msg: "userID is required", res: "error" }]);
+        }
+        if (!push_notification) {
+            return res.status(200)
+                .json([{ msg: "push_notification is required", res: "error" }]);
+        }
+
+        if (!service_notification) {
+            return res.status(200)
+                .json([{ msg: "service_notification is required", res: "error" }]);
+        }
 
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach, registerUser,userOrderAndSubscription,updatePushNotification,getPushNotificationData };
+     
+
+        let updateUser = await User.findOneAndUpdate(
+            { _id: mongoose.Types.ObjectId(userID) },
+            {
+                push_notification,
+                service_notification
+            }
+        );
+
+        if (
+            updateUser === undefined ||
+            updateUser === null ||
+            updateUser.length === 0 ||
+            updateUser === ""
+        ) {
+            return res.status(200)
+                .json([{ msg: "User not found!!!", res: "error", }]);
+        } else {
+            const userData = await User.findOne({ _id: mongoose.Types.ObjectId(userID) })
+            return res.status(200)
+                .json([{ msg: "Push Notification Data updated successfully", data: userData, res: "success" }]);
+        }
+        
+
+
+
+      
+
+    }
+    catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
+
+
+}
+
+
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach, registerUser,userOrderAndSubscription,updatePushNotificationToken,getPushNotificationData,updatePushNotificationData };

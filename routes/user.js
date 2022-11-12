@@ -24,9 +24,12 @@ router.post('/categoryServices',  userController.categoryServices)
 router.post('/addTrackTrace',  userController.addTrackTrace)
 router.post('/userTrackTraceList',  userController.userTrackTraceList)
 router.post('/userTrackTraceListGraph',  userController.userTrackTraceListGraph)
-router.post('/updatePushNotification',  userController.updatePushNotification)
+router.post('/updatePushNotificationToken',  userController.updatePushNotificationToken)
 
 router.post('/getPushNotificationData',  userController.getPushNotificationData)
+
+router.post('/updatePushNotificationData',  userController.updatePushNotificationData)
+
 
 
 
