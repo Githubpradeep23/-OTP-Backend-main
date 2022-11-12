@@ -67,6 +67,17 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+
+    push_notification: {
+      type: Boolean,
+      default: true,
+    },
+
+    service_notification: {
+      type: Boolean,
+      default: true,
+    },
+
     // createdAt: {
     //   type: Date,
     //   default: Date.now(),

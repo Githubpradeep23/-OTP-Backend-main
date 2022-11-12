@@ -22,6 +22,9 @@ const TalkToCoach = require("../models/talkToCoach");
 
 
 const Notification = require("../models/notification");
+const PushNotification = require("../models/pushNotification");
+
+
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
 const fs = require("fs");
@@ -1735,6 +1738,46 @@ const updateGymBranches = async (req, res) => {
 
 }
 
+const updatePushNotification=async (req, res) => {
+
+    try {
+
+        const { userID, token } = req.body;
+       
+        if (!userID) {
+            return res.status(200)
+                .json([{ msg: "userID is required", res: "error" }]);
+        }
+
+        if (!token) {
+            return res.status(200)
+                .json([{ msg: "token is required", res: "error" }]);
+        }
+
+        await PushNotification.deleteOne({ userID: mongoose.Types.ObjectId(userID) })
 
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach, registerUser,userOrderAndSubscription };
+        const pushNotificationData = await PushNotification.create({
+            userID: mongoose.Types.ObjectId(userID),
+            token: token,
+
+        });
+        
+        return res.status(200).json([{
+            message: "Token data updated Successfully!!",
+            data: pushNotificationData,
+            success: true
+        }]);
+
+    }
+    catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
+
+
+}
+
+
+
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach, registerUser,userOrderAndSubscription,updatePushNotification };

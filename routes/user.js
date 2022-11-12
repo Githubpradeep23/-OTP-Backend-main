@@ -24,6 +24,10 @@ router.post('/categoryServices',  userController.categoryServices)
 router.post('/addTrackTrace',  userController.addTrackTrace)
 router.post('/userTrackTraceList',  userController.userTrackTraceList)
 router.post('/userTrackTraceListGraph',  userController.userTrackTraceListGraph)
+router.post('/updatePushNotification',  userController.updatePushNotification)
+
+
+
 
 // ****************Home Page Api end*********************
 
