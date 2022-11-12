@@ -26,6 +26,9 @@ router.post('/userTrackTraceList',  userController.userTrackTraceList)
 router.post('/userTrackTraceListGraph',  userController.userTrackTraceListGraph)
 router.post('/updatePushNotification',  userController.updatePushNotification)
 
+router.post('/getPushNotificationData',  userController.getPushNotificationData)
+
+
 
 
 
