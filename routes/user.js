@@ -51,7 +51,7 @@ router.post('/bookingDemoByUser',  userController.bookingDemoByUser)
 router.post('/bookingPackageByUser',  userController.bookingPackageByUser)
 router.post('/paymentBuyUser',  userController.paymentBuyUser)
 router.post('/GymBranchesByServiceName',  userController.GymBranchesByServiceName)
-router.post('/userOrderAndSubscription',  userController.userOrderAndSubscription)
+router.post('/getUserOrderList',  userController.getUserOrderList)
 
 
 

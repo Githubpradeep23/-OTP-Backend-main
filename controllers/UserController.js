@@ -1163,7 +1163,7 @@ const paymentBuyUser = async (req, res) => {
     }
 }
 
-const userOrderAndSubscription = async (req, res) => {
+const getUserOrderList = async (req, res) => {
 
     try {
 
@@ -1184,12 +1184,12 @@ const userOrderAndSubscription = async (req, res) => {
                 }
             },
 
-            {
-                $lookup: {
-                    from: 'users', localField: 'userID',
-                    foreignField: '_id', as: 'userData'
-                }
-            },
+            // {
+            //     $lookup: {
+            //         from: 'users', localField: 'userID',
+            //         foreignField: '_id', as: 'userData'
+            //     }
+            // },
 
             {
                 $lookup: {
@@ -1216,16 +1216,7 @@ const userOrderAndSubscription = async (req, res) => {
             }
         });
 
-        // const subscriptionData = await PAYMENT.findOne({ userID: mongoose.Types.ObjectId(userID) });
-        // if (!subscriptionData) {
-        //     return res.status(200)
-        //         .json([{ msg: "No data found!!!", res: "error", }]);
-        // }
-        // return res.status(200).json([{
-        //     message: "Order and subscription Data!!",
-        //     data: subscriptionData,
-        //     success: true
-        // }]);
+    
 
     } catch (err) {
         return res.status(200)
@@ -1866,4 +1857,4 @@ const updatePushNotificationData=async(req,res)=>{
 }
 
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach, registerUser,userOrderAndSubscription,updatePushNotificationToken,getPushNotificationData,updatePushNotificationData };
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach, registerUser,getUserOrderList,updatePushNotificationToken,getPushNotificationData,updatePushNotificationData };
