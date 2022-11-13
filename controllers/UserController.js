@@ -1198,8 +1198,21 @@ const getUserOrderList = async (req, res) => {
                 $lookup: {
                     from: 'bookpackages', localField: 'packageId',
                     foreignField: '_id', as: 'packageData'
+                    
+
+
                 }
             },
+
+           
+                {
+                $lookup: {
+                  from: "services",
+                  localField: "packageData.service_id",
+                  foreignField: "_id",
+                  as: "servicedata",
+                }
+              }
         ]).exec((err, result) => {
             if (err) {
                 console.log("error", err)
