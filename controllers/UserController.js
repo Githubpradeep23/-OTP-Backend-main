@@ -1214,7 +1214,7 @@ const getUserOrderList = async (req, res) => {
                 } else {
 
                     return res.status(200)
-                        .json([{ msg: "Order and subscription Data!!", data: result, res: "success" }]);
+                        .json([{ msg: "alll user Order data!!", data: result, res: "success" }]);
                 }
             }
         });
