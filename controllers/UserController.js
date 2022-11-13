@@ -115,6 +115,9 @@ const signupVerify = async (req, res) => {
         } else {
             // await Otp.deleteOne({ number: number })
 
+            await Otp.deleteMany({ number: number })
+
+
             if (existingUser) {
                 return res.status(200)
                     .json([{ msg: "User with same number already exists & otp has verified & now redirect to homepage!", data: existingUser, res: "success" }]);
