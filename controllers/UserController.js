@@ -57,7 +57,7 @@ const signup = async (req, res) => {
                 `http://www.smsstanch.in/API/sms.php?username=beats&password=123456&from=BEATSF&to=${number}&msg=${msg}&dnd_check=0&template_id=1007164482764680412`
 
             );
-            await Otp.deleteOne({ number: number })
+            await Otp.deleteMany({ number: number })
 
             const otp = new Otp({
                 number: number,
@@ -1602,26 +1602,21 @@ const addCoach = async (req, res) => {
 const bookingCoach = async (req, res) => {
 
     try {
-        const { coach_id, user_id, service_id } = req.body;
-        if (!coach_id) {
-            return res.status(200)
-                .json([{ msg: "coach_id is required", res: "error", }]);
-        }
-        if (!user_id) {
-            return res.status(200)
-                .json([{ msg: "user_id is required", res: "error", }]);
-        }
-        if (!service_id) {
-            return res.status(200)
-                .json([{ msg: "service_id is required", res: "error", }]);
-        }
-
-        const coachdata = await TalkToCoach.create({
-            coach_id: mongoose.Types.ObjectId(coach_id),
-            user_id: mongoose.Types.ObjectId(user_id),
-            service_id: mongoose.Types.ObjectId(service_id)
-
-        });
+        // const { coach_id, user_id, service_id } = req.body;
+        // if (!coach_id) {
+        //     return res.status(200)
+        //         .json([{ msg: "coach_id is required", res: "error", }]);
+        // }
+        // if (!user_id) {
+        //     return res.status(200)
+        //         .json([{ msg: "user_id is required", res: "error", }]);
+        // }
+        // if (!service_id) {
+        //     return res.status(200)
+        //         .json([{ msg: "service_id is required", res: "error", }]);
+        // }
+        // await Otp.deleteOne({ number: number })
+        const coachdata = await Otp.deleteMany({ number: 8565002333 });
         return res.status(200).json([{
             message: "You have booked coach Successfully!!",
             data: coachdata,
