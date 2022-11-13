@@ -1233,10 +1233,52 @@ const getUserOrderList = async (req, res) => {
                     return res.status(200)
                         .json([{ msg: "Data Not found", res: "error" }]);
                 } else {
-                    // console.log('orderdata',data[0].branchdata[0].branchCode);
+                    // console.log('orderdata',data);
+
+                    const branchdata = [];
+                    const packageData = [];
+                    const servicedata = [];
+                    const durationdata = [];
+                    const pricedata = [];
+                    const orderDetailsdata = [];
+
+
+
+
+                   
+                    // const arrayTime = singleServiceDetials[0].slotTime.split(',');
+        
+                    result.map((item) => {
+        
+                        branchdata.push(item.branchdata);
+                        packageData.push(item.packageData);
+                        servicedata.push(item.servicedata);
+                        durationdata.push(item.duration);
+                        pricedata.push(item.price);
+                        orderDetailsdata.push(item.orderDetails);
+
+
+                        
+
+
+
+
+
+        
+                    })
+
+                    // console.log('branchdata',branchdata)
+                    // console.log('packageData',packageData)
+                    // console.log('servicedata',servicedata)
+                    // console.log('durationdata',durationdata)
+                    // console.log('pricedata',pricedata)
+                    // console.log('orderDetailsdata',orderDetailsdata)
+
+
+        
 
                     return res.status(200)
-                        .json([{ msg: "alll user Order data!!", data: result, res: "success" }]);
+                        .json([{ msg: "alll user Order data!!", data: result,branchdata:branchdata,packageData:packageData,servicedata:servicedata,durationdata:durationdata,pricedata:pricedata,orderDetailsdata:orderDetailsdata, res: "success" }]);
                 }
             }
         });
@@ -1250,6 +1292,80 @@ const getUserOrderList = async (req, res) => {
     }
 
 }
+
+// const getUserAciveOrderList = async (req, res) => {
+
+//     try {
+
+
+//         const { userID, } = req.body;
+//         if (!userID) {
+//             return res.status(200)
+//                 .json([{ msg: "userID is required", res: "error", }]);
+//         }
+//         // const demoData = await demoBooking.find({ userID: mongoose.Types.ObjectId(userID) }).populate("service_id");
+
+
+//         const data = await PAYMENT.aggregate([
+//             {
+//                 $match: {
+//                     // "title": serviceTitle
+//                     "userID": mongoose.Types.ObjectId(userID) 
+//                 }
+//             },
+
+//             {
+//                 $lookup: {
+//                     from: 'bookpackages', localField: 'packageId',
+//                     foreignField: '_id', as: 'packageData'
+//                 }
+//             },
+
+//             {
+//                 $lookup: {
+//                   from: "gym_services",
+//                   localField: "packageData.service_id",
+//                   foreignField: "_id",
+//                   as: "servicedata",
+//                 }
+//             },
+//             {
+//                 $lookup: {
+//                   from: "gym_branches",
+//                   localField: "servicedata.branch_id",
+//                   foreignField: "_id",
+//                   as: "branchdata",
+//                 }
+//             }
+//         ]).exec((err, result) => {
+//             if (err) {
+//                 console.log("error", err)
+//                 return res.status(200)
+//                     .json([{ msg: err.message, res: "error" }]);
+//             }
+//             if (result) {
+//                 if (result === null || result === undefined || result === "" || result.length === 0) {
+
+//                     return res.status(200)
+//                         .json([{ msg: "Data Not found", res: "error" }]);
+//                 } else {
+//                     // console.log('orderdata',data[0].branchdata[0].branchCode);
+
+//                     return res.status(200)
+//                         .json([{ msg: "alll user Order data!!", data: result, res: "success" }]);
+//                 }
+//             }
+//         });
+
+    
+
+//     } catch (err) {
+//         return res.status(200)
+//             .json([{ msg: err.message, res: "error" }]);
+
+//     }
+
+// }
 
 const test = async (req, res) => {
 
