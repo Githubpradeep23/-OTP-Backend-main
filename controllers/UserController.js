@@ -1187,32 +1187,29 @@ const getUserOrderList = async (req, res) => {
                 }
             },
 
-            // {
-            //     $lookup: {
-            //         from: 'users', localField: 'userID',
-            //         foreignField: '_id', as: 'userData'
-            //     }
-            // },
-
             {
                 $lookup: {
                     from: 'bookpackages', localField: 'packageId',
                     foreignField: '_id', as: 'packageData'
-                    
-
-
                 }
             },
 
-           
-                {
+            {
                 $lookup: {
-                  from: "services",
+                  from: "gym_services",
                   localField: "packageData.service_id",
                   foreignField: "_id",
                   as: "servicedata",
                 }
-              }
+            },
+            {
+                $lookup: {
+                  from: "gym_branches",
+                  localField: "servicedata.branch_id",
+                  foreignField: "_id",
+                  as: "branchdata",
+                }
+            }
         ]).exec((err, result) => {
             if (err) {
                 console.log("error", err)
@@ -1225,6 +1222,7 @@ const getUserOrderList = async (req, res) => {
                     return res.status(200)
                         .json([{ msg: "Data Not found", res: "error" }]);
                 } else {
+                    // console.log('orderdata',result);
 
                     return res.status(200)
                         .json([{ msg: "alll user Order data!!", data: result, res: "success" }]);
