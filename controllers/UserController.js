@@ -1235,12 +1235,13 @@ const getUserOrderList = async (req, res) => {
                 } else {
                     // console.log('orderdata',data);
 
-                    const branchdata = [];
-                    const packageData = [];
-                    const servicedata = [];
-                    const durationdata = [];
-                    const pricedata = [];
-                    const orderDetailsdata = [];
+                    // const branchdata = [];
+                    // const packageData = [];
+                    // const servicedata = [];
+                    // const durationdata = [];
+                    // const pricedata = [];
+                    // const orderDetailsdata = [];
+                    const finaldata=[];
 
 
 
@@ -1250,12 +1251,39 @@ const getUserOrderList = async (req, res) => {
         
                     result.map((item) => {
         
-                        branchdata.push(item.branchdata);
-                        packageData.push(item.packageData);
-                        servicedata.push(item.servicedata);
-                        durationdata.push(item.duration);
-                        pricedata.push(item.price);
-                        orderDetailsdata.push(item.orderDetails);
+
+                        var obj = {};
+
+                        obj["price"] = item.price 
+                        obj["duration"] = item.duration
+                        // obj["servicedata"] = item.servicedata
+
+                        item.branchdata.map((branch)=>{
+                            obj["branchName"] = branch.branchName
+                            
+                            obj["image"] = branch.image 
+
+                            finaldata.push(obj);
+
+                        
+
+
+                        })
+
+                        // branchdata.branchName;
+
+                        // branchdata.image;
+
+
+
+                        
+                        // finaldata.push(obj);
+                        // branchdata.push(item.branchdata);
+                        // packageData.push(item.packageData);
+                        // servicedata.push(item.servicedata);
+                        // durationdata.push(item.duration);
+                        // pricedata.push(item.price);
+                        // orderDetailsdata.push(item.orderDetails);
 
 
                         
@@ -1275,10 +1303,13 @@ const getUserOrderList = async (req, res) => {
                     // console.log('orderDetailsdata',orderDetailsdata)
 
 
-        
+                    // var d = branchdata.concat(packageData, servicedata,durationdata,pricedata,orderDetailsdata);
+                    
 
+                    // return res.status(200)
+                    // .json([{ msg: "alll user Order data!!", data: finaldata,branchdata:branchdata,packageData:packageData,servicedata:servicedata,durationdata:durationdata,pricedata:pricedata,orderDetailsdata:orderDetailsdata, res: "success" }]);
                     return res.status(200)
-                        .json([{ msg: "alll user Order data!!", data: result,branchdata:branchdata,packageData:packageData,servicedata:servicedata,durationdata:durationdata,pricedata:pricedata,orderDetailsdata:orderDetailsdata, res: "success" }]);
+                        .json([{ msg: "alll user Order data!!", data: finaldata, res: "success" }]);
                 }
             }
         });
