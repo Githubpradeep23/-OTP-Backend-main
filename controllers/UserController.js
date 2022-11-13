@@ -1124,7 +1124,7 @@ const paymentBuyUser = async (req, res) => {
         }
         if (!price) {
             return res.status(200)
-                .json([{ msg: "duration is required", res: "error", }]);
+                .json([{ msg: "price is required", res: "error", }]);
         }
 
         if (!orderDetails) {
