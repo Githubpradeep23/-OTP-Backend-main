@@ -1118,14 +1118,14 @@ const paymentBuyUser = async (req, res) => {
                 .json([{ msg: "packageId is required", res: "error", }]);
         }
 
-        // if (!duration) {
-        //     return res.status(200)
-        //         .json([{ msg: "duration is required", res: "error", }]);
-        // }
-        // if (!price) {
-        //     return res.status(200)
-        //         .json([{ msg: "duration is required", res: "error", }]);
-        // }
+        if (!duration) {
+            return res.status(200)
+                .json([{ msg: "duration is required", res: "error", }]);
+        }
+        if (!price) {
+            return res.status(200)
+                .json([{ msg: "duration is required", res: "error", }]);
+        }
 
         if (!orderDetails) {
             return res.status(200)
