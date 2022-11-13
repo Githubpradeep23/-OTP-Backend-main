@@ -1107,7 +1107,7 @@ const paymentBuyUser = async (req, res) => {
     try {
 
 
-        const { packageId, orderDetails, userID, } = req.body;
+        const { packageId, orderDetails, userID,duration,price } = req.body;
         if (!userID) {
             return res.status(200)
                 .json([{ msg: "userID is required", res: "error", }]);
