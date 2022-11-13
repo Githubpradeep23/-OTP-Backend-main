@@ -8,6 +8,16 @@ const paymentSchema = mongoose.Schema({
     type: Object,
     required: true,
   },
+
+  duration: {
+    type: String,
+    default: null
+  },
+
+  price: {
+    type: String,
+    default: null
+  },
   createdAt: {
     type: Date,
     default: Date.now(),

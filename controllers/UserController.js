@@ -1118,6 +1118,15 @@ const paymentBuyUser = async (req, res) => {
                 .json([{ msg: "packageId is required", res: "error", }]);
         }
 
+        if (!duration) {
+            return res.status(200)
+                .json([{ msg: "duration is required", res: "error", }]);
+        }
+        if (!price) {
+            return res.status(200)
+                .json([{ msg: "price is required", res: "error", }]);
+        }
+
         if (!orderDetails) {
             return res.status(200)
                 .json([{ msg: "orderDetails is required", res: "error", }]);
@@ -1148,7 +1157,9 @@ const paymentBuyUser = async (req, res) => {
             const paymentData = await PAYMENT.create({
                 userID,
                 packageId,
-                orderDetails
+                orderDetails,
+                duration,
+                price
 
             });
             return res.status(200).json([{
@@ -1222,7 +1233,7 @@ const getUserOrderList = async (req, res) => {
                     return res.status(200)
                         .json([{ msg: "Data Not found", res: "error" }]);
                 } else {
-                    // console.log('orderdata',result);
+                    // console.log('orderdata',data[0].branchdata[0].branchCode);
 
                     return res.status(200)
                         .json([{ msg: "alll user Order data!!", data: result, res: "success" }]);
