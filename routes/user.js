@@ -53,6 +53,9 @@ router.post('/paymentBuyUser',  userController.paymentBuyUser)
 router.post('/GymBranchesByServiceName',  userController.GymBranchesByServiceName)
 router.post('/getUserOrderList',  userController.getUserOrderList)
 
+router.post('/getUserActiveOrderList',  userController.getUserActiveOrderList)
+
+
 
 
 

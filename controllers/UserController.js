@@ -1324,79 +1324,116 @@ const getUserOrderList = async (req, res) => {
 
 }
 
-// const getUserAciveOrderList = async (req, res) => {
+const getUserActiveOrderList = async (req, res) => {
 
-//     try {
-
-
-//         const { userID, } = req.body;
-//         if (!userID) {
-//             return res.status(200)
-//                 .json([{ msg: "userID is required", res: "error", }]);
-//         }
-//         // const demoData = await demoBooking.find({ userID: mongoose.Types.ObjectId(userID) }).populate("service_id");
+    try {
 
 
-//         const data = await PAYMENT.aggregate([
-//             {
-//                 $match: {
-//                     // "title": serviceTitle
-//                     "userID": mongoose.Types.ObjectId(userID) 
-//                 }
-//             },
+        const { userID, } = req.body;
+        if (!userID) {
+            return res.status(200)
+                .json([{ msg: "userID is required", res: "error", }]);
+        }
+       
 
-//             {
-//                 $lookup: {
-//                     from: 'bookpackages', localField: 'packageId',
-//                     foreignField: '_id', as: 'packageData'
-//                 }
-//             },
+        const data = await PAYMENT.aggregate([
+            {
+                $match: {
+                    "userID": mongoose.Types.ObjectId(userID) 
+                }
+            },
 
-//             {
-//                 $lookup: {
-//                   from: "gym_services",
-//                   localField: "packageData.service_id",
-//                   foreignField: "_id",
-//                   as: "servicedata",
-//                 }
-//             },
-//             {
-//                 $lookup: {
-//                   from: "gym_branches",
-//                   localField: "servicedata.branch_id",
-//                   foreignField: "_id",
-//                   as: "branchdata",
-//                 }
-//             }
-//         ]).exec((err, result) => {
-//             if (err) {
-//                 console.log("error", err)
-//                 return res.status(200)
-//                     .json([{ msg: err.message, res: "error" }]);
-//             }
-//             if (result) {
-//                 if (result === null || result === undefined || result === "" || result.length === 0) {
+            {
+                $lookup: {
+                    from: 'bookpackages', localField: 'packageId',
+                    foreignField: '_id', as: 'packageData'
+                }
+            },
 
-//                     return res.status(200)
-//                         .json([{ msg: "Data Not found", res: "error" }]);
-//                 } else {
-//                     // console.log('orderdata',data[0].branchdata[0].branchCode);
+            {
+                $lookup: {
+                  from: "gym_services",
+                  localField: "packageData.service_id",
+                  foreignField: "_id",
+                  as: "servicedata",
+                }
+            },
+            {
+                $lookup: {
+                  from: "gym_branches",
+                  localField: "servicedata.branch_id",
+                  foreignField: "_id",
+                  as: "branchdata",
+                }
+            }
+        ]).exec((err, result) => {
+            if (err) {
+                console.log("error", err)
+                return res.status(200)
+                    .json([{ msg: err.message, res: "error" }]);
+            }
+            if (result) {
+                if (result === null || result === undefined || result === "" || result.length === 0) {
 
-//                     return res.status(200)
-//                         .json([{ msg: "alll user Order data!!", data: result, res: "success" }]);
-//                 }
-//             }
-//         });
+                    return res.status(200)
+                        .json([{ msg: "Data Not found", res: "error" }]);
+                } else {
+                   
+                    const finaldata=[];
+
+
+                    result.map((item) => {
+                       
+                        let d = new Date(item.createdAt); //Christmas
+
+                        d.setMonth(d.getMonth() + 1);
+                        // d.getMonth()+1
+                        // console.log(d.toString()); //Wed Jan 25 2023
+
+                        const expiryDate=d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+
+                        var moment = require('moment');
+                        const currentdate=moment().format('YYYY-MM-DD');
+                        if (currentdate <= expiryDate) {
+                            var obj = {};
+
+                            obj["price"] = item.price 
+                            obj["duration"] = item.duration
+                            obj["startDate"] = item.createdAt
+                            obj["expiryDate"] = expiryDate
+    
+    
+                            item.branchdata.map((branch)=>{
+                                obj["branchName"] = branch.branchName
+                                
+                                obj["image"] = branch.image 
+    
+                                finaldata.push(obj);
+    
+                            
+                            })
+
+                        }
+
+                       
+
+                    })
+
+                    return res.status(200)
+                        .json([{ msg: "all Active user Order data!!", data: finaldata, res: "success" }]);
+                }
+            }
+        });
 
     
 
-//     } catch (err) {
-//         return res.status(200)
-//             .json([{ msg: err.message, res: "error" }]);
+    } catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
 
-//     }
+    }
 
-// }
+}
 
 const test = async (req, res) => {
 
@@ -2029,4 +2066,4 @@ const updatePushNotificationData=async(req,res)=>{
 }
 
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach, registerUser,getUserOrderList,updatePushNotificationToken,getPushNotificationData,updatePushNotificationData };
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach, registerUser,getUserOrderList,updatePushNotificationToken,getPushNotificationData,updatePushNotificationData,getUserActiveOrderList };
