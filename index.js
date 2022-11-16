@@ -77,14 +77,13 @@ mongoose
   .connect("mongodb+srv://bhartishivam723:Shivam123@cluster0.c1txlyk.mongodb.net/gymDb?retryWrites=true&w=majority")//local database
   .then(() => {
     console.log("Database Connected");
+
+
+    // Server Listen
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`connected at port ${PORT}`);
+    });
   })
   .catch((e) => {
     console.log(e);
   });
-
-
-
-// Server Listen
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`connected at port ${PORT}`);
-});

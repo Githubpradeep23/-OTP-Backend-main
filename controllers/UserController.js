@@ -33,6 +33,7 @@ const bcrypt = require("bcrypt");
 const FeedBack = require("../models/userFeedBack");
 const mongoose = require('mongoose');
 const Razorpay = require("razorpay");
+var moment = require('moment');
 
 const signup = async (req, res) => {
     try {
@@ -415,6 +416,8 @@ const categoryServices = async (req, res) => {
 
 const addTrackTrace = async (req, res) => {
 
+    // await TrackWeight.deleteMany({})
+
     try {
         const { userID, weight, to, from, ht, PBF, SMM, Waist, PushUp, PullUps } =
             req.body;
@@ -432,71 +435,129 @@ const addTrackTrace = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "From Date is required", res: "error", }]);
         }
-        if (!to) {
-            return res.status(200)
-                .json([{ msg: "To Date is required", res: "error", }]);
-        }
-        console.log("userID, weight, date ", userID, weight, to, from);
+        // if (!to) {
+        //     return res.status(200)
+        //         .json([{ msg: "To Date is required", res: "error", }]);
+        // }
+        // console.log("userID, weight, date ", userID, weight, to, from);
         // try {
 
-        const userData = await User.findOne({ _id: userID });
+        const userData = await User.findOne({ _id: mongoose.Types.ObjectId(userID) });
         if (!userData) {
             return res.status(200)
                 .json([{ msg: "User not found!!!", res: "error", }]);
         }
-        if (!weight || weight==null) {
-            var weights=0;
+
+        const trackTraceData = await TrackWeight.find({ userID: mongoose.Types.ObjectId(userID) }).sort({createdBy: -1});
+
+
+        if(trackTraceData[0]!==undefined){
+            if (!weight || weight==null) {
+                var weights=trackTraceData[0].weight;
+            }else{
+                var weights=weight;
+    
+            }
+    
+            if (!ht || ht==null) {
+                var hts=trackTraceData[0].ht;
+            }else{
+                var hts=ht;
+    
+            }
+    
+            if (!PBF || PBF==null) {
+                var PBFs=trackTraceData[0].PBF;
+            }else{
+                var PBFs=PBF;
+    
+            }
+    
+            if (!SMM || SMM==null) {
+                var SMMs=trackTraceData[0].SMM;
+            }else{
+                var SMMs=SMM;
+    
+            }
+            if (!Waist || Waist==null) {
+                var Waists=trackTraceData[0].Waist;
+            }else{
+                var Waists=Waist;
+    
+            }
+    
+            if (!PushUp || PushUp==null) {
+                var PushUps=trackTraceData[0].PushUp;
+            }else{
+                var PushUps=PushUp;
+    
+            }
+    
+            if (!PullUps || PullUps==null) {
+                var PullUpss=trackTraceData[0].PullUps;
+            }else{
+                var PullUpss=PullUps;
+    
+            }
+
+
         }else{
-            var weights=weight;
+            if (!weight || weight==null) {
+                var weights=0;
+            }else{
+                var weights=weight;
+    
+            }
+    
+            if (!ht || ht==null) {
+                var hts=0;
+            }else{
+                var hts=ht;
+    
+            }
+    
+            if (!PBF || PBF==null) {
+                var PBFs=0;
+            }else{
+                var PBFs=PBF;
+    
+            }
+    
+            if (!SMM || SMM==null) {
+                var SMMs=0;
+            }else{
+                var SMMs=SMM;
+    
+            }
+            if (!Waist || Waist==null) {
+                var Waists=0;
+            }else{
+                var Waists=Waist;
+    
+            }
+    
+            if (!PushUp || PushUp==null) {
+                var PushUps=0;
+            }else{
+                var PushUps=PushUp;
+    
+            }
+    
+            if (!PullUps || PullUps==null) {
+                var PullUpss=0;
+            }else{
+                var PullUpss=PullUps;
+    
+            }
+
 
         }
 
-        if (!ht || ht==null) {
-            var hts=0;
-        }else{
-            var hts=ht;
-
-        }
-
-        if (!PBF || PBF==null) {
-            var PBFs=0;
-        }else{
-            var PBFs=PBF;
-
-        }
-
-        if (!SMM || SMM==null) {
-            var SMMs=0;
-        }else{
-            var SMMs=SMM;
-
-        }
-        if (!Waist || Waist==null) {
-            var Waists=0;
-        }else{
-            var Waists=Waist;
-
-        }
-
-        if (!PushUp || PushUp==null) {
-            var PushUps=0;
-        }else{
-            var PushUps=PushUp;
-
-        }
-
-        if (!PullUps || PullUps==null) {
-            var PullUpss=0;
-        }else{
-            var PullUpss=PullUps;
-
-        }
-
-
+     
         const trackTracedata = await TrackWeight.create({
             userID: mongoose.Types.ObjectId(userID),
             weight:weights,
-            to,
+            // to,
             from,
             ht:hts,
             PBF:PBFs,
@@ -504,9 +565,11 @@ const addTrackTrace = async (req, res) => {
             Waist:Waists,
             PushUp:PushUps,
             PullUps:PullUpss,
-        });
-        // console.log('track',trackTracedata);
+            createdBy:moment().format('YYYY-MM-DD HH:mm:ss')
 
+
+        });
+       
         return res.status(200)
             .json([{ msg: "Track & Trace data added sucessfully!!", data: trackTracedata, res: "success" }]);
 
@@ -1392,7 +1455,6 @@ const getUserActiveOrderList = async (req, res) => {
 
                         const expiryDate=d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
 
-                        var moment = require('moment');
                         const currentdate=moment().format('YYYY-MM-DD');
                         if (currentdate <= expiryDate) {
                             var obj = {};

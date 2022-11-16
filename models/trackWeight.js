@@ -7,10 +7,10 @@ const weightSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  to : {
-    type: String,
-    required: true,
-  },
+  // to : {
+  //   type: String,
+  //   required: true,
+  // },
   from : {
     type: String,
     required: true,
@@ -41,7 +41,7 @@ const weightSchema = new mongoose.Schema({
   },
   createdBy: {
     type: Date,
-    default: Date.now(),
+    required: true,
   },
 });
 
