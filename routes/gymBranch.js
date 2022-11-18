@@ -11,8 +11,8 @@ gymBrnachRouter.post("/addGymBranch", async (req, res) => {
     city,
     phoneNumber,
     branchCode,
-    opening_branchTiming,
-    closing_branchTiming,
+    // opening_branchTiming,
+    // closing_branchTiming,
     location,
   } = req.body;
   try {
@@ -37,13 +37,13 @@ gymBrnachRouter.post("/addGymBranch", async (req, res) => {
       phoneNumber !== null &&
       branchCode !== undefined &&
       branchCode !== "" &&
-      branchCode !== null &&
-      opening_branchTiming !== undefined &&
-      opening_branchTiming !== "" &&
-      opening_branchTiming !== null &&
-      closing_branchTiming !== undefined &&
-      closing_branchTiming !== "" &&
-      closing_branchTiming !== null
+      branchCode !== null
+      // opening_branchTiming !== undefined &&
+      // opening_branchTiming !== "" &&
+      // opening_branchTiming !== null &&
+      // closing_branchTiming !== undefined &&
+      // closing_branchTiming !== "" &&
+      // closing_branchTiming !== null
     ) {
       let checkGymBranch = await GYM_BRANCH.find({ branchName: name });
       if (checkGymBranch.length === 0 || checkGymBranch === null) {
@@ -52,8 +52,8 @@ gymBrnachRouter.post("/addGymBranch", async (req, res) => {
           branchCode: branchCode,
           branchCity: city,
           branchPhoneNumber: phoneNumber,
-          opening_branchTiming,
-          closing_branchTiming,
+          // opening_branchTiming,
+          // closing_branchTiming,
           location,
           manager_Phone_Number,
           managerName,
