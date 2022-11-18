@@ -95,8 +95,8 @@ gymBrnachRouter.put("/updateGymBranch", async (req, res) => {
       phoneNumber,
       branchCode,
       id,
-      opening_branchTiming,
-      closing_branchTiming,
+      // opening_branchTiming,
+      // closing_branchTiming,
       location,
     } = req.body;
     if (
@@ -123,12 +123,12 @@ gymBrnachRouter.put("/updateGymBranch", async (req, res) => {
       branchCode !== null &&
       id !== undefined &&
       id !== "" &&
-      id !== null &&
-      opening_branchTiming !== "" &&
-      opening_branchTiming !== null &&
-      closing_branchTiming !== undefined &&
-      closing_branchTiming !== "" &&
-      closing_branchTiming !== null
+      id !== null 
+      // opening_branchTiming !== "" &&
+      // opening_branchTiming !== null &&
+      // closing_branchTiming !== undefined &&
+      // closing_branchTiming !== "" &&
+      // closing_branchTiming !== null
     ) {
       let updateGymBranch = await GYM_BRANCH.findOneAndUpdate(
         { _id: id },
@@ -139,8 +139,8 @@ gymBrnachRouter.put("/updateGymBranch", async (req, res) => {
           managerName,
           branchCity: city,
           branchPhoneNumber: phoneNumber,
-          opening_branchTiming,
-          closing_branchTiming,
+          // opening_branchTiming,
+          // closing_branchTiming,
           location,
         }
       );
