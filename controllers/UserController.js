@@ -24,6 +24,9 @@ const TalkToCoach = require("../models/talkToCoach");
 const Notification = require("../models/notification");
 const PushNotification = require("../models/pushNotification");
 
+const COMPLAIN = require("../models/complains");
+
+
 
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
@@ -1679,6 +1682,61 @@ const allUserQueries = async (req, res) => {
     }
 
 }
+// Compalain Api User Start
+const createUserComplain = async (req, res) => {
+    try {
+        const { complain, userID } = req.body;
+        if (!userID) {
+            return res.status(200)
+                .json([{ msg: "userID is required", res: "error", }]);
+        }
+
+        if (!complain) {
+            return res.status(200)
+                .json([{ msg: "complain is required", res: "error", }]);
+        }
+
+        const complainData = await COMPLAIN.create({
+            complain,
+            user_id: mongoose.Types.ObjectId(userID),
+        });
+        return res.status(200).json([{
+            message: "Your complain has been submited,we will give you answer shortly!!",
+            data: complainData,
+            success: true
+        }]);
+
+    } catch (err) {
+        return res.status(200).json([{ msg: err.message, res: "error" }]);
+
+    }
+
+}
+
+const allUserComplains = async (req, res) => {
+    try {
+        const { userID } = req.body;
+        if (!userID) {
+            return res.status(200)
+                .json([{ msg: "userID is required", res: "error" }]);
+        }
+
+        const complainsData = await COMPLAIN.find({ user_id: mongoose.Types.ObjectId(userID) })
+
+        return res.status(200).json([{
+            message: "User All complains!!",
+            data: complainsData,
+            success: true
+        }]);
+
+    } catch (err) {
+        return res.status(200).json([{ msg: err.message, res: "error" }]);
+
+    }
+
+}
+
+// Compalain Api User End
 
 
 //GetBranch Detials by Service Name
@@ -2128,4 +2186,4 @@ const updatePushNotificationData=async(req,res)=>{
 }
 
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach, registerUser,getUserOrderList,updatePushNotificationToken,getPushNotificationData,updatePushNotificationData,getUserActiveOrderList };
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach, registerUser,getUserOrderList,updatePushNotificationToken,getPushNotificationData,updatePushNotificationData,getUserActiveOrderList,allUserComplains,createUserComplain };

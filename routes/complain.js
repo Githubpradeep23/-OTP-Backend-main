@@ -40,7 +40,7 @@ complainRouter.post("/addComplain", async (req, res) => {
 //Get All Complainsss
 complainRouter.get("/getAllComplains", async (req, res) => {
   try {
-    let getAllComplain = await Complain.find();
+    let getAllComplain = await Complain.find().populate("user_id");
     if (
       getAllComplain !== undefined &&
       getAllComplain.length !== 0 &&

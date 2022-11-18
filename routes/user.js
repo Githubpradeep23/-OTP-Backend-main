@@ -72,6 +72,9 @@ router.post('/allUserQueries',  userController.allUserQueries)
 router.post('/createUserQuery',  userController.createUserQuery)
 router.post('/UserActivityAndRecords',  userController.UserActivityAndRecords)
 
+router.post('/createUserComplain',  userController.createUserComplain)
+router.post('/allUserComplains',  userController.allUserComplains)
+
 
 
 // ****************Support Page Api end*****************
