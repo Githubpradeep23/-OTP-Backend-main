@@ -25,14 +25,14 @@ const gymBranchSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  opening_branchTiming: {
-    type: String,
-    required: true,
-  },
-  closing_branchTiming: {
-    type: String,
-    required: true,
-  },
+  // opening_branchTiming: {
+  //   type: String,
+  //   required: true,
+  // },
+  // closing_branchTiming: {
+  //   type: String,
+  //   required: true,
+  // },
   leaving_time: {
     type: String,
   },
