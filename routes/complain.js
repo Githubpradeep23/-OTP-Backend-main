@@ -53,6 +53,7 @@ complainRouter.get("/getAllComplains", async (req, res) => {
       });
     } else {
       return res.status(200).send({
+        getAllComplain,
         messge: "Complains Not Exist",
         success: false,
       });
@@ -64,6 +65,36 @@ complainRouter.get("/getAllComplains", async (req, res) => {
     });
   }
 });
+
+complainRouter.delete("/deleteComplain",async(req,res)=>{
+  try{
+    const { id } = req.body;
+    if (
+      id !== "" &&
+      id !== undefined &&
+      id !== null 
+    ){
+
+      await Complain.deleteOne({ _id:id })
+      return res.status(200).json({
+        message: "Complain deleted Successfully",
+        success: true,
+      });
+    
+    } else {
+      return res.status(200).json({
+        message: "Empty Field found. All field are required !!!",
+        success: false,
+      });
+    }
+
+  }catch(err){
+    return res.status(200).json({
+      message: "Something went wrong",
+      success: false,
+    });
+  }
+})
 
 
 module.exports = complainRouter
