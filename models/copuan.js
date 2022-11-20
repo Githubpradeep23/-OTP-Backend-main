@@ -13,6 +13,7 @@ const copuanSchema = new mongoose.Schema({
         required: true
     },
     createdAt: { type: Date, default: Date.now() },
+    updatedAt: { type: Date, default:null },
     expireAt: { type: Date, default: undefined }
 });
 

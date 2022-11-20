@@ -7,48 +7,50 @@ const CouponJS = require('couponjs');
 // Add Copuan
 copuanRouter.post("/addCopuan", async (req, res) => {
   try {
-    const { copuanTitle, expirationTime, discount_percentage, user_id } = req.body;
+    const { copuanTitle, expireAt, discount_percentage, copuanCode } = req.body;
+
 
     if (
       copuanTitle !== null &&
       copuanTitle !== undefined &&
       copuanTitle !== "" &&
-      expirationTime !== null &&
-      expirationTime !== undefined &&
-      expirationTime !== "" &&
-      user_id !== null &&
-      user_id !== undefined &&
-      user_id !== "" &&
+      expireAt !== null &&
+      expireAt !== undefined &&
+      expireAt !== "" &&
+
+
+      copuanCode !== null &&
+      copuanCode !== undefined &&
+      copuanCode !== "" &&
+
       discount_percentage !== null &&
       discount_percentage !== undefined &&
       discount_percentage !== ""
     ) {
-      const coupon = new CouponJS();
-      const myCoupon = coupon.generate({
-        length: 8
-      });
+      // const coupon = new CouponJS();
+      // const myCoupon = coupon.generate({
+      //   length: 8
+      // });
       let currentTime = Date.now();
       let created = new Date(currentTime);
-      let exp = new Date(currentTime + (expirationTime * 1000)
-      );
+      
 
       let addCopuanCode = await Copuan.create({
-        user_id,
         copuanTitle,
         discount_percentage,
-        copuanCode: myCoupon,
+        copuanCode: copuanCode,
         createdAt: created,
-        expireAt: exp,
+        expireAt: expireAt,
       });
 
-      let copuanCode_id = addCopuanCode["_id"];
+      // let copuanCode_id = addCopuanCode["_id"];
 
-      let notification = await Notification.create({
-        user_id,
-        copuanCode_id,
-        message: "Copuan Aloted Successfully"
-      });
-      console.log("🚀 ~ file: Copuan.js ~ line 51 ~ copuanRouter.post ~ notification", notification)
+      // let notification = await Notification.create({
+      //   user_id,
+      //   copuanCode_id,
+      //   message: "Copuan Aloted Successfully"
+      // });
+      // console.log("🚀 ~ file: Copuan.js ~ line 51 ~ copuanRouter.post ~ notification", notification)
 
       return res.status(200).json({
         addCopuanCode,
@@ -57,7 +59,7 @@ copuanRouter.post("/addCopuan", async (req, res) => {
       });
     } else {
       return res.status(200).json({
-        message: "Empty Field found.Service Id is required !!!",
+        message: "All feild is reuired !!!",
         success: false,
       });
     }
@@ -88,7 +90,7 @@ copuanRouter.delete("/deleteCopuan", async (req, res) => {
       ) {
         return res.status(200).json({
           id,
-          message: "Banner Not found ",
+          message: "Coupan Not found ",
           success: true,
         });
       } else if (
@@ -138,7 +140,77 @@ copuanRouter.get("/getAllCopuan", async (req, res) => {
 });
 
 
+copuanRouter.put("/updateCopuan", async (req, res) => {
+  console.log(req.body)
+  try {
+    const { copuanTitle, expireAt, discount_percentage, id, copuanCode } = req.body;
+
+   
+    if (
+      id !== null &&
+      id !== undefined &&
+      id !== "" &&
+      copuanTitle !== null &&
+      copuanTitle !== undefined &&
+      copuanTitle !== "" &&
+      expireAt !== null &&
+      expireAt !== undefined &&
+      expireAt !== "" &&
+
+
+      copuanCode !== null &&
+      copuanCode !== undefined &&
+      copuanCode !== "" &&
+
+      discount_percentage !== null &&
+      discount_percentage !== undefined &&
+      discount_percentage !== ""
+    ) {
+      let currentTime = Date.now();
+
+      let updatedAt = new Date(currentTime);
+
+      let updateCoupan = await Copuan.updateOne(
+        { _id: id },
+        {
+          copuanTitle,
+          discount_percentage,
+          copuanCode,
+          updatedAt: updatedAt,
+          expireAt
+        }
+      );
+
+      if (
+        updateCoupan.length === 0 ||
+        updateCoupan === undefined ||
+        updateCoupan === null ||
+        updateCoupan === ""
+      ) {
+        return res.status(200)
+          .json([{ msg: "Branch not found!!!", res: "error", }]);
+      } else {
+        const userData = await Copuan.findOne({ _id: id })
+        return res.status(200)
+          .json([{ msg: "Coupan  updated successflly", data: userData, res: "success" }]);
+      }
+
+    } else {
+      return res.status(200).json({
+        message: "All feild is required !!!",
+        success: false,
+      });
+
+    }
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({
+      message: error.message,
+      success: false
+    })
+  }
+});
+
+
 
 module.exports = copuanRouter;
-
-
