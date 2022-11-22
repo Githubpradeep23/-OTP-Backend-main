@@ -501,7 +501,7 @@ adminRouter.delete("/deleteEmployee", async (req, res) => {
     }
   } catch (error) {
     return res.status(500).json({
-      message:error.message,
+      message: error.message,
       success: false,
     });
   }
@@ -665,6 +665,86 @@ adminRouter.get("/getAllUserBookingDemo", async (req, res) => {
   }
 });
 
+adminRouter.get("/getAdminUserProfile", async (req, res) => {
+  try {
+    // let getAllDemosBookings = await Admin.find();
+    let AdminData = await Admin.find({ _id: '6309ba46e04e4772afddfa06' });
+    if (
+      AdminData.length === 0 ||
+      AdminData === undefined ||
+      AdminData === null
+    ) {
+      return res.status(422).json({
+        message: "Demo Not Exist",
+        success: false,
+      });
+    } else {
+      return res.status(200).json({
+        AdminData,
+        message: "Get All Users Booking Demos Successfully",
+        success: true,
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+      success: false,
+    });
+  }
 
+})
+
+adminRouter.post("/adminUpdateProfile", async (req, res) => {
+
+ 
+  try {
+    const { name, email, phoneNumber, password } = req.body;
+    if (
+      name !== "" &&
+      name !== undefined &&
+      name !== null &&
+      email !== "" &&
+      email !== undefined &&
+      email !== null &&
+      phoneNumber !== "" &&
+      phoneNumber !== undefined &&
+      phoneNumber !== null &&
+      password !== "" &&
+      password !== undefined &&
+      password !== null
+    ) {
+      let adminData = await Admin.findOneAndUpdate(
+        { _id: '6309ba46e04e4772afddfa06' },
+        {
+          name, email, phoneNumber, password
+        }
+      );
+      if (
+        adminData.length === 0 ||
+        adminData === undefined ||
+        adminData === null ||
+        adminData === ""
+      ) {
+        return res.status(404).json({
+          message: "User Data Not Found !!!",
+          success: false,
+        });
+      } else {
+        return res.status(200).json({
+          // id,
+          message: "Update Password Successfully",
+          success: true,
+        });
+      }
+    }
+
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+      success: true
+    })
+  }
+
+});
 // 
 module.exports = adminRouter;
