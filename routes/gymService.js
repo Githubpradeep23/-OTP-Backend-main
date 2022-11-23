@@ -17,8 +17,13 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
     console.log('body',req.body);
     // return false;
 
-    const { title, description, price, category, branchesID_Array, demoDate, demoTime, packageDate, packageTime, packageDuration, manager_contact_no, working_hours, coachName, contact_no, delievrables, consultationDate, consultationTime, slotTime } = req.body;
+    const { title, description, price, category, branchesID_Array, demoDate, demoTime, packageDate, packageTime, packageDuration, manager_contact_no, working_hours, coachName, contact_no, delievrables, consultationDate, consultationTime, slotTime,priceOneMonth,priceThreeMonth,priceSixMonth,priceTwelveMonth } = req.body;
     const image = req?.files?.image?.tempFilePath;
+
+
+
+ 
+
 
     if (
       title !== undefined &&
@@ -27,9 +32,7 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
       description !== undefined &&
       description !== "" &&
       description !== null &&
-      price !== undefined &&
-      price !== "" &&
-      price !== null &&
+   
       image !== undefined &&
       image !== null &&
       image !== "" &&
@@ -67,17 +70,18 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
 
               console.log("🚀 ~ file: gymService.js ~ line 65 ~ gymServiceRouter.post ~ parseData", parseData);
               console.log("🚀 ~ file: gymService.js ~ line 66 ~ gymServiceRouter.post ~ parseData.length", parseData.length);
-
+              
               let Data = parseData.map((branch_id, index) => {
                 return {
                   title,
                   description,
-                  price,
+                  // price,
                   image: imageURL,
                   category,
                   branch_id,
                   slotTime,
-                  duration: packageDuration
+                  // duration: packageDuration
+                  priceOneMonth,priceThreeMonth,priceSixMonth,priceTwelveMonth
                 }
               })
 
@@ -201,6 +205,8 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
                 description,
                 price,
                 delievrables,
+                slotTime,
+                priceOneMonth,priceThreeMonth,priceSixMonth,priceTwelveMonth
                 // consultationDate,
                 // consultationTime
               });
@@ -264,6 +270,8 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
                 image: imageURL,
                 category,
                 delievrables,
+                slotTime,
+                priceOneMonth,priceThreeMonth,priceSixMonth,priceTwelveMonth
               });
               console.log("🚀 ~ file: gymService.js ~ line 249 ~ gymServiceRouter.post ~ service In Academy", service)
 

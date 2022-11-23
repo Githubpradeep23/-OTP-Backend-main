@@ -13,10 +13,7 @@ const gymServicesSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  price: {
-    type: Number,
-    required: true,
-  },
+
   category: {
     type: String,
   },
@@ -28,6 +25,24 @@ const gymServicesSchema = new mongoose.Schema({
   duration:{
     type:String
   },
+  priceOneMonth: {
+    type: Number,
+    default:null,
+  },
+  priceThreeMonth: {
+    type: Number,
+    default:null,
+  },
+  priceSixMonth: {
+    type: Number,
+    default:null,
+  },
+  priceTwelveMonth: {
+    type: Number,
+    default:null,
+  },
+
+ 
   slotTime:{
     type:String
   },
