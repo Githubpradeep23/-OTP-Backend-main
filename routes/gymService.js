@@ -9,6 +9,7 @@ const Coach = require("../models/coach");
 const Demo = require("../models/demo");
 const Manager = require("../models/manager");
 const Package = require("../models/bookPackage");
+const mongoose = require('mongoose');
 
 // Add GYM Servcie
 gymServiceRouter.post("/addGymSevice", async (req, res) => {
@@ -88,30 +89,10 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
               let gymServiceData = await GYM_SERVICE.insertMany(Data);
               console.log("🚀 ~ file: gymService.js ~ line 81 ~ gymServiceRouter.post ~ gymServiceData", gymServiceData);
 
-              // if (
-              //   demoDate !== null &&
-              //   demoDate !== "" &&
-              //   demoDate !== undefined &&
-              //   demoTime !== null &&
-              //   demoTime !== "" &&
-              //   demoTime !== undefined
-              // ) {
-              //   let demoData = gymServiceData.map((value, index) => {
-              //     return {
-              //       Service_id: value["_id"],
-              //       Date: demoDate,
-              //       Time: demoTime
-              //     }
-              //   });
-
-              //   let AllDemos = await Demo.insertMany(demoData);
-              //   console.log("🚀 ~ file: gymService.js ~ line 100 ~ gymServiceRouter.post ~ AllDemos In Fitness Category", AllDemos)
-              // }
+            
 
               if (
-                // working_hours !== null &&
-                // working_hours !== "" &&
-                // working_hours !== undefined &&
+              
                 manager_contact_no !== null &&
                 manager_contact_no !== "" &&
                 manager_contact_no !== undefined
@@ -135,28 +116,7 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
                 success: true
               });
 
-              // if (
-              //   packageDate !== null &&
-              //   packageDate !== "" &&
-              //   packageDate !== undefined &&
-              //   packageTime !== null &&
-              //   packageTime !== "" &&
-              //   packageTime !== undefined
-              // ) {
-
-              // let duration = packageDuration ? packageDuration : null;
-              // let packageData = gymServiceData.map((value, index) => {
-              //   return {
-              //     service_id: value["_id"],
-              //     // Date: packageDate,
-              //     // Time: packageTime,
-              //     Durataion: duration
-              //   }
-              // });
-
-              // let AllPackages = await Package.insertMany(packageData);
-              // console.log("🚀 ~ file: gymService.js ~ line 144 ~ gymServiceRouter.post ~ AllPackages In fitnes", AllPackages);
-              // }
+           
 
 
             } catch (error) {
@@ -190,12 +150,7 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
             delievrables !== undefined &&
             delievrables !== null &&
             delievrables !== ""
-            // consultationDate !== null &&
-            // consultationDate !== undefined &&
-            // consultationDate !== "" &&
-            // consultationTime !== null &&
-            // consultationTime !== "" &&
-            // consultationTime !== undefined
+         
           ) {
             try {
               let addNewService = await GYM_SERVICE.create({
@@ -207,33 +162,14 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
                 delievrables,
                 slotTime,
                 priceOneMonth,priceThreeMonth,priceSixMonth,priceTwelveMonth
-                // consultationDate,
-                // consultationTime
+              
               });
               console.log("🚀 ~ file: gymService.js ~ line 203 ~ gymServiceRouter.post ~ addNewService", addNewService)
 
               let id = addNewService["_id"];
               console.log("🚀 ~ file: gymService.js ~ line 197 ~ gymServiceRouter.post ~ id In Wellness Sections", id);
 
-              // if (
-              //   packageDate !== null &&
-              //   packageDate !== "" &&
-              //   packageDate !== undefined &&
-              //   packageTime !== null &&
-              //   packageTime !== "" &&
-              //   packageTime !== undefined
-              // ) {
-              //   let duration = packageDuration ? packageDuration : null;
-              //   let AllPackages = await Package.create({
-              //     Date: packageDate,
-              //     Time: packageTime,
-              //     Durataion: duration,
-              //     service_id: id
-              //   });
-
-              //   console.log("🚀 ~ file: gymService.js ~ line 214 ~ gymServiceRouter.post ~ AllPackages", AllPackages);
-
-              // }
+           
 
               return res.status(200).json({
                 message: "Service Added Successfully In Wellness Sections",
@@ -347,9 +283,17 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
 
 // Edit GYM Servcie
 gymServiceRouter.put("/updateGymSevice", async (req, res) => {
+
+
   try {
     const image = req?.files?.image?.tempFilePath;
-    const { id, title, description, price, category, branch_id } = req.body;
+    // const { id, title, description, price, category, branch_id } = req.body;
+
+    const {id, title, description, category, branch_id,  slotTime,priceOneMonth,priceThreeMonth,priceSixMonth,priceTwelveMonth ,hiddenImageUrl} = req.body;
+
+    console.log(req.body)
+
+   
     if (
       title !== undefined &&
       title !== "" &&
@@ -357,15 +301,11 @@ gymServiceRouter.put("/updateGymSevice", async (req, res) => {
       description !== undefined &&
       description !== "" &&
       description !== null &&
-      price !== undefined &&
-      price !== "" &&
-      price !== null &&
+      
       id !== undefined &&
       id !== "" &&
       id !== null &&
-      image !== undefined &&
-      image !== null &&
-      image !== "" &&
+    
       branch_id !== undefined &&
       branch_id !== null &&
       branch_id !== "" &&
@@ -373,28 +313,53 @@ gymServiceRouter.put("/updateGymSevice", async (req, res) => {
       category !== null &&
       category !== undefined
     ) {
-      let options = {
-        method: "POST",
-        url: "https://api.cloudinary.com/v1_1/bng/image/upload",
-        headers: {
-          "cache-control": "no-cache",
-          "content-type":
-            "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
-        },
-        formData: {
-          file: {
-            value: fs.readFileSync(image),
-            options: { filename: "r.png", contentType: null },
-          },
-          upload_preset: "uploadApi",
-          cloud_name: "bng",
-        },
-      };
-      let imageURL = await helper.get(options);
+
+
+    
+      if(image !== undefined &&
+        image !== null &&
+        image !== ""){
+
+
+          let options = {
+            method: "POST",
+            url: "https://api.cloudinary.com/v1_1/bng/image/upload",
+            headers: {
+              "cache-control": "no-cache",
+              "content-type":
+                "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
+            },
+            formData: {
+              file: {
+                value: fs.readFileSync(image),
+                options: { filename: "r.png", contentType: null },
+              },
+              upload_preset: "uploadApi",
+              cloud_name: "bng",
+            },
+          };
+          var imageURL = await helper.get(options);
+
+      }else{
+        var imageURL=hiddenImageUrl;
+      }
+      
       let updateGymService = await GYM_SERVICE.findOneAndUpdate(
         { _id: id },
-        { title, description, price, image: imageURL, category, branch_id }
+
+        {title,
+        image: imageURL,
+        category,
+        description,
+        // price,
+        // delievrables,
+        slotTime,
+        branch_id:mongoose.Types.ObjectId(branch_id),
+        priceOneMonth,priceThreeMonth,priceSixMonth,priceTwelveMonth}
+        // { title, description, price, image: imageURL, category, branch_id }
       );
+
+      console.log('updategym',updateGymService)
 
       if (
         updateGymService.length === 0 ||
@@ -415,12 +380,14 @@ gymServiceRouter.put("/updateGymSevice", async (req, res) => {
         });
       }
     } else {
+      console.log('all feild requird')
       return res.status(200).json({
         message: "Empty Field found. All field are required !!!",
         success: false,
       });
     }
   } catch (error) {
+    console.log('error',error)
     return res.status(200).json({
       message: "Something went wrong",
       success: false,
