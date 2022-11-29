@@ -24,6 +24,3 @@ managerRouter.post("/addManager", async (req, res) => {
 });
 
 module.exports = managerRouter;
-
-
-

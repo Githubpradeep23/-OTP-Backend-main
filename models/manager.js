@@ -2,7 +2,8 @@ const { mongoose, Schema } = require("mongoose");
 
 const managerSchema = new mongoose.Schema({
     manager_contact_no: {
-        type: Number,
+        type: String,
+        default:null
     },
     working_hours: {
         type: String,

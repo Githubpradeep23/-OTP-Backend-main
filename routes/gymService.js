@@ -15,15 +15,15 @@ const mongoose = require('mongoose');
 gymServiceRouter.post("/addGymSevice", async (req, res) => {
   try {
     console.log("Start Add Service Api At line 16");
-    console.log('body',req.body);
+    console.log('body', req.body);
     // return false;
 
-    const { title, description, price, category, branchesID_Array, demoDate, demoTime, packageDate, packageTime, packageDuration, manager_contact_no, working_hours, coachName, contact_no, delievrables, consultationDate, consultationTime, slotTime,priceOneMonth,priceThreeMonth,priceSixMonth,priceTwelveMonth } = req.body;
+    const { title, description, price, category, branchesID_Array, demoDate, demoTime, packageDate, packageTime, packageDuration, manager_contact_no, working_hours, coachName, contact_no, delievrables, consultationDate, consultationTime, slotTime, priceOneMonth, priceThreeMonth, priceSixMonth, priceTwelveMonth } = req.body;
     const image = req?.files?.image?.tempFilePath;
 
 
 
- 
+
 
 
     if (
@@ -33,7 +33,7 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
       description !== undefined &&
       description !== "" &&
       description !== null &&
-   
+
       image !== undefined &&
       image !== null &&
       image !== "" &&
@@ -71,7 +71,7 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
 
               console.log("🚀 ~ file: gymService.js ~ line 65 ~ gymServiceRouter.post ~ parseData", parseData);
               console.log("🚀 ~ file: gymService.js ~ line 66 ~ gymServiceRouter.post ~ parseData.length", parseData.length);
-              
+
               let Data = parseData.map((branch_id, index) => {
                 return {
                   title,
@@ -82,17 +82,17 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
                   branch_id,
                   slotTime,
                   // duration: packageDuration
-                  priceOneMonth,priceThreeMonth,priceSixMonth,priceTwelveMonth
+                  priceOneMonth, priceThreeMonth, priceSixMonth, priceTwelveMonth
                 }
               })
 
               let gymServiceData = await GYM_SERVICE.insertMany(Data);
               console.log("🚀 ~ file: gymService.js ~ line 81 ~ gymServiceRouter.post ~ gymServiceData", gymServiceData);
 
-            
+
 
               if (
-              
+
                 manager_contact_no !== null &&
                 manager_contact_no !== "" &&
                 manager_contact_no !== undefined
@@ -116,7 +116,7 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
                 success: true
               });
 
-           
+
 
 
             } catch (error) {
@@ -150,7 +150,7 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
             delievrables !== undefined &&
             delievrables !== null &&
             delievrables !== ""
-         
+
           ) {
             try {
               let addNewService = await GYM_SERVICE.create({
@@ -161,15 +161,15 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
                 price,
                 delievrables,
                 slotTime,
-                priceOneMonth,priceThreeMonth,priceSixMonth,priceTwelveMonth
-              
+                priceOneMonth, priceThreeMonth, priceSixMonth, priceTwelveMonth
+
               });
               console.log("🚀 ~ file: gymService.js ~ line 203 ~ gymServiceRouter.post ~ addNewService", addNewService)
 
               let id = addNewService["_id"];
               console.log("🚀 ~ file: gymService.js ~ line 197 ~ gymServiceRouter.post ~ id In Wellness Sections", id);
 
-           
+
 
               return res.status(200).json({
                 message: "Service Added Successfully In Wellness Sections",
@@ -207,7 +207,7 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
                 category,
                 delievrables,
                 slotTime,
-                priceOneMonth,priceThreeMonth,priceSixMonth,priceTwelveMonth
+                priceOneMonth, priceThreeMonth, priceSixMonth, priceTwelveMonth
               });
               console.log("🚀 ~ file: gymService.js ~ line 249 ~ gymServiceRouter.post ~ service In Academy", service)
 
@@ -289,11 +289,11 @@ gymServiceRouter.put("/updateGymSevice", async (req, res) => {
     const image = req?.files?.image?.tempFilePath;
     // const { id, title, description, price, category, branch_id } = req.body;
 
-    const {id, title, description, category, branch_id,  slotTime,priceOneMonth,priceThreeMonth,priceSixMonth,priceTwelveMonth ,hiddenImageUrl} = req.body;
+    const { id, title, description, category, branch_id, slotTime, priceOneMonth, priceThreeMonth, priceSixMonth, priceTwelveMonth, hiddenImageUrl,manager_contact_no } = req.body;
 
     console.log(req.body)
 
-   
+
     if (
       title !== undefined &&
       title !== "" &&
@@ -301,11 +301,11 @@ gymServiceRouter.put("/updateGymSevice", async (req, res) => {
       description !== undefined &&
       description !== "" &&
       description !== null &&
-      
+
       id !== undefined &&
       id !== "" &&
       id !== null &&
-    
+
       branch_id !== undefined &&
       branch_id !== null &&
       branch_id !== "" &&
@@ -315,51 +315,86 @@ gymServiceRouter.put("/updateGymSevice", async (req, res) => {
     ) {
 
 
-    
-      if(image !== undefined &&
+
+      if (image !== undefined &&
         image !== null &&
-        image !== ""){
+        image !== "") {
 
 
-          let options = {
-            method: "POST",
-            url: "https://api.cloudinary.com/v1_1/bng/image/upload",
-            headers: {
-              "cache-control": "no-cache",
-              "content-type":
-                "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
+        let options = {
+          method: "POST",
+          url: "https://api.cloudinary.com/v1_1/bng/image/upload",
+          headers: {
+            "cache-control": "no-cache",
+            "content-type":
+              "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
+          },
+          formData: {
+            file: {
+              value: fs.readFileSync(image),
+              options: { filename: "r.png", contentType: null },
             },
-            formData: {
-              file: {
-                value: fs.readFileSync(image),
-                options: { filename: "r.png", contentType: null },
-              },
-              upload_preset: "uploadApi",
-              cloud_name: "bng",
-            },
-          };
-          var imageURL = await helper.get(options);
+            upload_preset: "uploadApi",
+            cloud_name: "bng",
+          },
+        };
+        var imageURL = await helper.get(options);
 
-      }else{
-        var imageURL=hiddenImageUrl;
+      } else {
+        var imageURL = hiddenImageUrl;
       }
-      
+
+      if(priceOneMonth==="null"){
+        var priceOneMonths="";
+      }else{
+        var priceOneMonths=priceOneMonth;
+      }
+
+      if(priceThreeMonth==="null"){
+        var priceThreeMonths="";
+      }else{
+        var priceThreeMonths=priceThreeMonth;
+      }
+
+      if(priceSixMonth==="null"){
+        var priceSixMonths="";
+      }else{
+        var priceSixMonths=priceSixMonth;
+      }
+
+      if(priceTwelveMonth==="null"){
+        var priceTwelveMonths="";
+      }else{
+        var priceTwelveMonths=priceTwelveMonth;
+      }
+
       let updateGymService = await GYM_SERVICE.findOneAndUpdate(
         { _id: id },
 
-        {title,
-        image: imageURL,
-        category,
-        description,
-        // price,
-        // delievrables,
-        slotTime,
-        branch_id:mongoose.Types.ObjectId(branch_id),
-        priceOneMonth,priceThreeMonth,priceSixMonth,priceTwelveMonth}
+        {
+          title,
+          image: imageURL,
+          category,
+          description,
+          // price,
+          // delievrables,
+          slotTime,
+          branch_id: mongoose.Types.ObjectId(branch_id),
+          
+          priceOneMonth:priceOneMonths, priceThreeMonth:priceThreeMonths, priceSixMonth:priceSixMonths, priceTwelveMonth:priceTwelveMonths
+        }
         // { title, description, price, image: imageURL, category, branch_id }
       );
+      let updateManger = await Manager.findOneAndUpdate(
+        { service_id: id },
+       { manager_contact_no}
 
-      console.log('updategym',updateGymService)
+      )
+
+      
+
+
+      // console.log('updategym', dd)
 
       if (
         updateGymService.length === 0 ||
@@ -387,7 +422,7 @@ gymServiceRouter.put("/updateGymSevice", async (req, res) => {
       });
     }
   } catch (error) {
-    console.log('error',error)
+    console.log('error', error)
     return res.status(200).json({
       message: "Something went wrong",
       success: false,
@@ -442,16 +477,72 @@ gymServiceRouter.get("/getAllGymService", async (req, res) => {
     let getAllGymService = await GYM_SERVICE.find().populate("branch_id")
     // const singleServiceDetials = await GYM_SERVICE.find({ title: serviceTitle }).populate("branch_id")
 
+    let getAllManager = await Manager.find();
+
+
     if (
       getAllGymService !== undefined &&
       getAllGymService.length !== 0 &&
       getAllGymService !== null
     ) {
       const key = 'title';
-      const Services = [...new Map(getAllGymService.map(item =>
-        [item[key], item])).values()];
+      // const Services = [...new Map(getAllGymService.map(item =>
+      //   [item[key], item])).values()];
+      var data = [];
+      const managerdatas = [];
+      getAllGymService.map((item, index) => {
+        var obj = {};
+
+        getAllManager.map((items) => {
+          // console.log('mangersrvice',items.service_id[0])
+          // console.log('gymservice',item._id)
+
+          if (items.service_id[0].equals(item._id)) {
+            obj["manager_contact_no"] = items.manager_contact_no
+            // data.push(obj);
+          }
+
+        })
+        obj['_id'] = item._id
+        obj["title"] = item.title
+        obj['bannerImage'] = item.bannerImage
+        obj['category'] = item.category
+        obj['description'] = item.description
+        obj['image'] = item.image
+        obj['priceOneMonth'] = item.priceOneMonth
+        obj['priceThreeMonth'] = item.priceThreeMonth
+        obj['priceSixMonth'] = item.priceSixMonth
+        obj['priceTwelveMonth'] = item.priceTwelveMonth
+
+        obj['slotTime'] = item.slotTime
+        obj['branch_id'] = item.branch_id
+
+
+
+
+
+
+
+
+        data.push(obj);
+
+        // item.concat(mangerdata)
+        // managerdatas.push(mangerdata)
+        // return mangerdata;
+
+
+
+
+
+
+      })
+
+      console.log('managerdata', data)
+
+
       return res.status(200).send({
-        getAllGymService,
+        data,
+        // getAllManager,
         messge: "All Gym Service",
         success: true,
       });

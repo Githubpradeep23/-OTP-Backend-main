@@ -71,10 +71,9 @@ app.use("/api/v1", consultationRouter);
 app.use("/api/v1", userRouter);
 
 
-// mongodb://127.0.0.1:27017/gym?retryWrites=true&w=majority
 mongoose
-  // .connect("mongodb+srv://test:test@cluster0.h7sxi.mongodb.net/NewOTP_DATABASE?retryWrites=true&w=majority") Live database
-  .connect("mongodb+srv://bhartishivam723:Shivam123@cluster0.c1txlyk.mongodb.net/gymDb?retryWrites=true&w=majority")//local database
+  // .connect("mongodb+srv://test:test@cluster0.h7sxi.mongodb.net/NewOTP_DATABASE?retryWrites=true&w=majority") Old Live database
+  .connect("mongodb+srv://bhartishivam723:Shivam123@cluster0.c1txlyk.mongodb.net/gymDb?retryWrites=true&w=majority")//New database
   .then(() => {
     console.log("Database Connected");
 
