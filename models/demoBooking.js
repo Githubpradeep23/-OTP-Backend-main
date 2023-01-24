@@ -12,9 +12,8 @@ const demoBookingSchema = new mongoose.Schema({
     required: true
   },
   demo_status: {
-    type: Boolean,
-    default: true
-
+    type: String,
+    required: false
   },
   Date: {
     type: String,

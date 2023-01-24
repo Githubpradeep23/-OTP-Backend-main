@@ -82,7 +82,18 @@ const userSchema = new mongoose.Schema(
     //   type: Date,
     //   default: Date.now(),
     // },
-
+    city: {
+      type: String,
+      default: null
+    },
+    state: {
+      type: String,
+      default: null
+    },
+    country: {
+      type: String,
+      default: null
+    }
   },
   { versionKey: false }
 );

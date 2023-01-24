@@ -11,6 +11,10 @@ const complainSchema = new mongoose.Schema({
         type: String,
         default:null
     },
+    status: {
+        type: Boolean,
+        default:false
+    },
     user_id: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     createdAt: {
         type: Date,

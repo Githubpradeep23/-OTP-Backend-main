@@ -37,6 +37,17 @@ const employeeSchema = new mongoose.Schema(
       type: Number,
       default: null
     },
+    gym_branch: {
+      type: mongoose.Schema.Types.ObjectId, ref: 'GYM_BRANCH'
+    },
+    role: {
+      type: String,
+      required: true
+    },
+    status: {
+      type: Boolean,
+      default: true
+    },
     createdAt:{
         type:Date,
         default:Date.now()

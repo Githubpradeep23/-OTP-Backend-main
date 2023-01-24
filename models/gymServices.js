@@ -29,6 +29,10 @@ const gymServicesSchema = new mongoose.Schema({
     type: Number,
     default:null,
   },
+  priceTwoMonth: {
+    type: Number,
+    default:null,
+  },
   priceThreeMonth: {
     type: Number,
     default:null,
@@ -41,12 +45,9 @@ const gymServicesSchema = new mongoose.Schema({
     type: Number,
     default:null,
   },
-
- 
   slotTime:{
     type:String
   },
-
   delievrables: String,
   consultationDate: String,
   consultationTime: String,

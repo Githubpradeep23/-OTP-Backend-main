@@ -20,9 +20,10 @@ const demoRouter = require("./routes/demo");
 const coachRouter = require("./routes/coach");
 const managerRouter = require("./routes/manager");
 const packageRouter = require("./routes/package");
-
+const titleRouter = require("./routes/tittle");
 const userRouter = require("./routes/user");
-
+const questionireRouter = require("./routes/questionire");
+const employeeRouter = require("./routes/employee");
 const fileUpload = require("express-fileupload");
 
 const PORT = process.env.PORT || 8080;
@@ -69,7 +70,10 @@ app.use("/api/v1", demoRouter);
 app.use("/api/v1", coachRouter);
 app.use("/api/v1", consultationRouter);
 app.use("/api/v1", userRouter);
-
+app.use("/api/v1", questionireRouter);
+app.use("/api/v1", questionireRouter);
+app.use("/api/v1", titleRouter);
+app.use("/api/v1/employee", employeeRouter);
 
 mongoose
   // .connect("mongodb+srv://test:test@cluster0.h7sxi.mongodb.net/NewOTP_DATABASE?retryWrites=true&w=majority") Old Live database

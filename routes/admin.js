@@ -8,6 +8,8 @@ const Demo = require("../models/demo");
 const demoBooking = require("../models/demoBooking");
 const helper = require("../utils/helper");
 const fs = require("fs");
+const Answers = require("../models/answers");
+const mongoose = require('mongoose');
 
 // Add Admin
 adminRouter.post("/addAdmin", async (req, res) => {
@@ -218,7 +220,16 @@ adminRouter.post("/addRequestForAdmin", async (req, res) => {
 // Get All Service
 adminRouter.get("/getAllUsers", async (req, res) => {
   try {
-    let getAllUsers = await User.find();
+    let allUsers = await User.find();
+    let getAllUsers = [];
+    for(let user of allUsers) {
+      let questionireAnswers = await Answers.find({ user_id: mongoose.Types.ObjectId(user._doc._id)}).populate("questions_id").populate("questionire_id").exec();
+      let updatedQuestionireAns = questionireAnswers.map(q => q._doc);
+      getAllUsers.push({
+        ...user._doc,
+        "questionireAnswers": updatedQuestionireAns
+    })
+    }
     if (
       getAllUsers !== undefined &&
       getAllUsers.length !== 0 &&
@@ -282,7 +293,7 @@ adminRouter.post("/addNewUser", async (req, res) => {
     ) {
 
       let findEmployee = await User.findOne({ number: number });
-      if (findUser !== undefined && findUser !== null) {
+      if (findEmployee !== undefined && findEmployee !== null) {
         return res.status(422).json({
           message: "User Already Exist",
           success: false,
@@ -640,7 +651,13 @@ adminRouter.delete("/deleteDemo", async (req, res) => {
 // Get All Demo Booking By All Users
 adminRouter.get("/getAllUserBookingDemo", async (req, res) => {
   try {
-    let getAllDemosBookings = await demoBooking.find();
+    let getAllDemosBookings = await demoBooking.find({}).populate({ 
+      path: 'service_id',
+      populate: [{
+        path: 'branch_id',
+        model: 'GYM_BRANCH'
+      }] 
+   }).exec();
     if (
       getAllDemosBookings.lenght === 0 ||
       getAllDemosBookings === undefined ||
@@ -651,6 +668,11 @@ adminRouter.get("/getAllUserBookingDemo", async (req, res) => {
         success: false,
       });
     } else {
+      // const updatedDemosBooking = getAllDemosBookings.map(demo => ({
+      //   ...demo,
+      //   branchName: demo._doc.service_id && demo._doc.service_id[0] && demo._doc.service_id[0]._doc && demo._doc.service_id[0]._doc.branch_id && demo._doc.service_id[0]._doc.branch_id[0] && demo._doc.service_id[0]._doc.branch_id[0]._doc.branchName,
+      //   location: demo._doc.service_id && demo._doc.service_id[0] && demo._doc.service_id[0]._doc && demo._doc.service_id[0]._doc.branch_id && demo._doc.service_id[0]._doc.branch_id[0] && demo._doc.service_id[0]._doc.branch_id[0]._doc.location,
+      // }));
       return res.status(200).json({
         getAllDemosBookings,
         message: "Get All Users Booking Demos Successfully",

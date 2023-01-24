@@ -1,6 +1,7 @@
 const express = require("express");
 const Complain = require("../models/complains");
 const complainRouter = express.Router();
+const mongoose = require('mongoose');
 
 //Add Complain
 complainRouter.post("/addComplain", async (req, res) => {
@@ -17,6 +18,7 @@ complainRouter.post("/addComplain", async (req, res) => {
       let newComplain = await Complain.create({
         id,
         complainMessage: message,
+        status: false
       });
       return res.status(200).json({
         newComplain,
@@ -96,5 +98,35 @@ complainRouter.delete("/deleteComplain",async(req,res)=>{
   }
 })
 
+complainRouter.put("/updateComplainStatus",async(req,res)=>{
+  try{
+    const { id } = req.body;
+    if (
+      id !== "" &&
+      id !== undefined &&
+      id !== null 
+    ){
+
+      const complain = await Complain.findById({ _id: mongoose.Types.ObjectId(id) });
+      await Complain.updateOne({_id:mongoose.Types.ObjectId(id)}, { $set: {status:!complain._doc.status}}); 
+      return res.status(200).json({
+        message: "Complain Status updated Successfully",
+        success: true,
+      });
+    
+    } else {
+      return res.status(200).json({
+        message: "Empty Field found. All field are required !!!",
+        success: false,
+      });
+    }
+
+  }catch(err){
+    return res.status(200).json({
+      message: "Something went wrong",
+      success: false,
+    });
+  }
+})
 
 module.exports = complainRouter

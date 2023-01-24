@@ -4,6 +4,7 @@ const Razorpay = require("razorpay");
 const Payment = require("../models/payment");
 const Voucher = require("../models/voucher");
 const axios = require("axios");
+const mongoose = require('mongoose');
 
 // Payment Route
 paymentRouter.post("/paymentByPrice", async (req, res) => {
@@ -89,7 +90,6 @@ paymentRouter.post("/paymentByPrice", async (req, res) => {
 // Get All Payments Records
 paymentRouter.get("/getAllPaymentsRecords", async (req, res) => {
   try {
-    let voucherRecord = await Voucher.find()
     let getAllPaymentsRecords = await Payment.find().populate(
       {
         path: 'voucher_id',
@@ -101,7 +101,19 @@ paymentRouter.get("/getAllPaymentsRecords", async (req, res) => {
           model: 'GYM_SERVICE',
         }]
       },
-    ).exec();
+    ).populate({ 
+      path: 'service_id',
+      populate: [{
+        path: 'branch_id',
+        model: 'GYM_BRANCH'
+      }] 
+   }).populate({ 
+    path: 'copuan_id',
+    model: 'Copuan',
+   }).populate({ 
+    path: 'userID',
+    model: 'User',
+  }).exec();
     if (
       getAllPaymentsRecords.lenght === 0 ||
       getAllPaymentsRecords === undefined ||
@@ -121,6 +133,45 @@ paymentRouter.get("/getAllPaymentsRecords", async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       message: error.message,
+      success: false,
+    });
+  }
+});
+
+paymentRouter.get("/getPaymentByUser/:userId", async (req, res) => {
+  try {
+    let userId = req.params.userId;
+    let payments = await Payment.find({ userId: mongoose.Types.ObjectId(userId)}).populate(
+      {
+        path: 'voucher_id',
+        populate: [{
+          path: 'user_id',
+          model: 'User',
+        }, {
+          path: 'service_id',
+          model: 'GYM_SERVICE',
+        }]
+      },
+    ).exec();
+    if (
+      payments !== undefined &&
+      payments.length !== 0 &&
+      payments !== null
+    ) {
+      return res.status(200).send({
+        payments,
+        messge: "All Payments of user",
+        success: true,
+      });
+    } else {
+      return res.status(200).send({
+        messge: "Payments does not Exist",
+        success: false,
+      });
+    }
+  } catch (error) {
+    return res.status(400).send({
+      messge: "Somethig went wrong",
       success: false,
     });
   }

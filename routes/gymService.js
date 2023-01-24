@@ -18,13 +18,8 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
     console.log('body', req.body);
     // return false;
 
-    const { title, description, price, category, branchesID_Array, demoDate, demoTime, packageDate, packageTime, packageDuration, manager_contact_no, working_hours, coachName, contact_no, delievrables, consultationDate, consultationTime, slotTime, priceOneMonth, priceThreeMonth, priceSixMonth, priceTwelveMonth } = req.body;
+    const { title, description, price, category, branchesID_Array, demoDate, demoTime, packageDate, packageTime, packageDuration, manager_contact_no, manager_name, working_hours, coachName, contact_no, delievrables, consultationDate, consultationTime, slotTime, priceOneMonth, priceTwoMonth, priceThreeMonth, priceSixMonth, priceTwelveMonth } = req.body;
     const image = req?.files?.image?.tempFilePath;
-
-
-
-
-
 
     if (
       title !== undefined &&
@@ -82,20 +77,16 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
                   branch_id,
                   slotTime,
                   // duration: packageDuration
-                  priceOneMonth, priceThreeMonth, priceSixMonth, priceTwelveMonth
+                  priceOneMonth, priceTwoMonth, priceThreeMonth, priceSixMonth, priceTwelveMonth
                 }
               })
 
               let gymServiceData = await GYM_SERVICE.insertMany(Data);
               console.log("🚀 ~ file: gymService.js ~ line 81 ~ gymServiceRouter.post ~ gymServiceData", gymServiceData);
-
-
-
               if (
-
                 manager_contact_no !== null &&
                 manager_contact_no !== "" &&
-                manager_contact_no !== undefined
+                manager_contact_no !== undefined 
               ) {
 
                 let allManagersData = gymServiceData.map((value, index) => {
@@ -103,7 +94,8 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
                   return {
                     service_id: value["_id"],
                     // working_hours,
-                    manager_contact_no
+                    manager_contact_no,
+                    manager_name: manager_name ?? undefined
                   }
                 });
 
@@ -161,7 +153,7 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
                 price,
                 delievrables,
                 slotTime,
-                priceOneMonth, priceThreeMonth, priceSixMonth, priceTwelveMonth
+                priceOneMonth, priceTwoMonth, priceThreeMonth, priceSixMonth, priceTwelveMonth
 
               });
               console.log("🚀 ~ file: gymService.js ~ line 203 ~ gymServiceRouter.post ~ addNewService", addNewService)
@@ -207,7 +199,7 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
                 category,
                 delievrables,
                 slotTime,
-                priceOneMonth, priceThreeMonth, priceSixMonth, priceTwelveMonth
+                priceOneMonth, priceTwoMonth, priceThreeMonth, priceSixMonth, priceTwelveMonth
               });
               console.log("🚀 ~ file: gymService.js ~ line 249 ~ gymServiceRouter.post ~ service In Academy", service)
 
@@ -222,9 +214,9 @@ gymServiceRouter.post("/addGymSevice", async (req, res) => {
                 contact_no !== null &&
                 contact_no !== undefined
               ) {
-                let newCoach = await Coach.create({
-                  name: coachName,
-                  contact_no,
+                let newCoach = await Manager.create({
+                  manager_contact_no: contact_no,
+                  manager_name: coachName ?? undefined,
                   service_id: id
                 });
                 console.log("🚀 ~ file: gymService.js ~ line 267 ~ gymServiceRouter.post ~ newCoach In Academy", newCoach)
@@ -289,7 +281,7 @@ gymServiceRouter.put("/updateGymSevice", async (req, res) => {
     const image = req?.files?.image?.tempFilePath;
     // const { id, title, description, price, category, branch_id } = req.body;
 
-    const { id, title, description, category, branch_id, slotTime, priceOneMonth, priceThreeMonth, priceSixMonth, priceTwelveMonth, hiddenImageUrl,manager_contact_no } = req.body;
+    const { id, title, description, category, branch_id, slotTime, priceOneMonth, priceTwoMonth, priceThreeMonth, priceSixMonth, priceTwelveMonth, hiddenImageUrl,manager_contact_no, manager_name, coachName, contact_no} = req.body;
 
     console.log(req.body)
 
@@ -306,16 +298,13 @@ gymServiceRouter.put("/updateGymSevice", async (req, res) => {
       id !== "" &&
       id !== null &&
 
-      branch_id !== undefined &&
-      branch_id !== null &&
-      branch_id !== "" &&
+      // branch_id !== undefined &&
+      // branch_id !== null &&
+      // branch_id !== "" &&
       category !== "" &&
       category !== null &&
       category !== undefined
     ) {
-
-
-
       if (image !== undefined &&
         image !== null &&
         image !== "") {
@@ -349,7 +338,11 @@ gymServiceRouter.put("/updateGymSevice", async (req, res) => {
       }else{
         var priceOneMonths=priceOneMonth;
       }
-
+      if(priceTwoMonth==="null"){
+        var priceTwoMonths="";
+      }else{
+        var priceTwoMonths=priceTwoMonth;
+      }
       if(priceThreeMonth==="null"){
         var priceThreeMonths="";
       }else{
@@ -381,26 +374,26 @@ gymServiceRouter.put("/updateGymSevice", async (req, res) => {
           slotTime,
           branch_id: mongoose.Types.ObjectId(branch_id),
           
-          priceOneMonth:priceOneMonths, priceThreeMonth:priceThreeMonths, priceSixMonth:priceSixMonths, priceTwelveMonth:priceTwelveMonths
+          priceOneMonth:priceOneMonths, priceTwoMonths:priceTwoMonths, priceThreeMonth:priceThreeMonths, priceSixMonth:priceSixMonths, priceTwelveMonth:priceTwelveMonths
         }
         // { title, description, price, image: imageURL, category, branch_id }
       );
-      let updateManger = await Manager.findOneAndUpdate(
+      const managerRecord = {}
+      if((manager_contact_no !== null && manager_contact_no !== '' && manager_contact_no !== undefined) || (contact_no !== undefined && contact_no !== null && contact_no !== '' )) {
+        managerRecord["manager_contact_no"] = manager_contact_no ?? contact_no;
+      }
+      if(manager_name || coachName) {
+        managerRecord["manager_name"] = manager_name ?? coachName;
+      }
+      await Manager.findOneAndUpdate(
         { service_id: id },
-       { manager_contact_no}
-
+       { ...managerRecord }
       )
 
-      
-
-
-      // console.log('updategym', dd)
-
       if (
-        updateGymService.length === 0 ||
-        updateGymService === undefined ||
-        updateGymService === null ||
-        updateGymService === ""
+        updateGymService._doc === undefined ||
+        updateGymService._doc === null ||
+        updateGymService._doc === ""
       ) {
         return res.status(200).json({
           id,
@@ -478,8 +471,14 @@ gymServiceRouter.get("/getAllGymService", async (req, res) => {
     // const singleServiceDetials = await GYM_SERVICE.find({ title: serviceTitle }).populate("branch_id")
 
     let getAllManager = await Manager.find();
-
-
+    for(let gymService of getAllGymService) {
+      if(gymService.delievrables !== null && gymService.delievrables !== undefined && gymService.delievrables !== '') {
+        gymService.delievrables = gymService.delievrables.replace( /(<([^>]+)>)/ig, '');
+      }
+      if(gymService.description !== null && gymService.description !== undefined && gymService.description !== '') {
+        gymService.description = gymService.description.replace( /(<([^>]+)>)/ig, '');
+      }
+    }
     if (
       getAllGymService !== undefined &&
       getAllGymService.length !== 0 &&
@@ -492,54 +491,35 @@ gymServiceRouter.get("/getAllGymService", async (req, res) => {
       const managerdatas = [];
       getAllGymService.map((item, index) => {
         var obj = {};
-
         getAllManager.map((items) => {
           // console.log('mangersrvice',items.service_id[0])
           // console.log('gymservice',item._id)
 
           if (items.service_id[0].equals(item._id)) {
             obj["manager_contact_no"] = items.manager_contact_no
-            // data.push(obj);
+            obj["manager_name"] = items.manager_name
           }
-
         })
+        // obj["manager_contact_no"] = (item.branch_id.length > 0 && item.branch_id[0].manager_Phone_Number) || null
         obj['_id'] = item._id
         obj["title"] = item.title
         obj['bannerImage'] = item.bannerImage
         obj['category'] = item.category
         obj['description'] = item.description
+        obj['delievrables'] = item.delievrables
         obj['image'] = item.image
         obj['priceOneMonth'] = item.priceOneMonth
+        obj['priceTwoMonth'] = item.priceTwoMonth
         obj['priceThreeMonth'] = item.priceThreeMonth
         obj['priceSixMonth'] = item.priceSixMonth
         obj['priceTwelveMonth'] = item.priceTwelveMonth
 
         obj['slotTime'] = item.slotTime
         obj['branch_id'] = item.branch_id
-
-
-
-
-
-
-
-
         data.push(obj);
-
-        // item.concat(mangerdata)
-        // managerdatas.push(mangerdata)
-        // return mangerdata;
-
-
-
-
-
-
       })
 
       console.log('managerdata', data)
-
-
       return res.status(200).send({
         data,
         // getAllManager,
@@ -592,6 +572,44 @@ gymServiceRouter.post("/getBranchDetailsBySerivceName", async (req, res) => {
       success: false
     });
   }
-})
+});
+
+// Get All Duration Prices for Service and branch
+gymServiceRouter.post("/getAllDurationPrices", async (req, res) => {
+  try {
+    const { serviceId } = req.body;
+    let response = [];
+    let result = await GYM_SERVICE.findOne({
+      _id: mongoose.Types.ObjectId(serviceId),
+    });
+    response = [{
+      "duration": 1,
+      "price": result._doc.priceOneMonth ?? 0
+    },{
+      "duration": 2,
+      "price": result._doc.priceTwoMonth ?? 0
+    },{
+      "duration": 3,
+      "price": result._doc.priceThreeMonth ?? 0
+    },{
+      "duration": 6,
+      "price": result._doc.priceSixMonth ?? 0
+    },{
+      "duration": 12,
+      "price": result._doc.priceTwelveMonth ?? 0
+    }];
+    return res.status(200).json({
+      response,
+      message: "Gym Service Duration Price",
+      success: true
+    });
+  } catch (error) {
+    console.log("🚀 ~ file: gymService.js ~ line 234 ~ gymServiceRouter.get ~ error", error)
+    return res.status(500).send({
+      messge: "Somethig went wrong",
+      success: false,
+    });
+  }
+});
 
 module.exports = gymServiceRouter;

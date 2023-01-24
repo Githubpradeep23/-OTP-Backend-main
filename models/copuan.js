@@ -8,6 +8,9 @@ const copuanSchema = new mongoose.Schema({
     discount_percentage: {
         type: Number
     },
+    discount_amount: {
+        type: Number
+    },
     copuanCode: {
         type: String,
         required: true

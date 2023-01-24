@@ -2,7 +2,7 @@ const express = require("express");
 const TrackWeight = require("../models/trackWeight");
 const trackWeightRouter = express.Router();
 const User = require("../models/user");
-
+const mongoose = require('mongoose');
 // Add
 trackWeightRouter.post("/addWeight", async (req, res) => {
   try {
@@ -217,4 +217,49 @@ trackWeightRouter.get("/getAllWeight", async (req, res) => {
   }
 });
 
+trackWeightRouter.get('/getWeightByUser', async (req, res) => {
+  try {
+  const getAllUsers = await User.find();
+  // const today = new Date();
+  // const firstDay = new Date(new Date(today.setDate(today.getDate() - today.getDay())).setHours(0,0,0,0));
+  // const lastDay = new Date(new Date(today.setDate(today.getDate() - today.getDay() + 6)).setHours(0,0,0,0));
+  let getAllRecords = [];
+  for(let user of getAllUsers) {
+    // from: {"$gte": ISODate(firstDay.toString()), "$lte": ISODate(lastDay.toString())}
+    let weight = await TrackWeight.find({ userID: user._id}).sort({createdBy: -1})
+    let updatedWeight = weight.map(w => w._doc);
+    getAllRecords.push({
+      ...user._doc,
+      weights: updatedWeight
+    })
+  }
+  // const getAllRecords = await TrackWeight.find().populate("userID")
+
+  // // console.log('ss',getAllRecords);
+  // // return false;
+  if (
+    getAllRecords !== undefined &&
+    getAllRecords !== "" &&
+    getAllRecords !== null &&
+    getAllRecords.length !== 0
+  ) {
+    return res.status(200).json({
+      getAllRecords,
+      message: "Get All Record Successfully !!!",
+      success: true,
+    });
+  }else {
+    return res.status(200).json({
+      message: "Record Not Found !!!",
+      success: false,
+    });
+  }
+  } catch (error) {
+    return res.status(200).json({
+      message: "Something Went Wrong !!",
+      res:error,
+      success: false,
+    });
+  }
+})
 module.exports = trackWeightRouter;

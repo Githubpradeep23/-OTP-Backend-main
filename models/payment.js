@@ -3,7 +3,9 @@ const { mongoose, Schema } = require("mongoose");
 const paymentSchema = mongoose.Schema({
   voucher_id : [{ type: Schema.Types.ObjectId, ref: 'Voucher' }],
   userID: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-  packageId: [{ type: Schema.Types.ObjectId, ref: 'Package' }],
+  // packageId: [{ type: Schema.Types.ObjectId, ref: 'Package' }],
+  service_id: [{ type: Schema.Types.ObjectId, ref: 'GYM_SERVICE' }],
+  copuan_id: [{ type: Schema.Types.ObjectId, ref: 'Copuan'}],
   orderDetails: {
     type: Object,
     required: true,

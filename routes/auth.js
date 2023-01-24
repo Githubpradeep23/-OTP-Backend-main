@@ -8,7 +8,7 @@ const fs = require("fs");
 const helper = require("../utils/helper");
 const bcrypt = require("bcrypt");
 const FeedBack = require("../models/userFeedBack");
-
+const mongoose = require('mongoose');
 // let OTP, user;
 // authRouter.post("/signup", async (req, res) => {
 //   try {
@@ -191,9 +191,6 @@ authRouter.put("/editUser", async (req, res) => {
       email !== "" &&
       email !== undefined &&
       email !== null &&
-      image !== undefined &&
-      image !== null &&
-      image !== "" &&
       user_Address !== "" &&
       user_Address !== undefined &&
       user_Address !== null &&
@@ -201,26 +198,33 @@ authRouter.put("/editUser", async (req, res) => {
       id !== null &&
       id !== undefined
     ) {
-      let options = {
-        method: "POST",
-        url: "https://api.cloudinary.com/v1_1/bng/image/upload",
-        headers: {
-          "cache-control": "no-cache",
-          "content-type":
-            "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
-        },
-        formData: {
-          file: {
-            value: fs.readFileSync(image),
-            options: { filename: "r.png", contentType: null },
+      let user = await User.findOne({ _id: mongoose.Types.ObjectId(id) });
+      let imageURL = '';
+      if( image !== undefined && image !== null && image !== "") {
+        let options = {
+          method: "POST",
+          url: "https://api.cloudinary.com/v1_1/bng/image/upload",
+          headers: {
+            "cache-control": "no-cache",
+            "content-type":
+              "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
           },
-          upload_preset: "uploadApi",
-          cloud_name: "bng",
-        },
-      };
-
-      let imageURL = await helper.get(options);
-      console.log("🚀 ~ file: auth.js ~ line 211 ~ authRouter.put ~ imageURL", imageURL)
+          formData: {
+            file: {
+              value: fs.readFileSync(image),
+              options: { filename: "r.png", contentType: null },
+            },
+            upload_preset: "uploadApi",
+            cloud_name: "bng",
+          },
+        };
+  
+        imageURL = await helper.get(options);
+        console.log("🚀 ~ file: auth.js ~ line 211 ~ authRouter.put ~ imageURL", imageURL)
+      }
+      else {
+        imageURL = user._doc.profilePicture;
+      }
       let updateUser = await User.findOneAndUpdate(
         { _id: id },
         {

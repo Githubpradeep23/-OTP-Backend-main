@@ -91,8 +91,10 @@ router.post('/addCoachTest', userController.addCoach)
 
 router.post('/bookingCoach', userController.bookingCoach)
 
-
-
+// ************Coins Api *****************
+router.post('/applyCoin', userController.applyCoin)
+router.post('/removeCoin', userController.removeCoin)
+// ************Coins Api End *************
 
 
 

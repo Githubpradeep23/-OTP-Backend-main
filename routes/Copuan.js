@@ -7,11 +7,11 @@ const CouponJS = require('couponjs');
 // Add Copuan
 copuanRouter.post("/addCopuan", async (req, res) => {
   try {
-    const { copuanTitle, expireAt, discount_percentage, copuanCode } = req.body;
+    const { copuanTitle, expireAt, discount_percentage, copuanCode, discount_amount } = req.body;
 
 
     if (
-      copuanTitle !== null &&
+      (copuanTitle !== null &&
       copuanTitle !== undefined &&
       copuanTitle !== "" &&
       expireAt !== null &&
@@ -21,36 +21,27 @@ copuanRouter.post("/addCopuan", async (req, res) => {
 
       copuanCode !== null &&
       copuanCode !== undefined &&
-      copuanCode !== "" &&
+      copuanCode !== "") &&
 
-      discount_percentage !== null &&
+      ((discount_percentage !== null &&
       discount_percentage !== undefined &&
-      discount_percentage !== ""
+      discount_percentage !== "") || 
+      (discount_amount !== null &&
+        discount_amount !== undefined &&
+        discount_amount !== ""))
     ) {
-      // const coupon = new CouponJS();
-      // const myCoupon = coupon.generate({
-      //   length: 8
-      // });
       let currentTime = Date.now();
       let created = new Date(currentTime);
       
 
       let addCopuanCode = await Copuan.create({
         copuanTitle,
-        discount_percentage,
+        discount_percentage : discount_percentage ?? undefined,
+        discount_amount : discount_amount ?? undefined,
         copuanCode: copuanCode,
         createdAt: created,
         expireAt: expireAt,
       });
-
-      // let copuanCode_id = addCopuanCode["_id"];
-
-      // let notification = await Notification.create({
-      //   user_id,
-      //   copuanCode_id,
-      //   message: "Copuan Aloted Successfully"
-      // });
-      // console.log("🚀 ~ file: Copuan.js ~ line 51 ~ copuanRouter.post ~ notification", notification)
 
       return res.status(200).json({
         addCopuanCode,
@@ -143,11 +134,11 @@ copuanRouter.get("/getAllCopuan", async (req, res) => {
 copuanRouter.put("/updateCopuan", async (req, res) => {
   console.log(req.body)
   try {
-    const { copuanTitle, expireAt, discount_percentage, id, copuanCode } = req.body;
+    const { copuanTitle, expireAt, discount_percentage, id, copuanCode, discount_amount } = req.body;
 
-   
+    console.log({copuanTitle, expireAt, discount_percentage, id, copuanCode, discount_amount});
     if (
-      id !== null &&
+      (id !== null &&
       id !== undefined &&
       id !== "" &&
       copuanTitle !== null &&
@@ -156,15 +147,15 @@ copuanRouter.put("/updateCopuan", async (req, res) => {
       expireAt !== null &&
       expireAt !== undefined &&
       expireAt !== "" &&
-
-
       copuanCode !== null &&
       copuanCode !== undefined &&
-      copuanCode !== "" &&
-
-      discount_percentage !== null &&
-      discount_percentage !== undefined &&
-      discount_percentage !== ""
+      copuanCode !== "") &&
+      ((discount_percentage !== null &&
+        discount_percentage !== undefined &&
+        discount_percentage !== "") || 
+        (discount_amount !== null &&
+          discount_amount !== undefined &&
+          discount_amount !== ""))
     ) {
       let currentTime = Date.now();
 
@@ -174,7 +165,8 @@ copuanRouter.put("/updateCopuan", async (req, res) => {
         { _id: id },
         {
           copuanTitle,
-          discount_percentage,
+          discount_percentage: discount_percentage ?? undefined,
+          discount_amount: discount_amount ?? undefined,
           copuanCode,
           updatedAt: updatedAt,
           expireAt
@@ -211,6 +203,102 @@ copuanRouter.put("/updateCopuan", async (req, res) => {
   }
 });
 
+// Apply Coupon
+copuanRouter.post("/applyCoupon", async (req, res) => {
+  try {
+    const { id, amount } = req.body;
+    if (
+      id !== undefined &&
+      id !== "" &&
+      id !== null &&
+      amount !== undefined &&
+      amount !== null &&
+      amount !== ""
+    ) {
+      console.log("id, amount", id, amount);
+      let checkCoupon = await Copuan.findById({ _id: id });
+      if (checkCoupon !== null && checkCoupon !== undefined) {
+        let discount_percentage = checkCoupon["discount_percentage"];
+        let discount_amount = checkCoupon["discount_amount"];
+        if(discount_percentage !== null && discount_percentage !== undefined && discount_percentage !== '') {
+          let discountedAmount = (amount * discount_percentage / 100);
+          let remainingAmount = amount - discountedAmount;
+          return res.status(200).json({
+            message: "Coupon applied successfully",
+            success: true,
+            data: {
+                originalAmount: amount,
+                remainingAmount,
+                discount: discountedAmount
+            }
+          });
+        } else {
+          let discountedAmount = discount_amount;
+          let remainingAmount = amount - discountedAmount;
+          return res.status(200).json({
+            message: "Coupon applied successfully",
+            success: true,
+            data: {
+                originalAmount: amount,
+                remainingAmount,
+                discount: discountedAmount
+            }
+          });
+        }
+      } else {
+        return res.status(200).json({
+          id,
+          message: "Coupon Not Found !!!",
+          success: false,
+        });
+      }
+    }else {
+        return res.status(400).json({
+          message: "Empty Field found",
+          success: false,
+        });
+      }
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+      success: false,
+    });
+  }
+});
 
+// Remove Coupon
+copuanRouter.post("/removeCoupon", async (req, res) => {
+  try {
+    const { id, amount, discount } = req.body;
+    if (
+      id !== undefined &&
+      id !== "" &&
+      id !== null &&
+      amount !== undefined &&
+      amount !== null &&
+      amount !== ""
+    ) {
+      console.log("id, amount", id, amount);
+        let originalAmount = amount + discount;
+        return res.status(200).json({
+          message: "Coupon applied successfully",
+          success: true,
+          data: {
+              originalAmount,
+          }
+        });
+    }else {
+        return res.status(400).json({
+          message: "Empty Field found",
+          success: false,
+        });
+      }
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+      success: false,
+    });
+  }
+});
 
 module.exports = copuanRouter;

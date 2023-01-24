@@ -8,6 +8,9 @@ const managerSchema = new mongoose.Schema({
     working_hours: {
         type: String,
     },
+    manager_name: {
+        type: String,
+    },
     service_id: [{ type: Schema.Types.ObjectId, ref: 'GYM_SERVICE' }],
     createdAt: {
         type: Date,

@@ -25,7 +25,7 @@ const Notification = require("../models/notification");
 const PushNotification = require("../models/pushNotification");
 
 const COMPLAIN = require("../models/complains");
-
+const Manager = require("../models/manager");
 
 
 const jwt = require("jsonwebtoken");
@@ -688,41 +688,24 @@ const getUserProfile = async (req, res) => {
 }
 const updateUserProfile = async (req, res) => {
     try {
-        const { userID, firstName, lastName, DOB, gender, number, email } = req.body;
+        const { userID, firstName, lastName, DOB, gender, number, email, user_Address, city , state,
+            country, postal_code } = req.body;
         let image = req?.files?.profilePicture?.tempFilePath;
 
         console.log('image', image)
-
+        
         if (!userID) {
             return res.status(200)
                 .json([{ msg: "User ID is required", res: "error", }]);
         }
-
-        // if (!firstName) {
-        //     return res.status(200)
-        //         .json([{ msg: "firstName is required", res: "error", }]);
-        // }
-        // if (!lastName) {
-        //     return res.status(200)
-        //         .json([{ msg: "lastName is required", res: "error", }]);
-        // }
-        // if (!DOB) {
-        //     return res.status(200)
-        //         .json([{ msg: "DOB is required", res: "error", }]);
-        // }
-        // if (!gender) {
-        //     return res.status(200)
-        //         .json([{ msg: "gender is required", res: "error", }]);
-        // }
-        // if (!number) {
-        //     return res.status(200)
-        //         .json([{ msg: "number is required", res: "error", }]);
-        // }
-        // if (!email) {
-        //     return res.status(200)
-        //         .json([{ msg: "email is required", res: "error", }]);
-        // }
-
+        const profile = {}
+        const user = await User.findOne({ _id: userID });
+        if(firstName !== null && firstName !== undefined && firstName !== '') { profile.firstName = firstName }
+        if(lastName !== null && lastName !== undefined && lastName !== '') { profile.lastName = lastName }
+        if(DOB !== null && DOB !== undefined && DOB !== '') { profile.DOB = DOB }
+        if(gender !== null && gender !== undefined && gender !== '') { profile.gender = gender }
+        if(email !== null && email !== undefined && email !== '') { profile.email = gender }
+        profile.number = number !== null && number !== undefined && number !== '' ? number : user.number;
 
         if (image !== "" &&
             image !== undefined &&
@@ -751,31 +734,23 @@ const updateUserProfile = async (req, res) => {
             console.log('yes')
 
         } else {
-
-            var dataimage = await User.findOne({ _id: userID })
-            var imageURL = dataimage.profilePicture
+            var imageURL = user.profilePicture
 
             console.log('no')
         }
 
 
         console.log('imageurl', imageURL)
-
-
-
-
+        profile.profilePicture = imageURL;
+        if(user_Address !== null && user_Address !== undefined && user_Address !== '') { profile.user_Address = user_Address}
+        if(city !== null && city !== undefined && city !== '') { profile.city = city}
+        if(state !== null && state !== undefined && state !== '') { profile.state = state}
+        if(country !== null && country !== undefined && country !== '') { profile.country = country}
+        if(postal_code !== null && postal_code !== undefined && postal_code !== '') { profile.postal_code = postal_code}
 
         let updateUser = await User.findOneAndUpdate(
             { _id: userID },
-            {
-                firstName,
-                lastName,
-                DOB,
-                gender,
-                number,
-                email,
-                profilePicture: imageURL,
-            }
+            profile
         );
 
         if (
@@ -808,120 +783,31 @@ const branchDetailsBySerivceName = async (req, res) => {
                 .json([{ msg: "Service Title is required", res: "error", }]);
 
         }
-        // *****************Collection Relation QUERY Start************
-
-        // const data = await demoBooking.aggregate([
-        //     {
-        //         $match: {
-        //             "title": serviceTitle
-        //         }
-        //     },
-
-        //     {
-        //         $lookup: {
-        //             from: 'users', localField: 'user_id',
-        //             foreignField: '_id', as: 'userData'
-        //         }
-        //     },
-
-        //     {
-        //         $lookup: {
-        //             from: 'gym_services', localField: 'service_id',
-        //             foreignField: '_id', as: 'serviceData'
-        //         }
-        //     },
-        // ]).exec((err, result) => {
-        //     if (err) {
-        //         console.log("error", err)
-        //         return res.status(200)
-        //             .json([{ msg: err.message, res: "error" }]);
-        //     }
-        //     if (result) {
-        //         if (result === null || result === undefined || result === "" || result.length === 0) {
-
-        //             return res.status(200)
-        //                 .json([{ msg: "Service Not found", res: "error" }]);
-        //         } else {
-
-        //             return res.status(200)
-        //                 .json([{ msg: "Service Details Data", data: result, res: "success" }]);
-        //         }
+        const singleServiceDetials = await GYM_SERVICE.find({ title: serviceTitle }).populate("branch_id");
+        // const updatedService = singleServiceDetials.map(async (item) => {
+        //     let getManagerByService = await Manager.findOne({service_id: mongoose.Types.ObjectId(item._id)});
+        //     return {
+        //         ...item,
+        //         manager_contact_no: getManagerByService.manager_contact_no,
+        //         manager_name: getManagerByService.manager_name
         //     }
         // });
-
-        // *****************Collection Relation QUERY End****************
-
-
-
-
-        const singleServiceDetials = await GYM_SERVICE.find({ title: serviceTitle }).populate("branch_id")
-        // var datats=[];
-        // console.log()
-        // singleServiceDetials.map((item)=>{
-        //     // push (datats,item.title)
-        //     var obj = {};
-        //     obj['serviceId']=item._id
-        //     obj["title"]=item.title
-        //     obj["description"]=item.description
-        //     obj["bannerImage"]=item.bannerImage
-        //     obj["category"]=item.category
-        //     obj["price"]=item.price
-        //     obj["duration"]=item.duration!=undefined?item.duration:''
-
-
-        //     // 6320350963e172a6eea28c15
-
-
-
-
-        //     // datats.push(obj)
-        //     item.branch_id.map((branch)=>{
-        //         // push (datats,item.title)
-        //         // datats.push(branch.managerName)
-        //     // var obj = {};
-
-        //     obj["MangerName"]=branch.managerName
-        //     obj["manager_Phone_Number"]=branch.manager_Phone_Number
-        //     obj["branchName"]=branch.branchName
-        //     obj["branchCode"]=branch.branchCode
-        //     obj["branchCity"]=branch.branchCity
-        //     obj["branchPhoneNumber"]=branch.branchPhoneNumber
-        //     obj["opening_branchTiming"]=branch.opening_branchTiming
-        //     obj["closing_branchTiming"]=branch.closing_branchTiming
-        //     obj["location"]=branch.location
-        //     obj["image"]=branch.image
-
-
-
-
-
-        //     // manager_Phone_Number
-
-        //         // console.log(branch);
-
-        //     })
-        //     datats.push(obj)
-
-        // })
-
-        // console.log(datats);
-
-        //         const traverse = singleServiceDetials => 
-        //   (singleServiceDetials?[]:[[singleServiceDetials.item]]).concat(...singleServiceDetials.branch_id.map(child => 
-        //      traverse(child).map(arr => 
-        //          [singleServiceDetials.item].concat(arr)
-        //       )
-        //   ));
-
-        //   console.log(traverse(singleServiceDetials))
-
-        if (singleServiceDetials === null || singleServiceDetials === undefined || singleServiceDetials === "" || singleServiceDetials.length === 0) {
+        let updatedService = [];
+        for(let item of singleServiceDetials) {
+            let getManagerByService = await Manager.findOne({service_id: mongoose.Types.ObjectId(item._id)});
+            updatedService.push({
+                ...item._doc,
+                manager_contact_no: getManagerByService.manager_contact_no,
+                manager_name: getManagerByService.manager_name
+            })
+        }
+        if (updatedService === null || updatedService === undefined || updatedService === "" || updatedService.length === 0) {
             return res.status(200)
                 .json([{ msg: "Service Not found", res: "error", }]);
         } else {
 
             return res.status(200)
-                .json([{ msg: "Service Details Data", data: singleServiceDetials, res: "success" }]);
+                .json([{ msg: "Service Details Data", data: updatedService, res: "success" }]);
         }
 
     }
@@ -935,7 +821,8 @@ const branchDetailsBySerivceName = async (req, res) => {
 const addPersonalInfo = async (req, res) => {
     try {
 
-        const { heightInFit, heightInINCH, previous_injury, health_Detials, weight, userID, DOB, age } = req.body;
+        const { heightInFit, heightInINCH, previous_injury, health_Detials, weight, userID, DOB, age, user_Address, city , state,
+        country, postal_code } = req.body;
         if (!userID) {
             return res.status(200)
                 .json([{ msg: "User ID is required", res: "error", }]);
@@ -1046,7 +933,7 @@ const UserActivityAndRecords = async (req, res) => {
 const bookingDemoByUser = async (req, res) => {
     try {
 
-        const { category, service_id, userID, Date, TimeSlot } = req.body;
+        const { category, service_id, userID, Date, TimeSlot, demo_status } = req.body;
         if (!userID) {
             return res.status(200)
                 .json([{ msg: "userID is required", res: "error", }]);
@@ -1082,14 +969,13 @@ const bookingDemoByUser = async (req, res) => {
             category,
             Date,
             TimeSlot,
-
+            demo_status
         });
         return res.status(200).json([{
             message: "You have booked demo Successfully!!",
             data: demodata,
             success: true
         }]);
-
     }
     catch (err) {
         return res.status(200)
@@ -1171,17 +1057,15 @@ const paymentBuyUser = async (req, res) => {
 
     // key secrate:CvIX87XzyJbtsZ7CaekLkPat
     try {
-
-
-        const { packageId, orderDetails, userID,duration,price } = req.body;
+        const { service_id, orderDetails, userID,duration,price, copuan_id } = req.body;
         if (!userID) {
             return res.status(200)
                 .json([{ msg: "userID is required", res: "error", }]);
         }
 
-        if (!packageId) {
+        if (!service_id) {
             return res.status(200)
-                .json([{ msg: "packageId is required", res: "error", }]);
+                .json([{ msg: "service_id is required", res: "error", }]);
         }
 
         if (!duration) {
@@ -1198,44 +1082,44 @@ const paymentBuyUser = async (req, res) => {
                 .json([{ msg: "orderDetails is required", res: "error", }]);
         }
 
-
-        let bookPackagedata = await bookPackage.findOneAndUpdate(
-            { _id: mongoose.Types.ObjectId(packageId), user_id: mongoose.Types.ObjectId(userID) },
-            {
-                package_status: true
-            }
-        );
+        let gymServiceData = await GYM_SERVICE.findOne({
+            _id: mongoose.Types.ObjectId(service_id)
+        })
+        // let bookPackagedata = await bookPackage.findOneAndUpdate(
+        //     { _id: mongoose.Types.ObjectId(packageId), user_id: mongoose.Types.ObjectId(userID) },
+        //     {
+        //         package_status: true
+        //     }
+        // );
 
         // console.log('boosk',bookPackagedata)
 
         if (
-            bookPackagedata === undefined ||
-            bookPackagedata === null ||
-            bookPackagedata === "" ||
-            bookPackagedata.length === 0
-
+            gymServiceData === undefined ||
+            gymServiceData === null ||
+            gymServiceData === ""
         ) {
             return res.status(200)
-                .json([{ msg: "Booking Package not found!!!", res: "error", }]);
+                .json([{ msg: "Gym Service not found!!!", res: "error", }]);
 
         } else {
-
-            const paymentData = await PAYMENT.create({
+            let paymentObj = {
                 userID,
-                packageId,
+                service_id,
                 orderDetails,
                 duration,
                 price
-
-            });
+            }
+            if(copuan_id !== null && copuan_id !== undefined && copuan_id !== '') {
+                paymentObj['copuan_id'] = copuan_id;
+            }
+            const paymentData = await PAYMENT.create(paymentObj);
             return res.status(200).json([{
                 message: "Pyament data has been stored successfully!!",
                 data: paymentData,
                 success: true
             }]);
         }
-
-
     } catch (err) {
         return res.status(200)
             .json([{ msg: err.message, res: "error" }]);
@@ -1741,68 +1625,38 @@ const allUserComplains = async (req, res) => {
 
 //GetBranch Detials by Service Name
 const serviceSlottimeById = async (req, res) => {
-
     try {
-
         const { barcnchID } = req.body;
         if (!barcnchID) {
             return res.status(200)
                 .json([{ msg: "barcnchID is required", res: "error" }]);
         }
-
-
-
-        const singleServiceDetials = await GYM_SERVICE.find({ _id: mongoose.Types.ObjectId(barcnchID) }).populate("branch_id")
-
-
-
-
+        const singleServiceDetials = await GYM_SERVICE.find({ branch_id: mongoose.Types.ObjectId(barcnchID) });
         if (singleServiceDetials === null || singleServiceDetials === undefined || singleServiceDetials === "" || singleServiceDetials.length === 0) {
             return res.status(200)
                 .json([{ msg: "Time slot Not found", res: "error", }]);
         } else {
             const data = [];
-
-            // if(singleServiceDetials[0].slotTime)
             if (singleServiceDetials[0].slotTime === undefined) {
                 return res.status(200)
                     .json([{ msg: "Time slot Not found", res: "error", }]);
 
             }
-
-            // }else{
-
             const arrayTime = singleServiceDetials[0].slotTime.split(',');
 
             arrayTime.map((item) => {
                 var obj = {};
-
                 obj["time"] = item
                 data.push(obj);
-
             })
-
-            // }
-
             return res.status(200)
                 .json([{ msg: "Slot Time Data ", time: data, res: "success", }]);
-
-            // console.log(singleServiceDetials[0].slotTime)
-
-
-
-
-
-            // console.log(array[0])
-
         }
-
     }
     catch (err) {
         return res.status(200)
             .json([{ msg: err.message, res: "error" }]);
     }
-
 }
 
 const GymBranchesByServiceName = async (req, res) => {
@@ -2185,5 +2039,108 @@ const updatePushNotificationData=async(req,res)=>{
 
 }
 
+const applyCoin =async (req, res) => {
+    try {
+      const { id, coin, amount } = req.body;
+      if (
+        id !== undefined &&
+        id !== "" &&
+        id !== null &&
+        coin !== undefined &&
+        coin !== null &&
+        coin !== ""
+      ) {
+        console.log("id,coin", id, coin);
+        let checkUser = await User.findById({ _id: id });
+        if (checkUser !== null && checkUser !== undefined) {
+          let currentCoins = checkUser["coin"];
+          if(coin > currentCoins) {
+            return res.status(400).json({
+                message: "Coin Balance is low",
+                success: false,
+              });
+          }
+          await User.findOneAndUpdate(
+            { _id: id },
+            { coin: currentCoins - coin }
+          );
+          const updatedAmount = amount - (coin/10);
+          return res.status(200).json({
+            message: "Coins Deducted successfully",
+            success: true,
+            data: {
+                updatedAmount,
+                coinBalance: currentCoins - coin
+            }
+          });
+        } else {
+          return res.status(200).json({
+            id,
+            message: "User Not Found !!!",
+            success: false,
+          });
+        }
+      } else {
+        return res.status(200).json({
+          message: "Empty Field found",
+          success: false,
+        });
+      }
+    } catch (error) {
+      return res.status(400).json({
+        message: "Something went wrong ",
+        success: false,
+      });
+    }
+  };
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach, registerUser,getUserOrderList,updatePushNotificationToken,getPushNotificationData,updatePushNotificationData,getUserActiveOrderList,allUserComplains,createUserComplain };
+  const removeCoin =async (req, res) => {
+    try {
+      const { id, coin, amount } = req.body;
+      if (
+        id !== undefined &&
+        id !== "" &&
+        id !== null &&
+        coin !== undefined &&
+        coin !== null &&
+        coin !== ""
+      ) {
+        console.log("id,coin", id, coin);
+        let checkUser = await User.findById({ _id: id });
+        if (checkUser !== null && checkUser !== undefined) {
+          let currentCoins = checkUser["coin"];
+          await User.findOneAndUpdate(
+            { _id: id },
+            { coin: currentCoins + coin }
+          );
+          const updatedAmount = amount + (coin/10);
+          return res.status(200).json({
+            message: "Coins Added Back successfully",
+            success: true,
+            data: {
+                updatedAmount,
+                coinBalance: currentCoins + coin
+            }
+          });
+        } else {
+          return res.status(200).json({
+            id,
+            message: "User Not Found !!!",
+            success: false,
+          });
+        }
+      } else {
+        return res.status(200).json({
+          message: "Empty Field found",
+          success: false,
+        });
+      }
+    } catch (error) {
+      return res.status(400).json({
+        message: "Something went wrong ",
+        success: false,
+      });
+    }
+  };
+
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach, registerUser,getUserOrderList,updatePushNotificationToken,getPushNotificationData,updatePushNotificationData,getUserActiveOrderList,allUserComplains,createUserComplain, applyCoin, removeCoin };
