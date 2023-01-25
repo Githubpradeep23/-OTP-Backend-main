@@ -795,11 +795,17 @@ const branchDetailsBySerivceName = async (req, res) => {
         let updatedService = [];
         for(let item of singleServiceDetials) {
             let getManagerByService = await Manager.findOne({service_id: mongoose.Types.ObjectId(item._id)});
-            updatedService.push({
-                ...item._doc,
-                manager_contact_no: getManagerByService.manager_contact_no,
-                manager_name: getManagerByService.manager_name
-            })
+            if(getManagerByService !== null && getManagerByService !== undefined && getManagerByService !== '') {
+                updatedService.push({
+                    ...item._doc,
+                    manager_contact_no: getManagerByService.manager_contact_no,
+                    manager_name: getManagerByService.manager_name
+                })
+            } else {
+                updatedService.push({
+                    ...item._doc
+                })
+            }
         }
         if (updatedService === null || updatedService === undefined || updatedService === "" || updatedService.length === 0) {
             return res.status(200)
