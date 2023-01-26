@@ -704,7 +704,7 @@ const updateUserProfile = async (req, res) => {
         if(lastName !== null && lastName !== undefined && lastName !== '') { profile.lastName = lastName }
         if(DOB !== null && DOB !== undefined && DOB !== '') { profile.DOB = DOB }
         if(gender !== null && gender !== undefined && gender !== '') { profile.gender = gender }
-        if(email !== null && email !== undefined && email !== '') { profile.email = gender }
+        if(email !== null && email !== undefined && email !== '') { profile.email = email }
         profile.number = number !== null && number !== undefined && number !== '' ? number : user.number;
 
         if (image !== "" &&
