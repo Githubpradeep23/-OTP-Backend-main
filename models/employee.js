@@ -3,6 +3,7 @@ const employeeSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
+      required: true
     },
     lastName: {
       type: String,
@@ -19,9 +20,10 @@ const employeeSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      default: null
+      default: null,
+      required: true
     },
-    employee_Address: {
+    employee_address: {
       type: String,
       default: null
     },
@@ -47,6 +49,10 @@ const employeeSchema = new mongoose.Schema(
     status: {
       type: Boolean,
       default: true
+    },
+    password: {
+      type: String,
+      required: false
     },
     createdAt:{
         type:Date,
