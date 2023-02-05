@@ -40,7 +40,8 @@ router.post('/updatePushNotificationData',  userController.updatePushNotificatio
 // ****************Account Page Api start*****************
 router.post('/getUserProfile',  userController.getUserProfile)
 router.post('/updateUserProfile',  userController.updateUserProfile)
-
+router.post('/addTempUser', userController.addTempUser);
+router.get('/getUsers/:type', userController.getUserByType);
 // ****************Account Page Api end*******************
 
 // ****************Fitness Page Api start*****************

@@ -257,7 +257,7 @@ adminRouter.get("/getAllUsers", async (req, res) => {
 // Add User
 adminRouter.post("/addNewUser", async (req, res) => {
   try {
-    const { firstName, lastName, number, coin, email, postal_code, user_Address, gender, DOB } = req.body;
+    const { firstName, lastName, number, coin, email, postal_code, user_Address, gender, DOB, userType } = req.body;
     const image = req?.files?.image?.tempFilePath;
     if (
       firstName !== "" &&
@@ -328,7 +328,8 @@ adminRouter.post("/addNewUser", async (req, res) => {
           user_Address,
           postal_code,
           coin,
-          profilePicture: imageURL
+          profilePicture: imageURL,
+          userType: userType ?? "TEMPORARY"
         });
         return res.status(200).json({
           user,

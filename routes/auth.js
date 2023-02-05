@@ -163,7 +163,7 @@ const mongoose = require('mongoose');
 
 authRouter.put("/editUser", async (req, res) => {
   try {
-    const { firstName, lastName, number, email, user_Address, postal_code, coin, id, DOB, gender } =
+    const { firstName, lastName, number, email, user_Address, postal_code, coin, id, DOB, gender, userType } =
       req.body;
     let image = req?.files?.profilePicture?.tempFilePath;
     if (
@@ -225,12 +225,16 @@ authRouter.put("/editUser", async (req, res) => {
       else {
         imageURL = user._doc.profilePicture;
       }
+      let profile = {
+        firstName, lastName, number, email, user_Address, postal_code, coin, DOB, gender,
+        profilePicture: imageURL,
+      };
+      if(userType) {
+        profile.userType = userType;
+      }
       let updateUser = await User.findOneAndUpdate(
         { _id: id },
-        {
-          firstName, lastName, number, email, user_Address, postal_code, coin, DOB, gender,
-          profilePicture: imageURL,
-        }
+        profile
       );
       console.log(
         "🚀 ~ file: auth.js ~ line 181 ~ authRouter.put ~ updateUser",

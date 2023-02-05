@@ -689,7 +689,7 @@ const getUserProfile = async (req, res) => {
 const updateUserProfile = async (req, res) => {
     try {
         const { userID, firstName, lastName, DOB, gender, number, email, user_Address, city , state,
-            country, postal_code } = req.body;
+            country, postal_code, userType } = req.body;
         let image = req?.files?.profilePicture?.tempFilePath;
 
         console.log('image', image)
@@ -747,7 +747,7 @@ const updateUserProfile = async (req, res) => {
         if(state !== null && state !== undefined && state !== '') { profile.state = state}
         if(country !== null && country !== undefined && country !== '') { profile.country = country}
         if(postal_code !== null && postal_code !== undefined && postal_code !== '') { profile.postal_code = postal_code}
-
+        if(userType !== null && userType !== '' && userType !== undefined) { profile.userType = userType }
         let updateUser = await User.findOneAndUpdate(
             { _id: userID },
             profile
@@ -2149,4 +2149,54 @@ const applyCoin =async (req, res) => {
     }
   };
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach, registerUser,getUserOrderList,updatePushNotificationToken,getPushNotificationData,updatePushNotificationData,getUserActiveOrderList,allUserComplains,createUserComplain, applyCoin, removeCoin };
+const addTempUser = async (req, res) => {
+    try {
+        const { firstName, lastName, number, email } = req.body;
+        let user = await User.create({
+            firstName,
+            lastName,
+            number,
+            email,
+            userType: "TEMPORARY"
+          });
+          return res.status(200).json({
+            user,
+            message: "Temporary User added Successfully",
+            success: true,
+          });
+    } catch (error) {
+        return res.status(400).json({
+          message: "Something went wrong ",
+          success: false,
+        });
+      }
+};
+
+const getUserByType = async (req, res) => {
+    try {
+        const type = req.params['type'];
+        if(type === null || type === undefined || type === '' ) {
+            return res.status(400).json({
+                message: "Type is missing in params",
+                success: false,
+              });
+        }
+        let users = await User.find({
+            userType: type
+        });
+        return res.status(200).json({
+            users,
+            count: users.length,
+            message: "Temporary User added Successfully",
+            success: true,
+        });
+    } catch (error) {
+        return res.status(400).json({
+          message: "Something went wrong ",
+          success: false,
+        });
+      }
+};
+
+module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach, registerUser,getUserOrderList,updatePushNotificationToken,getPushNotificationData,updatePushNotificationData,getUserActiveOrderList,allUserComplains,createUserComplain, applyCoin, removeCoin
+    ,addTempUser, getUserByType };

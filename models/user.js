@@ -93,7 +93,12 @@ const userSchema = new mongoose.Schema(
     country: {
       type: String,
       default: null
-    }
+    },
+    userType: {
+      type: String,
+      enum : ['TEMPORARY','PERMANENT'],
+      default: 'TEMPORARY'
+    },
   },
   { versionKey: false }
 );
