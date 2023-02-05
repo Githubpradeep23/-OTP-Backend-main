@@ -7,7 +7,8 @@ router.post('/submit', followUpController.submit);
 router.delete('/delete', followUpController.deleteTodo);
 router.get('/', followUpController.getAll);
 // Renewal Reminder
-router.post('/submitReminder', followUpController.submit);
-router.delete('/deleteReminder', followUpController.deleteTodo);
-router.get('/', followUpController.getAll);
+// router.post('/submitReminder', followUpController.submit);
+// router.delete('/deleteReminder', followUpController.deleteTodo);
+// router.get('/', followUpController.getAll);
+
 module.exports = router;
