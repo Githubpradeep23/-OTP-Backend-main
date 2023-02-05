@@ -6,18 +6,18 @@ const mongoose = require('mongoose');
 //Add Complain
 complainRouter.post("/addComplain", async (req, res) => {
   try {
-    const { id, message } = req.body;
+    const { query, userID } = req.body;
     if (
-      id !== "" &&
-      id !== undefined &&
-      id !== null &&
-      message !== "" &&
-      message !== undefined &&
-      message !== null
+      userID !== "" &&
+      userID !== undefined &&
+      userID !== null &&
+      query !== "" &&
+      query !== undefined &&
+      query !== null
     ) {
       let newComplain = await Complain.create({
-        id,
-        complainMessage: message,
+        user_id: userID,
+        complain: query,
         status: false
       });
       return res.status(200).json({
