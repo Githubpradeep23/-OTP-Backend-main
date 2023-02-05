@@ -658,7 +658,7 @@ adminRouter.get("/getAllUserBookingDemo", async (req, res) => {
         path: 'branch_id',
         model: 'GYM_BRANCH'
       }] 
-   }).exec();
+   }).populate('user_id').exec();
     if (
       getAllDemosBookings.lenght === 0 ||
       getAllDemosBookings === undefined ||
