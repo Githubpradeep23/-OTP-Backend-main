@@ -1,22 +1,26 @@
 const mongoose = require("mongoose");
 
 const reminderSchema = new mongoose.Schema({
-    dob: { type: Date, default: null },
-    gender: {
-        type: String,
-        default: null,
-        required: true
-    },
+    activeTo: { type: Date, default: null },
+    activeFrom: { type: Date, default: null },
     timeSlot: {
         type: String,
         required: true
     },
-    reminderCall: {
-        type: String,
+    followUpCall: {
+        type: Boolean,
         required: false
     },
-    demo: {
-        type: String,
+    reminderSMS: {
+        type: Boolean,
+        required: false
+    },
+    done: {
+        type: Boolean,
+        required: false
+    },
+    notDone: {
+        type: Boolean,
         required: false
     },
     remarks:{

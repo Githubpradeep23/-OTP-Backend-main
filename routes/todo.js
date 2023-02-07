@@ -1,14 +1,15 @@
 const mongoose = require('mongoose');
 const express = require("express");
 const followUpController = require('../controllers/todo/followUpController');
+const reminderController = require('../controllers/todo/reminderController');
 const router = express.Router();
 
 router.post('/submit', followUpController.submit);
 router.delete('/delete', followUpController.deleteTodo);
-router.get('/', followUpController.getAll);
+router.get('/followUp', followUpController.getAll);
 // Renewal Reminder
-// router.post('/submitReminder', followUpController.submit);
-// router.delete('/deleteReminder', followUpController.deleteTodo);
-// router.get('/', followUpController.getAll);
+router.post('/submitReminder', reminderController.submit);
+router.delete('/deleteReminder', reminderController.deleteReminder);
+router.get('/reminder', reminderController.getAll);
 
 module.exports = router;

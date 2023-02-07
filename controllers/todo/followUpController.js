@@ -42,12 +42,12 @@ const submit = async (req, res) => {
                 let followUpResponse = await followup.create(followupModel);
                 return res.status(200).json({
                   followUp: followUpResponse,
-                  message: "Added New Employee Successfully",
+                  message: "Added New FollowUp Successfully",
                   success: true,
                 });
             } else {
             return res.status(422).json({
-                message: "Empty Fields found. Either firstName, lastName, gender, email, image, number and role missing.",
+                message: "Empty Fields found. Either gender, timeSlot, type, gymService and userId missing.",
                 success: false,
             });
         }
