@@ -124,4 +124,31 @@ const getAll = async (req, res) => {
       }
 }
 
-module.exports = { submit, deleteTodo, getAll };
+const getAllByType = async (req, res) => {
+  try {
+      const type = req.params['type'];
+      let followUps = await followup.find({ type }).populate('gymService').populate('userId').exec();
+      if (
+          followUps !== undefined &&
+          followUps.length !== 0 &&
+          followUps !== null
+      ) {
+        return res.status(200).send({
+          followUps ,
+          messge: "All FollowUps",
+          success: true,
+        });
+      } else {
+        return res.status(200).send({
+          messge: "FollowUp does not exist",
+          success: false,
+        });
+      }
+    } catch (error) {
+      return res.status(400).send({
+        messge: "Somethig went wrong",
+        success: false,
+      });
+    }
+}
+module.exports = { submit, deleteTodo, getAll, getAllByType };

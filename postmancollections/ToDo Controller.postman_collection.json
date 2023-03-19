@@ -1,0 +1,272 @@
+{
+	"info": {
+		"_postman_id": "55070ee4-a901-41e7-91d8-db6e09fae1bd",
+		"name": "ToDo Controller",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Subit Ticket complaint",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"clientNumber\": \"6685666699\",\n    \"complaintDetails\": \"adssdjdhssdkjdsdakdndjdshdkhdfskdskdhkdskhdskdhjkdahdkhjdsfdfjkdfsjkdkdkdkdkdakddkjsddsfd\",\n    \"supportEmployee\": \"63d65dd41983b4bb7dd5f075\",\n    \"gymService\": \"63cd2021f56a148217f88354\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/todo/ticketComplaints",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"todo",
+						"ticketComplaints"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Submit Balance Reminder",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"timeSlot\": \"19:00\",\n    \"gymService\": \"63cd2021f56a148217f88354\",\n    \"userId\": \"6341e57c96e6e5dddb035bad\",\n    \"totalFees\": 3000,\n    \"demo\": true,\n    \"balancePaid\": false,\n    \"balance\": 1200\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/todo/balanceReminder",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"todo",
+						"balanceReminder"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Subit Absent Reminder",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"timeSlot\": \"19:00\",\n    \"followUpCall\":  true,\n    \"reminderSMS\": true,\n    \"remarks\": \"You were absent in your timeslot\",\n    \"gymService\": \"63cd2021f56a148217f88354\",\n    \"userId\": \"6341e57c96e6e5dddb035bad\",\n    \"done\": true,\n    \"notDone\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/todo/submitAbsentReminder",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"todo",
+						"submitAbsentReminder"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Complaints",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/todo/ticketComplaints",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"todo",
+						"ticketComplaints"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Absent Reminder",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/todo/absentReminder",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"todo",
+						"absentReminder"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Balance Reminders",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/todo/balanceReminder/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"todo",
+						"balanceReminder",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Ticket status",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/todo/ticketComplaints/6415a61fb05177246886b3d0/status/COMPLETED",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"todo",
+						"ticketComplaints",
+						"6415a61fb05177246886b3d0",
+						"status",
+						"COMPLETED"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Submit Audits",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"staffInOut\": true, \"whatsAppStatus\": false, \"whatsAppBroadcast\": true, \"hygieneCheck\": true, \"addWhatsAppContact\": false, \"airPercentageCheck\": true, \"turnedOnLights\": true,\n            \"cashHandover\": true, \"absentSmsCalls\": false, \"followUpCalls\": true, \n            \"turnetOffLights\": true, \"gymService\":\"63cd2021f56a148217f88354\" }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/todo/audits",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"todo",
+						"audits"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllRequests",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/todo/audits/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"todo",
+						"audits",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllFollowUpsByType",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/todo/followUp/all/Demo",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"todo",
+						"followUp",
+						"all",
+						"Demo"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
