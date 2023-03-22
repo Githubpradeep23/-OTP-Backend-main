@@ -197,7 +197,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{ \"staffInOut\": true, \"whatsAppStatus\": false, \"whatsAppBroadcast\": true, \"hygieneCheck\": true, \"addWhatsAppContact\": false, \"airPercentageCheck\": true, \"turnedOnLights\": true,\n            \"cashHandover\": true, \"absentSmsCalls\": false, \"followUpCalls\": true, \n            \"turnetOffLights\": true, \"gymService\":\"63cd2021f56a148217f88354\" }",
+					"raw": "{ \"staffInOut\": true, \"whatsAppStatus\": false, \"whatsAppBroadcast\": true, \"hygieneCheck\": true, \"addWhatsAppContact\": false, \"airPercentageCheck\": true, \"turnedOnLights\": true,\n            \"cashHandover\": true, \"absentSmsCalls\": false, \"followUpCalls\": true, \n            \"turnedOffLights\": true, \"gymService\":\"63cd2021f56a148217f88354\" }",
 					"options": {
 						"raw": {
 							"language": "json"
