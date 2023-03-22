@@ -117,13 +117,19 @@ const getAll = async (req, res) => {
 
 const updateStatus = async (req, res) => {
     try {
-        const status = req.params['status'];
         const id = req.params['id'];
-        if(status === null || status === undefined || isEmpty(id)) {
+        if(id === null || id === undefined || isEmpty(id)) {
             return res.status(400).send({
-                messge: "Please enter correct status",
+                messge: "Please enter correct id",
                 success: false,
               });
+        }
+        let status = 'PENDING';
+        const ticketComplaintRes = await ticketComplaints.findOne(
+            { _id: mongoose.Types.ObjectId(id) },
+        );
+        if(ticketComplaintRes.status === 'PENDING') {
+            status = 'COMPLETED'
         }
         const updatedTicketStatus = await ticketComplaints.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(id) },
@@ -140,7 +146,7 @@ const updateStatus = async (req, res) => {
         } else {
             const ticketComplaintData = await ticketComplaints.findOne({ _id: mongoose.Types.ObjectId(id) })
             return res.status(200)
-                .json([{ msg: "Ticket status updated successflly", data: ticketComplaintData, res: "success" }]);
+                .json({ msg: "Ticket status updated successflly", data: ticketComplaintData, res: "success" });
         }
     } catch (error) {
         return res.status(400).send({

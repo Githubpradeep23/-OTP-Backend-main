@@ -11,7 +11,7 @@ const auditSchema = new mongoose.Schema({
     cashHandover: { type: Boolean, default: false },
     absentSmsCalls: { type: Boolean, default: false },
     followUpCalls: { type: Boolean, default: false },
-    turnetOffLights: { type: Boolean, default: false },
+    turnedOffLights: { type: Boolean, default: false },
     gymService: { type: mongoose.Schema.Types.ObjectId, ref: 'GYM_SERVICE'},
     date: { 
         type: Date,
