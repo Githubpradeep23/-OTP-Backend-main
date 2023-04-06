@@ -1,0 +1,233 @@
+{
+	"info": {
+		"_postman_id": "c4d73fd4-2fd4-4af2-be49-a5654e2765c3",
+		"name": "Trainer",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "LeaveType",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"employee_role\": \"HR\",\n    \"totalLeaves\": 12,\n    \"carryForwardLeaves\": 6\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/trainer/leaveType/submit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"trainer",
+						"leaveType",
+						"submit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAll Leave Type",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/trainer/leaveType/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"trainer",
+						"leaveType",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Leave Type",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"642033984aea6bae39db4e29\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/trainer/leaveType/delete",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"trainer",
+						"leaveType",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Submit Leave",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"employeeId\": \"63d80dce9a13e85f262bf531\",\n    \"employee_role\": \"Trainer\",\n    \"reason\": \"I am Hospitalised need to take off\",\n    \"approver1\": \"63d65dd41983b4bb7dd5f075\",\n    \"approver2\": \"63ff9b8ae1218b0eaf538052\",\n    \"gymService\": \"63cd2021f56a148217f88354\",\n    \"status\": \"PENDING\",\n    \"date\": \"04-14-2023\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/trainer/leave/submit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"trainer",
+						"leave",
+						"submit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get ALl Leaves",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/trainer/leave/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"trainer",
+						"leave",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Leave Status",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"status\": \"APPROVED\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/trainer/leave/64203d937fe657da94d98a21/status",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"trainer",
+						"leave",
+						"64203d937fe657da94d98a21",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Count Total Leaves",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/trainer/leave/employee/count/63d80dce9a13e85f262bf531",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"trainer",
+						"leave",
+						"employee",
+						"count",
+						"63d80dce9a13e85f262bf531"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Trainer Leaves",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/trainer/leave/employee/63d80dce9a13e85f262bf531",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"trainer",
+						"leave",
+						"employee",
+						"63d80dce9a13e85f262bf531"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -37,6 +37,7 @@ const FeedBack = require("../models/userFeedBack");
 const mongoose = require('mongoose');
 const Razorpay = require("razorpay");
 var moment = require('moment');
+const { isEmpty } = require("lodash");
 
 const signup = async (req, res) => {
     try {
@@ -945,10 +946,6 @@ const bookingDemoByUser = async (req, res) => {
                 .json([{ msg: "userID is required", res: "error", }]);
         }
 
-        if (!category) {
-            return res.status(200)
-                .json([{ msg: "category is required", res: "error", }]);
-        }
         if (!service_id) {
             return res.status(200)
                 .json([{ msg: "service_id is required", res: "error", }]);
@@ -2198,5 +2195,31 @@ const getUserByType = async (req, res) => {
       }
 };
 
+const getUserByPhoneNumber = async (req, res) => {
+    try {
+        const number = req.params['number'];
+        if(isEmpty(number)) {
+            return res.status(400).json({
+                message: "number is missing in params",
+                success: false,
+            });
+        }
+        let user = await User.findOne({
+            number
+        });
+        return res.status(200).json({
+            user,
+            message: "User found successfully",
+            success: true,
+        });
+    } catch (error) {
+        return res.status(400).json({
+          message: "Something went wrong ",
+          success: false,
+        });
+      }
+}
+
+
 module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach, registerUser,getUserOrderList,updatePushNotificationToken,getPushNotificationData,updatePushNotificationData,getUserActiveOrderList,allUserComplains,createUserComplain, applyCoin, removeCoin
-    ,addTempUser, getUserByType };
+    ,addTempUser, getUserByType, getUserByPhoneNumber };

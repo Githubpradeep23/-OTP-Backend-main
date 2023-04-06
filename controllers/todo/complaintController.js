@@ -156,4 +156,66 @@ const updateStatus = async (req, res) => {
       }
 }
 
-module.exports = { submit, deleteTicketComplaint, getAll, updateStatus };
+const getAllPendingComplaints = async (req, res) => {
+  try {
+      let complaintTickets = await ticketComplaints.find({ status : 'PENDING'}).populate('gymService').populate('userId').populate('supportEmployee').exec();
+      if (
+          complaintTickets !== undefined &&
+          complaintTickets.length !== 0 &&
+          complaintTickets !== null
+      ) {
+        return res.status(200).send({
+          complaintTickets ,
+          messge: "All complaintTickets",
+          success: true,
+        });
+      } else {
+        return res.status(200).send({
+          messge: "ComplaintTickets does not exist",
+          success: false,
+        });
+      }
+    } catch (error) {
+      return res.status(400).send({
+        messge: "Somethig went wrong",
+        success: false,
+      });
+    }
+}
+
+const updateEmployeeInTicket = async (req, res) => {
+  try {
+      const employee = req.params['employee'];
+      const id = req.params['id'];
+      if(employee === null || employee === undefined || isEmpty(employee)) {
+          return res.status(400).send({
+              messge: "Please enter correct employeeId",
+              success: false,
+            });
+      }
+      const updatedTicketStatus = await ticketComplaints.findOneAndUpdate(
+          { _id: mongoose.Types.ObjectId(id) },
+          { $set: {supportEmployee : employee}}
+      );
+      if (
+          updatedTicketStatus.length === 0 ||
+          updatedTicketStatus === undefined ||
+          updatedTicketStatus === null ||
+          updatedTicketStatus === ""
+      ) {
+          return res.status(200)
+              .json([{ msg: "Ticket Not found!!!", res: "error", }]);
+      } else {
+          const ticketComplaintData = await ticketComplaints.findOne({ _id: mongoose.Types.ObjectId(id) })
+          return res.status(200)
+              .json({ msg: "Ticket Employee updated successflly", data: ticketComplaintData, res: "success" });
+      }
+  } catch (error) {
+      return res.status(400).send({
+        messge: "Somethig went wrong",
+        success: false,
+      });
+    }
+}
+
+module.exports = { submit, deleteTicketComplaint, getAll, updateStatus, getAllPendingComplaints, updateEmployeeInTicket };

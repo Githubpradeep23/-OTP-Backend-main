@@ -1,0 +1,483 @@
+{
+	"info": {
+		"_postman_id": "beaf8df9-c884-4462-a95f-f8a3bbaa28cb",
+		"name": "CMS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Submit CMS",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"fit5\": true, \"strong60\": true, \"enquiries\": false, \"renewals\": true, \"upcomingDemos\": false, \"feeBalance\": true, \"inactiveClients\": true,\n            \"fusions\": true, \"demosBooked\": false, \"newJoining\": false, \"upcomingRenewals\": true, \"review\": false, \"activeClients\": false, \"gymService\":\"63cd2021f56a148217f88354\",\n            \"fit\": true }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/cms/filters",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"cms",
+						"filters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Submit Billing",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n    \"gymService\":\"63cd2021f56a148217f88354\",\n    \"user\": \"6341e57c96e6e5dddb035bad\",\n    \"package\": \"Silver\",\n    \"activeFrom\": \"04/07/2023\",\n    \"activeTo\": \"05/06/2023\",\n    \"totalFee\": 2000,\n    \"paidFee\": 1500,\n    \"feeDue\": 500 \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/cms/billing",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"cms",
+						"billing"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Submit Attendance",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n    \"user\": \"6341e57c96e6e5dddb035bad\",\n    \"monthDate\": \"04-2023\",\n    \"noOfDaysPresent\": 1,\n    \"noOfDaysAbsent\": 0\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/cms/attendance",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"cms",
+						"attendance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Submit Cancellation Subscription",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n    \"billing\":\"642f10d14bd34164a8f68d13\",\n    \"user\": \"6341e57c96e6e5dddb035bad\",\n    \"extendUpto\": \"04/12/2023\",\n    \"cancelSubscription\": true,\n    \"feeRefund\": 1000,\n    \"reasonForCancellation\": \"zcjsdnsdklmdskdskdf\",\n    \"approver1\": \"63d65dd41983b4bb7dd5f075\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/cms/subscription/cancel",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"cms",
+						"subscription",
+						"cancel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Billing",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n    \"billingId\": \"642c879bd89f234ba0b7b277\",\n    \"package\": \"Diamond\",\n    \"activeFrom\": \"02/01/2023\",\n    \"activeTo\": \"03/01/2023\",\n    \"totalFee\": 7000,\n    \"paidFee\": 3000,\n    \"feeDue\": 4000 \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/cms/billing",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"cms",
+						"billing"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Attendance",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n    \"present\": 1,\n    \"attendanceId\": \"642f1d12a7b76cf3968117b0\",\n    \"absent\": 0\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/cms/attendance",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"cms",
+						"attendance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Submit Enquiry",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n    \"gymService\":\"63cd2021f56a148217f88354\",\n    \"user\": \"6341e57c96e6e5dddb035bad\",\n    \"source\": \"Google\",\n    \"remarks\": \"Enquiry from google\" \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/cms/enquiry",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"cms",
+						"enquiry"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Filters",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/cms/filters/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"cms",
+						"filters",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Enquiries",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/cms/enquiry/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"cms",
+						"enquiry",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Billing",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/cms/billing/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"cms",
+						"billing",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Packages ByUserId",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/user/63cd1a1996a9cfaf6506c42b",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"63cd1a1996a9cfaf6506c42b"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Billing by user Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/cms/billing/user/6341e57c96e6e5dddb035bad",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"cms",
+						"billing",
+						"user",
+						"6341e57c96e6e5dddb035bad"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Active Subscriptions by user",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/cms/billing/active/6341e57c96e6e5dddb035bad",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"cms",
+						"billing",
+						"active",
+						"6341e57c96e6e5dddb035bad"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all cancel Subscriptions of user",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/cms/subscription/user/6341e57c96e6e5dddb035bad",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"cms",
+						"subscription",
+						"user",
+						"6341e57c96e6e5dddb035bad"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete filters",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"642b33f9b7fabc798cbc8802\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/cms/filters",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"cms",
+						"filters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete enquiry",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"642c78e62a396e1ca6e00acc\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/cms/enquiry",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"cms",
+						"enquiry"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete billing",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"642c78e62a396e1ca6e00acc\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/cms/billing",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"cms",
+						"billing"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

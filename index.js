@@ -26,6 +26,9 @@ const questionireRouter = require("./routes/questionire");
 const employeeRouter = require("./routes/employee");
 const fileUpload = require("express-fileupload");
 const todoRouter = require('./routes/todo');
+const cmsRouter = require('./routes/cms');
+const trainerRouter = require('./routes/trainer');
+const hrRouter = require('./routes/hr');
 const PORT = process.env.PORT || 8080;
 const app = express();
 const cors = require("cors");
@@ -75,7 +78,9 @@ app.use("/api/v1", questionireRouter);
 app.use("/api/v1", titleRouter);
 app.use("/api/v1/employee", employeeRouter);
 app.use("/api/v1/todo", todoRouter);
-
+app.use("/api/v1/trainer", trainerRouter);
+app.use("/api/v1/hr", hrRouter);
+app.use("/api/v1/cms", cmsRouter);
 mongoose
   // .connect("mongodb+srv://test:test@cluster0.h7sxi.mongodb.net/NewOTP_DATABASE?retryWrites=true&w=majority") Old Live database
   .connect("mongodb+srv://bhartishivam723:Shivam123@cluster0.c1txlyk.mongodb.net/gymDb?retryWrites=true&w=majority")//New database

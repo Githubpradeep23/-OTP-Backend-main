@@ -56,12 +56,6 @@ router.post('/getUserOrderList',  userController.getUserOrderList)
 
 router.post('/getUserActiveOrderList',  userController.getUserActiveOrderList)
 
-
-
-
-
-
-
 // ****************Fitness Page Api end*******************
 
 // ****************Support Page Api start*****************
@@ -75,8 +69,6 @@ router.post('/UserActivityAndRecords',  userController.UserActivityAndRecords)
 
 router.post('/createUserComplain',  userController.createUserComplain)
 router.post('/allUserComplains',  userController.allUserComplains)
-
-
 
 // ****************Support Page Api end*****************
 
@@ -97,9 +89,5 @@ router.post('/applyCoin', userController.applyCoin)
 router.post('/removeCoin', userController.removeCoin)
 // ************Coins Api End *************
 
-
-
-
-
-
+router.get('/user/:number', userController.getUserByPhoneNumber)
 module.exports = router;

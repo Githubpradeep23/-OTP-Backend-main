@@ -9,7 +9,7 @@ const demoBookingSchema = new mongoose.Schema({
 
   category:{
     type: String,
-    required: true
+    required: false
   },
   demo_status: {
     type: String,
