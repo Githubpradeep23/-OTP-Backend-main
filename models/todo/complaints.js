@@ -9,6 +9,9 @@ const complaintSchema = new mongoose.Schema({
     status: { 
         type: String,
         default: 'PENDING'
+    },
+    scalme: {
+        type: String, default: null
     }
   });
   

@@ -29,8 +29,8 @@ const submit = async (req, res) => {
             numberOfRounds1,
             numberOfRounds2,
             name: !isEmpty(name) ? name : undefined,
-            set1: mapActivity(set1),
-            set2: mapActivity(set2)
+            set1: mapActivity(JSON.parse(set1)),
+            set2: mapActivity(JSON.parse(set2))
         };
         
         let workoutResponse = await workout.create(workoutModel);
@@ -162,8 +162,8 @@ const updateWorkout = async (req, res) => {
         }
         updateWorkout.day = isEmpty(day) ? undefined : day;
         updateWorkout.name = isEmpty(name) ? undefined : name;
-        updateWorkout.set1 = isEmpty(set1) ? undefined : mapActivity(set1);
-        updateWorkout.set2 = isEmpty(set2) ? undefined : mapActivity(set2);
+        updateWorkout.set1 = isEmpty(set1) ? undefined : mapActivity(JSON.parse(set1));
+        updateWorkout.set2 = isEmpty(set2) ? undefined : mapActivity(JSON.parse(set2));
         updateWorkout.numberOfRounds1 = isNaN(numberOfRounds1) ? 0 : Number(numberOfRounds1);
         updateWorkout.numberOfRounds2 = isNaN(numberOfRounds2) ? 0 : Number(numberOfRounds2);
         let updatedWorkout = await workout.findOneAndUpdate(

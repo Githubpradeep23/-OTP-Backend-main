@@ -2178,6 +2178,15 @@ const getUserByType = async (req, res) => {
                 success: false,
               });
         }
+        if(type === 'ALL') {
+            let users = await User.find();
+            return res.status(200).json({
+                users,
+                count: users.length,
+                message: "All Users",
+                success: true,
+            });
+        }
         let users = await User.find({
             userType: type
         });
@@ -2194,6 +2203,7 @@ const getUserByType = async (req, res) => {
         });
       }
 };
+
 
 const getUserByPhoneNumber = async (req, res) => {
     try {

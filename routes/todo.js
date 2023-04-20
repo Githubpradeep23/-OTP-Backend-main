@@ -22,7 +22,9 @@ router.delete('/ticketComplaints', ticketComplaintController.deleteTicketComplai
 router.get('/ticketComplaints', ticketComplaintController.getAll);
 router.get('/ticketComplaints/pending', ticketComplaintController.getAllPendingComplaints);
 router.put('/ticketComplaints/:id/status', ticketComplaintController.updateStatus);
+router.put('/ticketComplaints/:id/scalme', ticketComplaintController.updateScalmeInTicket);
 router.put('/ticketComplaints/:id/:employee', ticketComplaintController.updateEmployeeInTicket);
+
 // Absent Reminders
 router.post('/submitAbsentReminder', absentReminderController.submit);
 router.delete('/deleteAbsentReminder', absentReminderController.deleteAbsentReminder)

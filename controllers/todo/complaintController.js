@@ -218,4 +218,33 @@ const updateEmployeeInTicket = async (req, res) => {
     }
 }
 
-module.exports = { submit, deleteTicketComplaint, getAll, updateStatus, getAllPendingComplaints, updateEmployeeInTicket };
+const updateScalmeInTicket = async (req, res) => {
+  try {
+      const { scalme } = req.body;
+      const id = req.params['id'];
+      const updatedTicketStatus = await ticketComplaints.findOneAndUpdate(
+          { _id: mongoose.Types.ObjectId(id) },
+          { $set: {scalme}}
+      );
+      if (
+          updatedTicketStatus.length === 0 ||
+          updatedTicketStatus === undefined ||
+          updatedTicketStatus === null ||
+          updatedTicketStatus === ""
+      ) {
+          return res.status(200)
+              .json([{ msg: "Ticket Not found!!!", res: "error", }]);
+      } else {
+          const ticketComplaintData = await ticketComplaints.findOne({ _id: mongoose.Types.ObjectId(id) })
+          return res.status(200)
+              .json({ msg: "Ticket Scalme updated successflly", data: ticketComplaintData, res: "success" });
+      }
+  } catch (error) {
+      return res.status(400).send({
+        messge: "Somethig went wrong",
+        success: false,
+      });
+    }
+}
+
+module.exports = { submit, deleteTicketComplaint, getAll, updateStatus, getAllPendingComplaints, updateEmployeeInTicket, updateScalmeInTicket };
