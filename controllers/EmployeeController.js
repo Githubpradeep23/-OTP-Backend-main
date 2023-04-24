@@ -3,6 +3,7 @@ const Employee = require("../models/employee");
 const fs = require("fs");
 const mongoose = require('mongoose');
 const helper = require("../utils/helper");
+const { isEmpty } = require("lodash");
 
 const addEmployee = async (req, res) => {
     try {
@@ -314,4 +315,29 @@ const changePassword = async (req, res) => {
   }
 }
 
-module.exports = { addEmployee, deleteEmployeeProfile, getAllEmployees, updateEmployeeProfile, updateStatus, changePassword }
+const loginEmployee = async (req, res) => {
+  try {
+      const { number, password } = req.body;
+      let employeeRes = await Employee.findOne({ number, password });
+      if (isEmpty(employeeRes)) {
+        return res.status(400).send({
+          getAllEmployee,
+          messge: "Either phone number or password incorrect",
+          success: true,
+        });
+      } else {
+        return res.status(200).send({
+          response: true,
+          messge: "Employee Found",
+          success: false,
+        });
+      }
+    } catch (error) {
+      return res.status(400).send({
+        messge: "Somethig went wrong",
+        success: false,
+      });
+    }
+}
+
+module.exports = { addEmployee, deleteEmployeeProfile, getAllEmployees, updateEmployeeProfile, updateStatus, changePassword, loginEmployee }
