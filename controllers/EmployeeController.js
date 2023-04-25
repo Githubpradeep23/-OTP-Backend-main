@@ -321,13 +321,12 @@ const loginEmployee = async (req, res) => {
       let employeeRes = await Employee.findOne({ number, password });
       if (isEmpty(employeeRes)) {
         return res.status(400).send({
-          getAllEmployee,
           messge: "Either phone number or password incorrect",
           success: true,
         });
       } else {
         return res.status(200).send({
-          response: true,
+          response: employeeRes,
           messge: "Employee Found",
           success: false,
         });
