@@ -326,7 +326,6 @@ const loginEmployee = async (req, res) => {
         });
       } else {
         return res.status(200).send({
-          response: employeeRes,
           messge: "Employee Found",
           success: false,
         });
