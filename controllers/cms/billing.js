@@ -4,7 +4,7 @@ const billing = require("../../models/cms/billing");
 const submit = async (req, res) => {
     try {
         const { gymService, user, package, activeFrom, activeTo, totalFee, paidFee, feeDue, remarks } = req.body;
-        if (isEmpty(gymService) || isEmpty(user) || isEmpty(package) || isEmpty(activeFrom) || isEmpty(activeTo) || !isNumber(totalFee) || !isNumber(paidFee) || !isNumber(feeDue)) {
+        if (isEmpty(gymService) || isEmpty(user) || isEmpty(package) || isEmpty(activeFrom) || isEmpty(activeTo) || isNaN(totalFee) || isNaN(paidFee) || isNaN(feeDue)) {
             return res.status(422).json({
                 message: "Empty Fields found . Either GymService, package, activeFrom, totalFee , paidFee , feeDue or User Id is missing.",
                 success: false,
