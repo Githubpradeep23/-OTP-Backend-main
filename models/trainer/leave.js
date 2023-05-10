@@ -15,9 +15,17 @@ const leaveSchema = new mongoose.Schema(
         type: String,
         default: 'PENIDNG'
     },
-    date: {
+    fromDate: {
         type: Date,
         default: Date.now()
+    },
+    toDate: {
+      type: Date,
+      default: Date.now()
+    },
+    days: {
+      type: Number,
+      default: 1
     }
   },
   {

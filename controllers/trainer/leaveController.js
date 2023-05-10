@@ -3,10 +3,16 @@ const leaveType = require("../../models/trainer/leaveType");
 const leave = require("../../models/trainer/leave");
 const mongoose = require('mongoose');
 
+const totalDays = (date_1, date_2) => {
+  let difference = date_1.getTime() - date_2.getTime();
+  let totalDays = Math.ceil(difference / (1000 * 3600 * 24));
+  return totalDays;
+}
+
 const submit = async (req, res) => {
     try {
-        const { employeeId, employee_role, reason, approver1, approver2, gymService, status, date } = req.body;
-        if ( isEmpty(employeeId) || isEmpty(gymService) || isEmpty(employee_role) || isEmpty(reason) || isEmpty(approver1) || isEmpty(approver2)) {
+        const { employeeId, employee_role, reason, approver1, approver2, gymService, status, fromDate, toDate } = req.body;
+        if (isEmpty(employeeId) || isEmpty(gymService) || isEmpty(employee_role) || isEmpty(reason) || isEmpty(approver1) || isEmpty(approver2)) {
             return res.status(422).json({
                 message: "Empty Fields found. Either employeeId, gymService, employee_role, reason approver1 or approver2 is missing.",
                 success: false,
@@ -27,7 +33,9 @@ const submit = async (req, res) => {
             gymService,
             status: isEmpty(status) ? 'PENDING' : status,
             leaveType: leaveTypeResult._id,
-            date : isEmpty(date) ? Date.now() : new Date(date)
+            fromDate : isEmpty(fromDate) ? Date.now() : new Date(fromDate),
+            toDate : isEmpty(toDate) ? Date.now() : new Date(toDate),
+            days: !isEmpty(fromDate) && !isEmpty(toDate) ? totalDays(new Date(new Date(fromDate).setHours(0,0,0,0)), new Date(new Date(toDate).setHours(23,59,59,59))) : 1
         };
         let leaveResponse = await leave.create(leaveModel);
         return res.status(200).json({
@@ -148,11 +156,16 @@ const fetchAllLeavesByEmpId = async (req, res) => {
         let approvedLeaves = await leave.find({ status : 'APPROVED', employeeId }).populate('employeeId').populate('approver1').populate('approver2').populate('gymService').populate('leaveType').exec();
         let declinedLeaves = await leave.find({ status : 'DECLINED', employeeId }).populate('employeeId').populate('approver1').populate('approver2').populate('gymService').populate('leaveType').exec();
         let approvedLeavesCount = approvedLeaves.length;
+        let approvedDaysCount = 0;
+        for(let approvedLeave of approvedLeaves) {
+          approvedDaysCount += approvedLeave.days ?? 1;
+        }
         let declinedLeavesCount = declinedLeaves.length;
         let approver1 = approvedLeaves.length > 0 && approvedLeaves[0]._doc.approver1.number;
         let approver2 = approvedLeaves.length > 0 && approvedLeaves[0]._doc.approver2.number;
         let response = {
             approvedLeavesCount,
+            approvedDaysCount,
             declinedLeavesCount,
             approver1,
             approver2,
@@ -176,7 +189,10 @@ const fetchUsedLeavesByTrainerId = async (req, res) => {
     try {
         const employeeId = req.params['employeeId']
         let approvedLeaves = await leave.find({ status : 'APPROVED', employeeId }).populate('employeeId').populate('approver1').populate('approver2').populate('gymService').populate('leaveType').exec();
-        let approvedLeavesCount = approvedLeaves.length;
+        let approvedLeavesCount = 0;
+        for(let approvedLeave of approvedLeaves) {
+          approvedLeavesCount += approvedLeave.days ?? 1;
+        }
         const leaveTypeResult = await leaveType.findOne({ employee_role : 'Trainer' });
         let totalLeaves = leaveTypeResult.totalLeaves;
         const returnObj = {
