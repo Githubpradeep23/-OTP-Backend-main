@@ -35,7 +35,7 @@ const submit = async (req, res) => {
             leaveType: leaveTypeResult._id,
             fromDate : isEmpty(fromDate) ? Date.now() : new Date(fromDate),
             toDate : isEmpty(toDate) ? Date.now() : new Date(toDate),
-            days: !isEmpty(fromDate) && !isEmpty(toDate) ? totalDays(new Date(new Date(fromDate).setHours(0,0,0,0)), new Date(new Date(toDate).setHours(23,59,59,59))) : 1
+            days: !isEmpty(fromDate) && !isEmpty(toDate) ? totalDays(new Date(new Date(toDate).setHours(23,59,59,59)), new Date(new Date(fromDate).setHours(0,0,0,0))) : 1
         };
         let leaveResponse = await leave.create(leaveModel);
         return res.status(200).json({
