@@ -6,6 +6,8 @@ const ticketComplaintController = require('../controllers/todo/complaintControll
 const absentReminderController = require('../controllers/todo/absentReminderController');
 const balanceReminderController = require('../controllers/todo/balanceReminderController');
 const auditController = require('../controllers/todo/auditController');
+const pushCallController = require('../controllers/todo/pushCallController');
+
 const router = express.Router();
 
 router.post('/submit', followUpController.submit);
@@ -37,4 +39,8 @@ router.get('/balanceReminder/all', balanceReminderController.getAll);
 router.post('/audits', auditController.submit);
 router.delete('/audits', auditController.deleteAudits)
 router.get('/audits/all', auditController.getAll);
+// Push Calls
+router.post('/pushCall/submit', pushCallController.submit);
+router.delete('/pushCall/delete', pushCallController.deletePushCall);
+router.get('/pushCall/all', pushCallController.getAll);
 module.exports = router;
