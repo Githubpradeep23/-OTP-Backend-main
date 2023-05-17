@@ -338,4 +338,37 @@ const loginEmployee = async (req, res) => {
     }
 }
 
-module.exports = { addEmployee, deleteEmployeeProfile, getAllEmployees, updateEmployeeProfile, updateStatus, changePassword, loginEmployee }
+const getEmployeesById = async (req, res) => {
+  try {
+      const id = req.params['id'];
+      let employeeById = await Employee.find({ _id : id}).populate('gym_branch').exec();
+      const updatedEmployeeById = {
+        ...employeeById._doc,
+        branchName: employeeById.gym_branch.branchName,
+        branchLocation: employeeById.gym_branch.location,
+      }
+      if (
+        updatedEmployeeById !== undefined &&
+        updatedEmployeeById !== null
+      ) {
+        return res.status(200).send({
+          employee: updatedEmployeeById,
+          messge: "Get Employee ById",
+          success: true,
+        });
+      } else {
+        return res.status(200).send({
+          messge: "Employee does not exist",
+          success: false,
+        });
+      }
+    } catch (error) {
+      return res.status(400).send({
+        messge: "Somethig went wrong",
+        success: false,
+      });
+    }
+}
+
+
+module.exports = { addEmployee, deleteEmployeeProfile, getAllEmployees, updateEmployeeProfile, updateStatus, changePassword, loginEmployee, getEmployeesById }

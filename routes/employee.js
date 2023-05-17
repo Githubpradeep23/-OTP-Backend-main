@@ -7,6 +7,7 @@ router.post('/add', employeeController.addEmployee);
 router.delete('/delete', employeeController.deleteEmployeeProfile);
 router.put('/updateProfile', employeeController.updateEmployeeProfile);
 router.get('/getAll', employeeController.getAllEmployees);
+router.get('/get/:id', employeeController.getEmployeesById);
 router.put('/updateStatus', employeeController.updateStatus);
 router.put('/updatePassword', employeeController.changePassword);
 router.post('/login', employeeController.loginEmployee);
