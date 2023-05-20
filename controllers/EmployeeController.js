@@ -341,7 +341,7 @@ const loginEmployee = async (req, res) => {
 const getEmployeesById = async (req, res) => {
   try {
       const id = req.params['id'];
-      let employeeById = await Employee.find({ _id : id}).populate('gym_branch').exec();
+      let employeeById = await Employee.findOne({ _id : id}).populate('gym_branch').exec();
       const updatedEmployeeById = {
         ...employeeById._doc,
         branchName: employeeById.gym_branch.branchName,
