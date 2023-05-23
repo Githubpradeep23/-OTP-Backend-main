@@ -1,5 +1,5 @@
 const Request = require("../../models/serviceRequest");
-const followup = require("../../models/todo/followup");
+const followup = require("../../models/todo/followUp");
 
 const submit = async (req, res) => {
     try {
