@@ -3,7 +3,7 @@ const exercise = require("../../models/trainer/exercise");
 
 const submit = async (req, res) => {
     try {
-        const { name, type, bodyPart } = req.body;
+        const { name, type, bodyPart, gym_branch } = req.body;
         if ( isEmpty(name)) {
             return res.status(400).json({
                 message: "Empty Fields found. Either employee_role or totalLeaves is missing.",
@@ -14,6 +14,7 @@ const submit = async (req, res) => {
             name,
             type: !isEmpty(type) ? type : undefined,
             bodyPart: !isEmpty(bodyPart) ? bodyPart : undefined,
+            gym_branch: isEmpty(gym_branch) ? undefined : gym_branch
         };
         
         let exerciseResponse = await exercise.create(exerciseModel);
@@ -69,7 +70,7 @@ const deleteExercise = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        let exercises = await exercise.find();
+        let exercises = await exercise.find().populate('gym_branch');
         if (
             exercises !== undefined &&
             exercises.length !== 0 &&

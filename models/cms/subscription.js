@@ -9,6 +9,7 @@ const cancelSubscriptionSchema = new mongoose.Schema({
     reasonForCancellation: { type: String, required: false },
     approver1: { type: mongoose.Schema.Types.ObjectId, ref: 'Employee' },
     approver2: { type: mongoose.Schema.Types.ObjectId, ref: 'Employee' },
+    gym_branch: { type: mongoose.Schema.Types.ObjectId, ref: 'GYM_BRANCH' },
 });
   
 const cancelSubscription = new mongoose.model("CancelSubscription", cancelSubscriptionSchema);

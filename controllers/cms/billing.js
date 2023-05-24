@@ -1,9 +1,10 @@
 const { isEmpty, isNumber } = require("lodash");
 const billing = require("../../models/cms/billing");
+const GYM_SERVICE = require("../../models/gymServices");
 
 const submit = async (req, res) => {
     try {
-        const { gymService, user, package, activeFrom, activeTo, totalFee, paidFee, feeDue, remarks } = req.body;
+        const { gymService, user, package, activeFrom, activeTo, totalFee, paidFee, feeDue, remarks, gym_branch } = req.body;
         if (isEmpty(gymService) || isEmpty(user) || isEmpty(package) || isEmpty(activeFrom) || isEmpty(activeTo) || isNaN(totalFee) || isNaN(paidFee) || isNaN(feeDue)) {
             return res.status(422).json({
                 message: "Empty Fields found . Either GymService, package, activeFrom, totalFee , paidFee , feeDue or User Id is missing.",
@@ -19,7 +20,8 @@ const submit = async (req, res) => {
             totalFee: Number(totalFee),
             paidFee: Number(paidFee),
             feeDue: Number(feeDue),
-            remarks : isEmpty(remarks) ? undefined : remarks
+            remarks : isEmpty(remarks) ? undefined : remarks,
+            gym_branch: isEmpty(gym_branch) ? undefined : gym_branch
         };
         let billingResponse = await billing.create(billingModel);
         return res.status(200).json({
@@ -35,7 +37,7 @@ const submit = async (req, res) => {
 
 const updateBilling = async (req, res) => {
     try {
-        const { billingId, gymService, user, package, activeFrom, activeTo, totalFee, paidFee, feeDue, remarks } = req.body;
+        const { billingId, gymService, user, package, activeFrom, activeTo, totalFee, paidFee, feeDue, remarks, gym_branch } = req.body;
         if (isEmpty(billingId)) {
             return res.status(422).json({
                 message: "Empty Fields found .",
@@ -52,6 +54,7 @@ const updateBilling = async (req, res) => {
         updateBillingmodel.paidFee = isNaN(paidFee) ? undefined : Number(paidFee);
         updateBillingmodel.feeDue = isNaN(feeDue) ? undefined : Number(feeDue);
         updateBillingmodel.remarks = isEmpty(remarks) ? undefined : remarks;
+        updateBillingmodel.gym_branch = isEmpty(gym_branch) ? undefined : gym_branch;
         let updatedBilling = await billing.findOneAndUpdate(
             { _id: billingId },
             { $set : updateBillingmodel}
@@ -118,7 +121,7 @@ const deleteBilling = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        let allBillings = await billing.find().populate('gymService').populate('user').exec();
+        let allBillings = await billing.find().populate('gymService').populate('gym_branch').populate('user').exec();
         if (
             allBillings !== undefined &&
             allBillings.length !== 0 &&
@@ -146,7 +149,7 @@ const getAll = async (req, res) => {
 const getAllBillingByUser = async (req, res) => {
     try {
         const userId = req.params['userId'];
-        let allBillingsByUser = await billing.find({ user: userId }).populate('gymService').populate('user').exec();
+        let allBillingsByUser = await billing.find({ user: userId }).populate('gymService').populate('gym_branch').populate('user').exec();
         if (
             allBillingsByUser !== undefined &&
             allBillingsByUser.length !== 0 &&
@@ -175,7 +178,7 @@ const getActiveSubscriptionsOfUser = async (req, res) => {
     try {
         const userId = req.params['userId'];
         const date = new Date();
-        let userActiveSubscriptions = await billing.find({ user: userId, activeFrom : {$lte: date}, activeTo : {$gte: date} }).populate('gymService').populate('user').exec();
+        let userActiveSubscriptions = await billing.find({ user: userId, activeFrom : {$gte: date}, activeTo : {$lte: date} }).populate('gymService').populate('gym_branch').populate('user').exec();
         if (
             userActiveSubscriptions !== undefined &&
             userActiveSubscriptions.length !== 0 &&
@@ -199,5 +202,34 @@ const getActiveSubscriptionsOfUser = async (req, res) => {
         });
       }
 }
+
+// const getActiveSubscriptionsOfServices = async (req, res) => {
+//   try {
+//       const userId = req.params['userId'];
+//       const date = new Date();
+//       let userActiveSubscriptions = await billing.find({ user: userId, activeFrom : {$lte: date}, activeTo : {$gte: date} }).populate('gymService').populate('user').exec();
+//       if (
+//           userActiveSubscriptions !== undefined &&
+//           userActiveSubscriptions.length !== 0 &&
+//           userActiveSubscriptions !== null
+//       ) {
+//         return res.status(200).send({
+//           activeSubscriptions: userActiveSubscriptions ,
+//           messge: "All activeSubscriptions by user",
+//           success: true,
+//         });
+//       } else {
+//         return res.status(200).send({
+//           messge: "Active Subscriptions does not exist",
+//           success: false,
+//         });
+//       }
+//     } catch (error) {
+//       return res.status(400).send({
+//         messge: "Somethig went wrong",
+//         success: false,
+//       });
+//     }
+// }
 
 module.exports = { submit, deleteBilling, getAll, getAllBillingByUser, updateBilling, getActiveSubscriptionsOfUser };

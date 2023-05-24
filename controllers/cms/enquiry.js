@@ -3,14 +3,14 @@ const enquiry = require("../../models/cms/enquiry");
 
 const submit = async (req, res) => {
     try {
-        const { gymService, user, source, remarks } = req.body;
+        const { gymService, user, source, remarks, gym_branch } = req.body;
         if (isEmpty(gymService) || isEmpty(user)) {
             return res.status(422).json({
                 message: "Empty Fields found GymService or User Id is missing.",
                 success: false,
             });
         }
-        let enquiryModel = { gymService, user, source, remarks };
+        let enquiryModel = { gymService, user, source, remarks, gym_branch };
         let enquiryResponse = await enquiry.create(enquiryModel);
         return res.status(200).json({
             enquiry: enquiryResponse,
@@ -65,7 +65,7 @@ const deleteEnquiry = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        let allEnquiries = await enquiry.find().populate('gymService').populate('user').exec();
+        let allEnquiries = await enquiry.find().populate('gymService').populate('gym_branch').populate('user').exec();
         if (
             allEnquiries !== undefined &&
             allEnquiries.length !== 0 &&

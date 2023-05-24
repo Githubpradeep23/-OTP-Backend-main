@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const submit = async (req, res) => {
     try {
-        const { allergies, user, conditions, medications, previousInjury } = req.body;
+        const { allergies, user, conditions, medications, previousInjury, gym_branch} = req.body;
         if (isEmpty(allergies) || isEmpty(user) || isEmpty(conditions) || isEmpty(medications) || isEmpty(previousInjury)) {
             return res.status(400).json({
                 message: "Empty Fields found. Either allergies, user, conditions, medications or previousInjury is missing.",
@@ -16,7 +16,8 @@ const submit = async (req, res) => {
             user,
             conditions,
             medications,
-            previousInjury
+            previousInjury,
+            gym_branch: isEmpty(gym_branch) ? undefined : gym_branch
         };
         
         let medicalRecordsResponse = await medicalRecords.create(medicalRecordModel);
@@ -72,7 +73,7 @@ const deleteMedicalRecords = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        let allMedicalRecords = await medicalRecords.find().populate('user');
+        let allMedicalRecords = await medicalRecords.find().populate('user').populate('gym_branch');
         if (
             allMedicalRecords !== undefined &&
             allMedicalRecords.length !== 0 &&
@@ -100,7 +101,7 @@ const getAll = async (req, res) => {
 const getAllMedicalRecordsOfUser = async (req, res) => {
     try {
         const user = req.params['user'];
-        let medicalRecordsByUser = await medicalRecords.findOne({ user }).populate('user');
+        let medicalRecordsByUser = await medicalRecords.findOne({ user }).populate('user').populate('gym_branch');
         if (
             medicalRecordsByUser !== undefined &&
             medicalRecordsByUser.length !== 0 &&
@@ -127,7 +128,7 @@ const getAllMedicalRecordsOfUser = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        const { medicalRecordId, allergies, user, conditions, medications, previousInjury } = req.body;
+        const { medicalRecordId, allergies, user, conditions, medications, previousInjury, gym_branch } = req.body;
         if (!medicalRecordId) {
             return res.status(400)
                 .json([{ msg: "Medical Record ID is required", res: "error", }]);
@@ -143,6 +144,7 @@ const update = async (req, res) => {
         updateMedicalRecord.conditions = isEmpty(conditions) ? undefined :conditions;
         updateMedicalRecord.medications = isEmpty(medications) ? undefined : medications;
         updateMedicalRecord.previousInjury = isEmpty(previousInjury) ? undefined : previousInjury;
+        updateMedicalRecord.gym_branch = isEmpty(gym_branch) ? undefined : gym_branch;
         let updatedMedicalRecord = await medicalRecords.findOneAndUpdate(
             { _id: medicalRecordId },
             { $set : updateMedicalRecord}

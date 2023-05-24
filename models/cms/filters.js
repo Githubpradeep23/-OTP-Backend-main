@@ -19,7 +19,8 @@ const filtersSchema = new mongoose.Schema({
     date: { 
         type: Date,
         default: new Date()
-    }
+    },
+    gym_branch: { type: mongoose.Schema.Types.ObjectId, ref: 'GYM_BRANCH' },
   });
   
   const filters = new mongoose.model("Filters", filtersSchema);

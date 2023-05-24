@@ -12,7 +12,8 @@ const complaintSchema = new mongoose.Schema({
     },
     scalme: {
         type: String, default: null
-    }
+    },
+    gym_branch: { type: mongoose.Schema.Types.ObjectId, ref: 'GYM_BRANCH' },
   });
   
   const ticketComplaints = new mongoose.model("TicketComplaints", complaintSchema);

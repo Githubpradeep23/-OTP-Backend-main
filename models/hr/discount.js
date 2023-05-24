@@ -6,7 +6,8 @@ const discountSchema = new mongoose.Schema({
     billAmount: { type: Number, required: true },
     gymService: { type: mongoose.Schema.Types.ObjectId, ref: 'GYM_SERVICE'},
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    status: { type: String, default: 'PENDING'}
+    status: { type: String, default: 'PENDING'},
+    gym_branch: { type: mongoose.Schema.Types.ObjectId, ref: 'GYM_BRANCH' },
   });
   
   const discount = new mongoose.model("Discount", discountSchema);

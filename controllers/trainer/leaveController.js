@@ -11,7 +11,7 @@ const totalDays = (date_1, date_2) => {
 
 const submit = async (req, res) => {
     try {
-        const { employeeId, employee_role, reason, approver1, approver2, gymService, status, fromDate, toDate } = req.body;
+        const { employeeId, employee_role, reason, approver1, approver2, gymService, status, fromDate, toDate, gym_branch } = req.body;
         if (isEmpty(employeeId) || isEmpty(gymService) || isEmpty(employee_role) || isEmpty(reason) || isEmpty(approver1) || isEmpty(approver2)) {
             return res.status(422).json({
                 message: "Empty Fields found. Either employeeId, gymService, employee_role, reason approver1 or approver2 is missing.",
@@ -35,7 +35,8 @@ const submit = async (req, res) => {
             leaveType: leaveTypeResult._id,
             fromDate : isEmpty(fromDate) ? Date.now() : new Date(fromDate),
             toDate : isEmpty(toDate) ? Date.now() : new Date(toDate),
-            days: !isEmpty(fromDate) && !isEmpty(toDate) ? totalDays(new Date(new Date(toDate).setHours(23,59,59,59)), new Date(new Date(fromDate).setHours(0,0,0,0))) : 1
+            days: !isEmpty(fromDate) && !isEmpty(toDate) ? totalDays(new Date(new Date(toDate).setHours(23,59,59,59)), new Date(new Date(fromDate).setHours(0,0,0,0))) : 1,
+            gym_branch: isEmpty(gym_branch) ? undefined : gym_branch
         };
         let leaveResponse = await leave.create(leaveModel);
         return res.status(200).json({
@@ -90,7 +91,7 @@ const deleteLeave = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        let leaves = await leave.find().populate('employeeId').populate('approver1').populate('approver2').populate('gymService').populate('leaveType').exec();
+        let leaves = await leave.find().populate('employeeId').populate('approver1').populate('approver2').populate('gymService').populate('leaveType').populate('gym_branch').exec();
         if (
             leaves !== undefined &&
             leaves.length !== 0 &&
@@ -219,7 +220,7 @@ const fetchAllLeavesByFilter = async (req, res) => {
         status : 'PENDING', 
         employeeId, 
         createdAt: { $gte: new Date(fromDate), $lt: new Date(toDate) } 
-      }).populate('employeeId').populate('approver1').populate('approver2').populate('gymService').populate('leaveType').exec();
+      }).populate('employeeId').populate('approver1').populate('approver2').populate('gymService').populate('gym_branch').populate('leaveType').exec();
 
       return res.status(200).send({
           pendingLeaves ,

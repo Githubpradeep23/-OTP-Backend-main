@@ -20,6 +20,7 @@ const medicalRecordSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId, ref: 'User',
     },
+    gym_branch: { type: mongoose.Schema.Types.ObjectId, ref: 'GYM_BRANCH' },
 });
 
 const medicalRecord = new mongoose.model("MedicalRecord", medicalRecordSchema);

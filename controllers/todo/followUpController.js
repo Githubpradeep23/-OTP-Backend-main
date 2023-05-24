@@ -1,9 +1,10 @@
+const { isEmpty } = require("lodash");
 const Request = require("../../models/serviceRequest");
 const followup = require("../../models/todo/followUp");
 
 const submit = async (req, res) => {
     try {
-        const { dob, gender, timeSlot, reminderCall, demo, remarks, gymService, userId, type } = req.body;
+        const { dob, gender, timeSlot, reminderCall, demo, remarks, gymService, userId, type, gym_branch } = req.body;
         if (
             gender !== "" &&
             gender !== undefined &&
@@ -38,6 +39,9 @@ const submit = async (req, res) => {
                 }
                 if(remarks !== null && remarks !== '' && remarks !== undefined){
                     followupModel['remarks'] = remarks                                                                                   ;
+                }
+                if(!isEmpty(gym_branch)) {
+                  followupModel['gym_branch'] = gym_branch
                 }
                 let followUpResponse = await followup.create(followupModel);
                 return res.status(200).json({
@@ -99,7 +103,7 @@ const deleteTodo = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        let followUps = await followup.find().populate('gymService').populate('userId').exec();
+        let followUps = await followup.find().populate('gymService').populate('gym_branch').populate('userId').exec();
         if (
             followUps !== undefined &&
             followUps.length !== 0 &&
@@ -127,7 +131,7 @@ const getAll = async (req, res) => {
 const getAllByType = async (req, res) => {
   try {
       const type = req.params['type'];
-      let followUps = await followup.find({ type }).populate('gymService').populate('userId').exec();
+      let followUps = await followup.find({ type }).populate('gymService').populate('gym_branch').populate('userId').exec();
       if (
           followUps !== undefined &&
           followUps.length !== 0 &&

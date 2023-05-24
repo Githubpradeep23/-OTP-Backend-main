@@ -37,6 +37,7 @@ const workoutSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
+    gym_branch: { type: mongoose.Schema.Types.ObjectId, ref: 'GYM_BRANCH' },
 });
 
 const workout = new mongoose.model("Workout", workoutSchema);

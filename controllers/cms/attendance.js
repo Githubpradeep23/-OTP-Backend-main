@@ -3,7 +3,7 @@ const attendanceModel = require("../../models/cms/attendance");
 
 const submit = async (req, res) => {
     try {
-        const { user, monthDate, noOfDaysPresent, noOfDaysAbsent } = req.body;
+        const { user, monthDate, noOfDaysPresent, noOfDaysAbsent, gym_branch } = req.body;
         if (isEmpty(user) || isEmpty(monthDate)) {
             return res.status(422).json({
                 message: "Empty Fields found user Id or monthDate is missing.",
@@ -17,6 +17,7 @@ const submit = async (req, res) => {
               monthDate,
               noOfDaysPresent : isNaN(noOfDaysPresent) ? 0 : Number(noOfDaysPresent),
               noOfDaysAbsent : isNaN(noOfDaysAbsent) ? 0 : Number(noOfDaysAbsent),
+              gym_branch: isEmpty(gym_branch) ? undefined : gym_branch
           };
           let attendanceResponse = await attendanceModel.create(attendanceReq);
           return res.status(200).json({
@@ -28,6 +29,7 @@ const submit = async (req, res) => {
         let updateAttendance = {
           noOfDaysPresent : isNaN(present) || present === 0 ? undefined : existingAttendanceResponse.noOfDaysPresent || 0 + Number(present),
           noOfDaysAbsent : isNaN(absent) || absent === 0 ? undefined : existingAttendanceResponse.noOfDaysAbsent || 0 +  Number(absent),
+          gym_branch: isEmpty(gym_branch) ? undefined : gym_branch
         };
         let attendanceResponse = await attendanceModel.findOneAndUpdate(
           { _id: attendanceId },
@@ -137,7 +139,7 @@ const deleteAttendance = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        let allAttendances = await attendanceModel.find().populate('user').exec();
+        let allAttendances = await attendanceModel.find().populate('user').populate('gym_branch').exec();
         if (
             allAttendances !== undefined &&
             allAttendances.length !== 0 &&

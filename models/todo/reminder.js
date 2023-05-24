@@ -28,7 +28,8 @@ const reminderSchema = new mongoose.Schema({
         required: false
     },
     gymService: { type: mongoose.Schema.Types.ObjectId, ref: 'GYM_SERVICE'},
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    gym_branch: { type: mongoose.Schema.Types.ObjectId, ref: 'GYM_BRANCH' },
   });
   
   const renewalReminder = new mongoose.model("RenewalReminder", reminderSchema);

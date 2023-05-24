@@ -28,7 +28,8 @@ const followUpSchema = new mongoose.Schema({
     type: { 
         type: String,
         required: true
-    }
+    },
+    gym_branch: { type: mongoose.Schema.Types.ObjectId, ref: 'GYM_BRANCH' },
   });
   
   const followup = new mongoose.model("FollowUp", followUpSchema);

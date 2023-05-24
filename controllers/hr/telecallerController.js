@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const submit = async (req, res) => {
     try {
-        const { name, service, mobile,review } = req.body;
+        const { name, service, mobile,review, gym_branch } = req.body;
         if ( isEmpty(name) ||  isNaN(mobile) || isEmpty(service) || isEmpty(review)) {
             return res.status(400).json({
                 message: "Empty Fields found. Either name, mobile, service or review is missing.",
@@ -15,7 +15,8 @@ const submit = async (req, res) => {
             name,
             mobile,
             service,
-            review
+            review,
+            gym_branch: isEmpty(gym_branch) ? undefined : gym_branch
         };
         
         let telecallerResponse = await telecaller.create(telecallerModel);
@@ -71,7 +72,7 @@ const deleteTelecaller = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        let telecallers = await telecaller.find().populate('service').exec();
+        let telecallers = await telecaller.find().populate('service').populate('gym_branch').exec();
         if (
             telecallers !== undefined &&
             telecallers.length !== 0 &&

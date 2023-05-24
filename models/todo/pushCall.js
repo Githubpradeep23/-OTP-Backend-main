@@ -16,6 +16,7 @@ const pushCallSchema = new mongoose.Schema({
     },
     gymService: { type: mongoose.Schema.Types.ObjectId, ref: 'GYM_SERVICE'},
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    gym_branch: { type: mongoose.Schema.Types.ObjectId, ref: 'GYM_BRANCH' },
   });
   
   const pushCall = new mongoose.model("PushCall", pushCallSchema);

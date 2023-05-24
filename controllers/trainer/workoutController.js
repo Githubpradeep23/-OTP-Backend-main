@@ -17,7 +17,7 @@ const mapActivity = (activities) => {
 
 const submit = async (req, res) => {
     try {
-        const { day, name, set1, numberOfRounds1, set2, numberOfRounds2 } = req.body;
+        const { day, name, set1, numberOfRounds1, set2, numberOfRounds2, gym_branch } = req.body;
         if (isEmpty(day) || isEmpty(set1) || isNaN(numberOfRounds1) || isEmpty(set2) || isNaN(numberOfRounds2)) {
             return res.status(400).json({
                 message: "Empty Fields found. Either day, set1, numberOfRounds1, set2 or numberOfRounds2 is missing.",
@@ -30,7 +30,8 @@ const submit = async (req, res) => {
             numberOfRounds2,
             name: !isEmpty(name) ? name : undefined,
             set1: mapActivity(JSON.parse(set1)),
-            set2: mapActivity(JSON.parse(set2))
+            set2: mapActivity(JSON.parse(set2)),
+            gym_branch: isEmpty(gym_branch) ? undefined : gym_branch
         };
         
         let workoutResponse = await workout.create(workoutModel);
@@ -90,7 +91,7 @@ const getAll = async (req, res) => {
             populate: [{ path: 'exercise', model: 'Exercise'}]
         }).populate({ path: 'set2',
             populate: [{ path: 'exercise', model: 'Exercise'}]
-        });
+        }).populate('gym_branch');
         if (
             workouts !== undefined &&
             workouts.length !== 0 &&
@@ -122,7 +123,7 @@ const getAllWorkoutsByDay = async (req, res) => {
         populate: [{ path: 'exercise', model: 'Exercise'}]
         }).populate({ path: 'set2',
             populate: [{ path: 'exercise', model: 'Exercise'}]
-        });
+        }).populate('gym_branch');
         if (
             workoutByDay !== undefined &&
             workoutByDay.length !== 0 &&
@@ -149,7 +150,7 @@ const getAllWorkoutsByDay = async (req, res) => {
 
 const updateWorkout = async (req, res) => {
     try {
-        const { workoutId, day, name, set1, numberOfRounds1, set2, numberOfRounds2 } = req.body;
+        const { workoutId, day, name, set1, numberOfRounds1, set2, numberOfRounds2, gym_branch } = req.body;
         if (!workoutId) {
             return res.status(400)
                 .json([{ msg: "Workout ID is required", res: "error", }]);
@@ -166,6 +167,8 @@ const updateWorkout = async (req, res) => {
         updateWorkout.set2 = isEmpty(set2) ? undefined : mapActivity(JSON.parse(set2));
         updateWorkout.numberOfRounds1 = isNaN(numberOfRounds1) ? 0 : Number(numberOfRounds1);
         updateWorkout.numberOfRounds2 = isNaN(numberOfRounds2) ? 0 : Number(numberOfRounds2);
+        updateWorkout.gym_branch = isEmpty(gym_branch) ? undefined : gym_branch;
+        
         let updatedWorkout = await workout.findOneAndUpdate(
             { _id: workoutId },
             { $set : updateWorkout}

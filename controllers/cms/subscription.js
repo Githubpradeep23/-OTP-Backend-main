@@ -4,7 +4,7 @@ const billingModel = require("../../models/cms/billing");
 
 const submitCancellation = async (req, res) => {
     try {
-        const { billing, user, extendUpto, cancelSubscription, feeRefund, reasonForCancellation, approver1, approver2 } = req.body;
+        const { billing, user, extendUpto, cancelSubscription, feeRefund, reasonForCancellation, approver1, approver2, gym_branch } = req.body;
         if (isEmpty(billing) || isEmpty(user)) {
             return res.status(400).json({
                 message: "Empty Fields found . Either billing or User Id is missing.",
@@ -19,7 +19,8 @@ const submitCancellation = async (req, res) => {
             feeRefund: isNaN(feeRefund) ? undefined : Number(feeRefund),
             reasonForCancellation: isEmpty(reasonForCancellation) ? undefined :  reasonForCancellation,
             approver1: isEmpty(approver1) ? undefined : approver1,
-            approver2 : isEmpty(approver2) ? undefined : approver2
+            approver2 : isEmpty(approver2) ? undefined : approver2,
+            gym_branch: isEmpty(gym_branch) ? undefined : gym_branch,
         };
         if(cancelSubscription) {
             await billingModel.findOneAndUpdate(
@@ -81,7 +82,7 @@ const deleteSubscription = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        let allSubscription = await subscription.find().populate('billing').populate('user').exec();
+        let allSubscription = await subscription.find().populate('billing').populate('gym_branch').populate('user').exec();
         if (
             allSubscription !== undefined &&
             allSubscription.length !== 0 &&
@@ -109,7 +110,7 @@ const getAll = async (req, res) => {
 const getAllSubscriptionsByUser = async (req, res) => {
     try {
         const userId = req.params['userId'];
-        let allSubscriptionsByUser = await subscription.find({ user: userId }).populate('billing').populate('user').exec();
+        let allSubscriptionsByUser = await subscription.find({ user: userId }).populate('billing').populate('gym_branch').populate('user').exec();
         if (
             allSubscriptionsByUser !== undefined &&
             allSubscriptionsByUser.length !== 0 &&

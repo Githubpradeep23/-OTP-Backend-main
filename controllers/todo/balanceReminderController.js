@@ -3,7 +3,7 @@ const balanceReminder = require("../../models/todo/balanceReminder");
 
 const submit = async (req, res) => {
     try {
-        const { timeSlot, totalFees, demo, balancePaid, gymService, userId, balance } = req.body;
+        const { timeSlot, totalFees, demo, balancePaid, gymService, userId, balance, gym_branch } = req.body;
         if (isNaN(totalFees) || isEmpty(timeSlot) || isEmpty(gymService) || isEmpty(userId)) {
             return res.status(422).json({
                 message: "Empty Fields found. Either totalFees, timeSlot, gymService and userId missing.",
@@ -14,7 +14,8 @@ const submit = async (req, res) => {
             timeSlot,
             totalFees,
             gymService,
-            userId
+            userId,
+            gym_branch: isEmpty(gym_branch) ? undefined : gym_branch
         };
         if(balancePaid !== null && balancePaid !== '' && balancePaid !== undefined){
             balanceReminderModel['balancePaid'] = balancePaid                                                                                   ;
@@ -77,7 +78,7 @@ const deleteBalanceReminder = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        let balanceReminders = await balanceReminder.find().populate('gymService').populate('userId').exec();
+        let balanceReminders = await balanceReminder.find().populate('gymService').populate('gym_branch').populate('userId').exec();
         if (
             balanceReminders !== undefined &&
             balanceReminders.length !== 0 &&

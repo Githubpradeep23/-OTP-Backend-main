@@ -1,9 +1,10 @@
+const { isEmpty } = require("lodash");
 const Request = require("../../models/serviceRequest");
 const pushCall = require("../../models/todo/pushCall");
 
 const submit = async (req, res) => {
     try {
-        const { callBackOn, interestedIn, bookDemo, gymService, userId, remarks } = req.body;
+        const { callBackOn, interestedIn, bookDemo, gymService, userId, remarks, gym_branch } = req.body;
         if (
             callBackOn !== "" &&
             callBackOn !== undefined &&
@@ -27,6 +28,9 @@ const submit = async (req, res) => {
                 }
                 if(remarks !== null && remarks !== '' && remarks !== undefined){
                     pushCallModel['remarks'] = remarks                                                                                   ;
+                }
+                if(!isEmpty(gym_branch)) {
+                    pushCallModel['gym_branch'] = gym_branch
                 }
                 let pushCallResponse = await pushCall.create(pushCallModel);
                 return res.status(200).json({
@@ -88,7 +92,7 @@ const deletePushCall = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        let pushCalls = await pushCall.find().populate('gymService').populate('userId').exec();
+        let pushCalls = await pushCall.find().populate('gymService').populate('gym_branch').populate('userId').exec();
         if (
             pushCalls !== undefined &&
             pushCalls.length !== 0 &&

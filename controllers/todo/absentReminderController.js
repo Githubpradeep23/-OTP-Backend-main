@@ -3,7 +3,7 @@ const absentReminder = require("../../models/todo/absentReminder");
 
 const submit = async (req, res) => {
     try {
-        const { date, timeSlot, followUpCall, reminderSMS, remarks, gymService, userId, done, notDone } = req.body;
+        const { date, timeSlot, followUpCall, reminderSMS, remarks, gymService, userId, done, notDone, gym_branch } = req.body;
         if ( isEmpty(timeSlot) || isEmpty(gymService) || isEmpty(userId)) {
             return res.status(422).json({
                 message: "Empty Fields found. Either timeSlot, gymService or userId is missing.",
@@ -14,7 +14,8 @@ const submit = async (req, res) => {
             timeSlot,
             date : isEmpty(date) ? new Date() : new Date(date),
             gymService,
-            userId
+            userId,
+            gym_branch: isEmpty(gym_branch) ? undefined : gym_branch 
           };
         if(followUpCall !== undefined){
             absentReminderModel['followUpCall'] = followUpCall;
@@ -84,7 +85,7 @@ const deleteAbsentReminder = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        let absentReminders = await absentReminder.find().populate('gymService').populate('userId').exec();
+        let absentReminders = await absentReminder.find().populate('gymService').populate('gym_branch').populate('userId').exec();
         if (
             absentReminders !== undefined &&
             absentReminders.length !== 0 &&

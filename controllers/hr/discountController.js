@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const submit = async (req, res) => {
     try {
-        const { discount, description, billAmount, gymService, userId, status } = req.body;
+        const { discount, description, billAmount, gymService, userId, status, gym_branch } = req.body;
         if ( isNaN(discount) ||  isNaN(billAmount) || isEmpty(gymService) || isEmpty(userId)) {
             return res.status(400).json({
                 message: "Empty Fields found. Either discount, billAmount, gymService or userId is missing.",
@@ -17,7 +17,8 @@ const submit = async (req, res) => {
             billAmount : Number(billAmount),
             gymService,
             userId,
-            status: isEmpty(status) ? 'PENDING' : status
+            status: isEmpty(status) ? 'PENDING' : status,
+            gym_branch: isEmpty(gym_branch) ? undefined : gym_branch
         };
         
         let discountResponse = await discountDb.create(discountModel);
@@ -73,7 +74,7 @@ const deleteDiscount = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        let discounts = await discountDb.find().populate('gymService').populate('userId').exec();
+        let discounts = await discountDb.find().populate('gymService').populate('gym_branch').populate('userId').exec();
         if (
             discounts !== undefined &&
             discounts.length !== 0 &&
@@ -101,7 +102,7 @@ const getAll = async (req, res) => {
 const getAllByUserId = async (req, res) => {
     try {
         const userId = req.params['userId'];
-        let discounts = await discountDb.find({userId}).populate('gymService').populate('userId').exec();
+        let discounts = await discountDb.find({userId}).populate('gymService').populate('gym_branch').populate('userId').exec();
         if (
             discounts !== undefined &&
             discounts.length !== 0 &&

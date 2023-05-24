@@ -10,6 +10,7 @@ const billingSchema = new mongoose.Schema({
     paidFee: { type: Number, required: true },
     feeDue: { type: Number, required: true },
     remarks: { type: String, required: false },
+    gym_branch: { type: mongoose.Schema.Types.ObjectId, ref: 'GYM_BRANCH' },
   });
   
   const billing = new mongoose.model("Billing", billingSchema);

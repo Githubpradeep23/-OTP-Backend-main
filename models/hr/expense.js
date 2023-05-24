@@ -8,7 +8,8 @@ const expenseSchema = new mongoose.Schema({
     status: { 
         type: String,
         default: 'PENDING'
-    }
+    },
+    gym_branch: { type: mongoose.Schema.Types.ObjectId, ref: 'GYM_BRANCH' },
   });
   
   const expense = new mongoose.model("Expense", expenseSchema);

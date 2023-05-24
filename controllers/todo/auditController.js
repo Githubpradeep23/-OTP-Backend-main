@@ -4,7 +4,7 @@ const audits = require("../../models/todo/audit");
 const submit = async (req, res) => {
     try {
         const { staffInOut, whatsAppStatus, whatsAppBroadcast, hygieneCheck, addWhatsAppContact, airPercentageCheck, turnedOnLights,
-            cashHandover, absentSmsCalls, followUpCalls, turnedOffLights, gymService } = req.body;
+            cashHandover, absentSmsCalls, followUpCalls, turnedOffLights, gymService, gym_branch } = req.body;
         if (isEmpty(gymService)) {
             return res.status(422).json({
                 message: "Empty Fields found GymService is missing.",
@@ -14,7 +14,7 @@ const submit = async (req, res) => {
         let auditModel = {
             staffInOut, whatsAppStatus, whatsAppBroadcast, hygieneCheck, addWhatsAppContact, 
             airPercentageCheck, turnedOnLights, cashHandover, absentSmsCalls, followUpCalls,
-            turnedOffLights, gymService
+            turnedOffLights, gymService, gym_branch
         };
         let auditsResponse = await audits.create(auditModel);
         return res.status(200).json({
@@ -70,7 +70,7 @@ const deleteAudits = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        let allAudits = await audits.find().populate('gymService').exec();
+        let allAudits = await audits.find().populate('gymService').populate('gym_branch').exec();
         if (
             allAudits !== undefined &&
             allAudits.length !== 0 &&

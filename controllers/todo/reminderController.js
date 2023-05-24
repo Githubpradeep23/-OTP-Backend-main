@@ -1,9 +1,10 @@
+const { isEmpty } = require("lodash");
 const Request = require("../../models/serviceRequest");
 const renewalReminder = require("../../models/todo/reminder");
 
 const submit = async (req, res) => {
     try {
-        const { activeTo, activeFrom, timeSlot, followUpCall, reminderSMS, remarks, gymService, userId, done, notDone } = req.body;
+        const { activeTo, activeFrom, timeSlot, followUpCall, reminderSMS, remarks, gymService, userId, done, notDone, gym_branch } = req.body;
         if (
             activeTo !== "" &&
             activeTo !== undefined &&
@@ -41,6 +42,9 @@ const submit = async (req, res) => {
                 }
                 if(remarks !== null && remarks !== '' && remarks !== undefined){
                     reminderModel['remarks'] = remarks                                                                                   ;
+                }
+                if(!isEmpty(gym_branch)) {
+                    reminderModel['gym_branch'] = gym_branch
                 }
                 let reminderResponse = await renewalReminder.create(reminderModel);
                 return res.status(200).json({
@@ -102,7 +106,7 @@ const deleteReminder = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        let reminders = await renewalReminder.find().populate('gymService').populate('userId').exec();
+        let reminders = await renewalReminder.find().populate('gymService').populate('gym_branch').populate('userId').exec();
         if (
             reminders !== undefined &&
             reminders.length !== 0 &&

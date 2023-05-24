@@ -26,7 +26,8 @@ const leaveSchema = new mongoose.Schema(
     days: {
       type: Number,
       default: 1
-    }
+    },
+    gym_branch: { type: mongoose.Schema.Types.ObjectId, ref: 'GYM_BRANCH' },
   },
   {
     timestamps: true

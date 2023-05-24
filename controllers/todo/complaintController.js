@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 
 const submit = async (req, res) => {
     try {
-        const { clientNumber, complaintDetails, supportEmployee, gymService, status } = req.body;
+        const { clientNumber, complaintDetails, supportEmployee, gymService, status, gym_branch } = req.body;
         if (isEmpty(clientNumber) || isEmpty(complaintDetails) || isEmpty(supportEmployee) || isEmpty(gymService)) {
             return res.status(422).json({
                 message: "Empty Fields found. Either clientNumber, complaintDetails, supportEmployee and gymService missing.",
@@ -24,7 +24,8 @@ const submit = async (req, res) => {
             clientNumber,
             complaintDetails,
             supportEmployee,
-            gymService
+            gymService,
+            gym_branch: isEmpty(gym_branch) ? undefined : gym_branch
         };
         const userByPhoneNo = await user.findOne({number: clientNumber});
         if(isEmpty(userByPhoneNo)) {
@@ -90,7 +91,7 @@ const deleteTicketComplaint = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        let complaintTickets = await ticketComplaints.find().populate('gymService').populate('userId').populate('supportEmployee').exec();
+        let complaintTickets = await ticketComplaints.find().populate('gymService').populate('gym_branch').populate('userId').populate('supportEmployee').exec();
         if (
             complaintTickets !== undefined &&
             complaintTickets.length !== 0 &&
@@ -158,7 +159,7 @@ const updateStatus = async (req, res) => {
 
 const getAllPendingComplaints = async (req, res) => {
   try {
-      let complaintTickets = await ticketComplaints.find({ status : 'PENDING'}).populate('gymService').populate('userId').populate('supportEmployee').exec();
+      let complaintTickets = await ticketComplaints.find({ status : 'PENDING'}).populate('gymService').populate('gym_branch').populate('userId').populate('supportEmployee').exec();
       if (
           complaintTickets !== undefined &&
           complaintTickets.length !== 0 &&

@@ -16,7 +16,8 @@ const auditSchema = new mongoose.Schema({
     date: { 
         type: Date,
         default: new Date()
-    }
+    },
+    gym_branch: { type: mongoose.Schema.Types.ObjectId, ref: 'GYM_BRANCH' },
   });
   
   const audits = new mongoose.model("Audits", auditSchema);

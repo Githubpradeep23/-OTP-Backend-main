@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const submit = async (req, res) => {
     try {
-        const { expense, description, billAmount, employeeId, status } = req.body;
+        const { expense, description, billAmount, employeeId, status, gym_branch } = req.body;
         if ( isNaN(expense) ||  isNaN(billAmount) || isEmpty(employeeId)) {
             return res.status(400).json({
                 message: "Empty Fields found. Either expense, billAmount, or employeeId is missing.",
@@ -16,7 +16,8 @@ const submit = async (req, res) => {
             description: isEmpty(description) ? undefined : description, 
             billAmount : Number(billAmount),
             employeeId,
-            status: isEmpty(status) ? 'PENDING' : status
+            status: isEmpty(status) ? 'PENDING' : status,
+            gym_branch: isEmpty(gym_branch) ? undefined : gym_branch,
         };
         
         let expenseResponse = await expenseDb.create(expenseModel);
@@ -72,7 +73,7 @@ const deleteExpense = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        let expenses = await expenseDb.find().populate('employeeId').exec();
+        let expenses = await expenseDb.find().populate('employeeId').populate('gym_branch').exec();
         if (
             expenses !== undefined &&
             expenses.length !== 0 &&
@@ -100,7 +101,7 @@ const getAll = async (req, res) => {
 const getAllByEmployeeId = async (req, res) => {
     try {
         const userId = req.params['userId'];
-        let expenses = await expenseDb.find({employeeId}).populate('employeeId').exec();
+        let expenses = await expenseDb.find({employeeId}).populate('employeeId').populate('gym_branch').exec();
         if (
             expenses !== undefined &&
             expenses.length !== 0 &&

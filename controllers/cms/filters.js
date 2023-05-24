@@ -5,7 +5,7 @@ const submit = async (req, res) => {
     try {
         const { fit5, strong60, enquiries, renewals, upcomingDemos, feeBalance, inactiveClients,
             fusions, demosBooked, newJoining, upcomingRenewals, review, activeClients, gymService,
-            fit } = req.body;
+            fit, gym_branch } = req.body;
         if (isEmpty(gymService)) {
             return res.status(422).json({
                 message: "Empty Fields found GymService is missing.",
@@ -15,7 +15,7 @@ const submit = async (req, res) => {
         let filterModel = {
             fit5, strong60, enquiries, renewals, upcomingDemos, feeBalance,
             inactiveClients, fusions, demosBooked, newJoining, upcomingRenewals,
-            review, gymService, activeClients, fit
+            review, gymService, activeClients, fit, gym_branch
         };
         let filtersResponse = await filters.create(filterModel);
         return res.status(200).json({
@@ -71,7 +71,7 @@ const deleteFilters = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        let allFilters = await filters.find().populate('gymService').exec();
+        let allFilters = await filters.find().populate('gymService').populate('gym_branch').exec();
         if (
             allFilters !== undefined &&
             allFilters.length !== 0 &&
