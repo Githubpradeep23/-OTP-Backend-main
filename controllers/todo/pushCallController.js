@@ -93,13 +93,21 @@ const deletePushCall = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         let pushCalls = await pushCall.find().populate('gymService').populate('gym_branch').populate('userId').exec();
+        let getAllPushCalls = [];
+        for(let pushCall of pushCalls) {
+          getAllPushCalls.push({
+            ...pushCall._doc,
+            branchName: pushCall.gym_branch ? pushCall.gym_branch.branchName : undefined,
+            branchLocation: pushCall.gym_branch ? pushCall.gym_branch.location : undefined,
+          })
+        }
         if (
-            pushCalls !== undefined &&
-            pushCalls.length !== 0 &&
-            pushCalls !== null
+          getAllPushCalls !== undefined &&
+          getAllPushCalls.length !== 0 &&
+          getAllPushCalls !== null
         ) {
           return res.status(200).send({
-            pushCalls ,
+            pushCalls: getAllPushCalls ,
             messge: "All PushCalls",
             success: true,
           });

@@ -74,13 +74,21 @@ const deleteMedicalRecords = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         let allMedicalRecords = await medicalRecords.find().populate('user').populate('gym_branch');
+        let getAllMedicalRecords = [];
+        for(let medicalRecord of allMedicalRecords) {
+          getAllMedicalRecords.push({
+            ...medicalRecord._doc,
+            branchName: medicalRecord.gym_branch ? medicalRecord.gym_branch.branchName : undefined,
+            branchLocation: medicalRecord.gym_branch ? medicalRecord.gym_branch.location : undefined,
+          })
+        }
         if (
-            allMedicalRecords !== undefined &&
-            allMedicalRecords.length !== 0 &&
-            allMedicalRecords !== null
+          getAllMedicalRecords !== undefined &&
+          getAllMedicalRecords.length !== 0 &&
+          getAllMedicalRecords !== null
         ) {
           return res.status(200).send({
-            medicalRecords: allMedicalRecords ,
+            medicalRecords: getAllMedicalRecords ,
             messge: "All MedicalRecords",
             success: true,
           });

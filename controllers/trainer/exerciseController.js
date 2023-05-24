@@ -71,13 +71,21 @@ const deleteExercise = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         let exercises = await exercise.find().populate('gym_branch');
+        let getAllExercises = [];
+        for(let exercise of exercises) {
+          getAllExercises.push({
+            ...exercise._doc,
+            branchName: exercise.gym_branch ? exercise.gym_branch.branchName : undefined,
+            branchLocation: exercise.gym_branch ? exercise.gym_branch.location : undefined,
+          })
+        }
         if (
-            exercises !== undefined &&
-            exercises.length !== 0 &&
-            exercises !== null
+          getAllExercises !== undefined &&
+          getAllExercises.length !== 0 &&
+          getAllExercises !== null
         ) {
           return res.status(200).send({
-            exercises ,
+            exercises: getAllExercises ,
             messge: "All Exercises",
             success: true,
           });

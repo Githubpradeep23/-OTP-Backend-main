@@ -122,13 +122,21 @@ const deleteBilling = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         let allBillings = await billing.find().populate('gymService').populate('gym_branch').populate('user').exec();
+        let getAllBillings = [];
+        for(let billing of allBillings) {
+          getAllBillings.push({
+            ...billing._doc,
+            branchName: billing.gym_branch ? billing.gym_branch.branchName : undefined,
+            branchLocation: billing.gym_branch ? billing.gym_branch.location : undefined,
+          })
+        }
         if (
-            allBillings !== undefined &&
-            allBillings.length !== 0 &&
-            allBillings !== null
+          getAllBillings !== undefined &&
+          getAllBillings.length !== 0 &&
+          getAllBillings !== null
         ) {
           return res.status(200).send({
-            billing: allBillings ,
+            billing: getAllBillings ,
             messge: "All Billings",
             success: true,
           });

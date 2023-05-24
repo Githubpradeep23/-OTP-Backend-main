@@ -75,13 +75,21 @@ const deleteDiscount = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         let discounts = await discountDb.find().populate('gymService').populate('gym_branch').populate('userId').exec();
+        let getAllDiscounts = [];
+        for(let discount of discounts) {
+          getAllDiscounts.push({
+            ...discount._doc,
+            branchName: discount.gym_branch ? discount.gym_branch.branchName : undefined,
+            branchLocation: discount.gym_branch ? discount.gym_branch.location : undefined,
+          })
+        }
         if (
-            discounts !== undefined &&
-            discounts.length !== 0 &&
-            discounts !== null
+          getAllDiscounts !== undefined &&
+          getAllDiscounts.length !== 0 &&
+          getAllDiscounts !== null
         ) {
           return res.status(200).send({
-            discounts ,
+            discounts: getAllDiscounts ,
             messge: "All discounts",
             success: true,
           });

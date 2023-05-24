@@ -79,13 +79,21 @@ const deleteBalanceReminder = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         let balanceReminders = await balanceReminder.find().populate('gymService').populate('gym_branch').populate('userId').exec();
+        let getAllBalanceReminders = [];
+        for(let balanceReminder of balanceReminders) {
+          getAllBalanceReminders.push({
+            ...balanceReminder._doc,
+            branchName: balanceReminder.gym_branch ? balanceReminder.gym_branch.branchName : undefined,
+            branchLocation: balanceReminder.gym_branch ? balanceReminder.gym_branch.location : undefined,
+          })
+        }
         if (
-            balanceReminders !== undefined &&
-            balanceReminders.length !== 0 &&
-            balanceReminders !== null
+          getAllBalanceReminders !== undefined &&
+          getAllBalanceReminders.length !== 0 &&
+          getAllBalanceReminders !== null
         ) {
           return res.status(200).send({
-            balanceReminders ,
+            balanceReminders: getAllBalanceReminders ,
             messge: "All Balance Reminders",
             success: true,
           });

@@ -104,13 +104,21 @@ const deleteTodo = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         let followUps = await followup.find().populate('gymService').populate('gym_branch').populate('userId').exec();
+        let getAllFollowUps = [];
+        for(let followUp of followUps) {
+          getAllFollowUps.push({
+            ...followUp._doc,
+            branchName: followUp.gym_branch ? followUp.gym_branch.branchName : undefined,
+            branchLocation: followUp.gym_branch ? followUp.gym_branch.location : undefined,
+          })
+        }
         if (
-            followUps !== undefined &&
-            followUps.length !== 0 &&
-            followUps !== null
+          getAllFollowUps !== undefined &&
+          getAllFollowUps.length !== 0 &&
+          getAllFollowUps !== null
         ) {
           return res.status(200).send({
-            followUps ,
+            followUps: getAllFollowUps,
             messge: "All FollowUps",
             success: true,
           });

@@ -86,13 +86,21 @@ const deleteAbsentReminder = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         let absentReminders = await absentReminder.find().populate('gymService').populate('gym_branch').populate('userId').exec();
+        let getAllAbsentReminders = [];
+        for(let absentReminder of absentReminders) {
+          getAllAbsentReminders.push({
+            ...absentReminder._doc,
+            branchName: absentReminder.gym_branch ? absentReminder.gym_branch.branchName : undefined,
+            branchLocation: absentReminder.gym_branch ? absentReminder.gym_branch.location : undefined,
+          })
+        }
         if (
-            absentReminders !== undefined &&
-            absentReminders.length !== 0 &&
-            absentReminders !== null
+          getAllAbsentReminders !== undefined &&
+          getAllAbsentReminders.length !== 0 &&
+          getAllAbsentReminders !== null
         ) {
           return res.status(200).send({
-            absentReminders ,
+            absentReminders: getAllAbsentReminders ,
             messge: "All Absent Reminders",
             success: true,
           });

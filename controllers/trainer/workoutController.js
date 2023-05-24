@@ -92,13 +92,21 @@ const getAll = async (req, res) => {
         }).populate({ path: 'set2',
             populate: [{ path: 'exercise', model: 'Exercise'}]
         }).populate('gym_branch');
+        let getAllWorkouts = [];
+        for(let workout of workouts) {
+          getAllWorkouts.push({
+            ...workout._doc,
+            branchName: workout.gym_branch ? workout.gym_branch.branchName : undefined,
+            branchLocation: workout.gym_branch ? workout.gym_branch.location : undefined,
+          })
+        }
         if (
-            workouts !== undefined &&
-            workouts.length !== 0 &&
-            workouts !== null
+          getAllWorkouts !== undefined &&
+          getAllWorkouts.length !== 0 &&
+          getAllWorkouts !== null
         ) {
           return res.status(200).send({
-            workouts ,
+            workouts: getAllWorkouts ,
             messge: "All Workouts by day",
             success: true,
           });
@@ -168,7 +176,7 @@ const updateWorkout = async (req, res) => {
         updateWorkout.numberOfRounds1 = isNaN(numberOfRounds1) ? 0 : Number(numberOfRounds1);
         updateWorkout.numberOfRounds2 = isNaN(numberOfRounds2) ? 0 : Number(numberOfRounds2);
         updateWorkout.gym_branch = isEmpty(gym_branch) ? undefined : gym_branch;
-        
+
         let updatedWorkout = await workout.findOneAndUpdate(
             { _id: workoutId },
             { $set : updateWorkout}

@@ -107,13 +107,21 @@ const deleteReminder = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         let reminders = await renewalReminder.find().populate('gymService').populate('gym_branch').populate('userId').exec();
+        let getAllReminders = [];
+        for(let reminder of reminders) {
+          getAllReminders.push({
+            ...reminder._doc,
+            branchName: reminder.gym_branch ? reminder.gym_branch.branchName : undefined,
+            branchLocation: reminder.gym_branch ? reminder.gym_branch.location : undefined,
+          })
+        }
         if (
-            reminders !== undefined &&
-            reminders.length !== 0 &&
-            reminders !== null
+          getAllReminders !== undefined &&
+          getAllReminders.length !== 0 &&
+          getAllReminders !== null
         ) {
           return res.status(200).send({
-            renewalReminders: reminders ,
+            renewalReminders: getAllReminders ,
             messge: "All Reminders",
             success: true,
           });

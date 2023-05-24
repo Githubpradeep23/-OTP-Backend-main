@@ -71,13 +71,21 @@ const deleteAudits = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         let allAudits = await audits.find().populate('gymService').populate('gym_branch').exec();
+        let getAllAudits = [];
+        for(let audit of allAudits) {
+          getAllAudits.push({
+            ...audit._doc,
+            branchName: audit.gym_branch ? audit.gym_branch.branchName : undefined,
+            branchLocation: audit.gym_branch ? audit.gym_branch.location : undefined,
+          })
+        }
         if (
-            allAudits !== undefined &&
-            allAudits.length !== 0 &&
-            allAudits !== null
+          getAllAudits !== undefined &&
+          getAllAudits.length !== 0 &&
+          getAllAudits !== null
         ) {
           return res.status(200).send({
-            audits: allAudits ,
+            audits: getAllAudits ,
             messge: "All Audits",
             success: true,
           });

@@ -92,13 +92,21 @@ const deleteTicketComplaint = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         let complaintTickets = await ticketComplaints.find().populate('gymService').populate('gym_branch').populate('userId').populate('supportEmployee').exec();
+        let getAllComplaintTickets = [];
+        for(let complaintTicket of complaintTickets) {
+          getAllComplaintTickets.push({
+            ...complaintTicket._doc,
+            branchName: complaintTicket.gym_branch ? complaintTicket.gym_branch.branchName : undefined,
+            branchLocation: complaintTicket.gym_branch ? complaintTicket.gym_branch.location : undefined,
+          })
+        }
         if (
-            complaintTickets !== undefined &&
-            complaintTickets.length !== 0 &&
-            complaintTickets !== null
+          getAllComplaintTickets !== undefined &&
+          getAllComplaintTickets.length !== 0 &&
+          getAllComplaintTickets !== null
         ) {
           return res.status(200).send({
-            complaintTickets ,
+            complaintTickets: getAllComplaintTickets ,
             messge: "All complaintTickets",
             success: true,
           });

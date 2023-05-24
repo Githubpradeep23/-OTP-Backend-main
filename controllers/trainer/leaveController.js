@@ -92,13 +92,21 @@ const deleteLeave = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         let leaves = await leave.find().populate('employeeId').populate('approver1').populate('approver2').populate('gymService').populate('leaveType').populate('gym_branch').exec();
+        let getAllLeaves = [];
+        for(let leave of leaves) {
+          getAllLeaves.push({
+            ...leave._doc,
+            branchName: leave.gym_branch ? leave.gym_branch.branchName : undefined,
+            branchLocation: leave.gym_branch ? leave.gym_branch.location : undefined,
+          })
+        }
         if (
-            leaves !== undefined &&
-            leaves.length !== 0 &&
-            leaves !== null
+          getAllLeaves !== undefined &&
+          getAllLeaves.length !== 0 &&
+          getAllLeaves !== null
         ) {
           return res.status(200).send({
-            leaves ,
+            leaves: getAllLeaves ,
             messge: "All Leaves",
             success: true,
           });

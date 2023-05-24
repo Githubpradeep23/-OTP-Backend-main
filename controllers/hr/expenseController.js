@@ -74,13 +74,21 @@ const deleteExpense = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         let expenses = await expenseDb.find().populate('employeeId').populate('gym_branch').exec();
+        let getAllExpenses = [];
+        for(let expense of expenses) {
+          getAllExpenses.push({
+            ...expense._doc,
+            branchName: expense.gym_branch ? expense.gym_branch.branchName : undefined,
+            branchLocation: expense.gym_branch ? expense.gym_branch.location : undefined,
+          })
+        }
         if (
-            expenses !== undefined &&
-            expenses.length !== 0 &&
-            expenses !== null
+          getAllExpenses !== undefined &&
+          getAllExpenses.length !== 0 &&
+          getAllExpenses !== null
         ) {
           return res.status(200).send({
-            expenses ,
+            expenses: getAllExpenses,
             messge: "All expenses",
             success: true,
           });

@@ -72,13 +72,21 @@ const deleteFilters = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         let allFilters = await filters.find().populate('gymService').populate('gym_branch').exec();
+        let getAllFilters = [];
+        for(let filter of allFilters) {
+          getAllFilters.push({
+            ...filter._doc,
+            branchName: filter.gym_branch ? filter.gym_branch.branchName : undefined,
+            branchLocation: filter.gym_branch ? filter.gym_branch.location : undefined,
+          })
+        }
         if (
-            allFilters !== undefined &&
-            allFilters.length !== 0 &&
-            allFilters !== null
+          getAllFilters !== undefined &&
+          getAllFilters.length !== 0 &&
+          getAllFilters !== null
         ) {
           return res.status(200).send({
-            filters: allFilters ,
+            filters: getAllFilters ,
             messge: "All Filters",
             success: true,
           });

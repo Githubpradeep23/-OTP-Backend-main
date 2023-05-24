@@ -73,13 +73,21 @@ const deleteTelecaller = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         let telecallers = await telecaller.find().populate('service').populate('gym_branch').exec();
+        let getAllTelecallers = [];
+        for(let telecaller of telecallers) {
+          getAllTelecallers.push({
+            ...telecaller._doc,
+            branchName: telecaller.gym_branch ? telecaller.gym_branch.branchName : undefined,
+            branchLocation: telecaller.gym_branch ? telecaller.gym_branch.location : undefined,
+          })
+        }
         if (
-            telecallers !== undefined &&
-            telecallers.length !== 0 &&
-            telecallers !== null
+          getAllTelecallers !== undefined &&
+          getAllTelecallers.length !== 0 &&
+          getAllTelecallers !== null
         ) {
           return res.status(200).send({
-            telecallers ,
+            telecallers: getAllTelecallers ,
             messge: "All telecallers",
             success: true,
           });

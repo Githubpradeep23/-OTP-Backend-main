@@ -140,13 +140,21 @@ const deleteAttendance = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         let allAttendances = await attendanceModel.find().populate('user').populate('gym_branch').exec();
+        let getAllAttendances = [];
+        for(let attendance of allAttendances) {
+          getAllAttendances.push({
+            ...attendance._doc,
+            branchName: attendance.gym_branch ? attendance.gym_branch.branchName : undefined,
+            branchLocation: attendance.gym_branch ? attendance.gym_branch.location : undefined,
+          })
+        }
         if (
-            allAttendances !== undefined &&
-            allAttendances.length !== 0 &&
-            allAttendances !== null
+          getAllAttendances !== undefined &&
+          getAllAttendances.length !== 0 &&
+          getAllAttendances !== null
         ) {
           return res.status(200).send({
-            attendances: allAttendances ,
+            attendances: getAllAttendances ,
             messge: "All Attendances",
             success: true,
           });

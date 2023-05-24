@@ -66,13 +66,21 @@ const deleteEnquiry = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         let allEnquiries = await enquiry.find().populate('gymService').populate('gym_branch').populate('user').exec();
+        let getAllEnquiries = [];
+        for(let enquiry of allEnquiries) {
+          getAllEnquiries.push({
+            ...enquiry._doc,
+            branchName: enquiry.gym_branch ? enquiry.gym_branch.branchName : undefined,
+            branchLocation: enquiry.gym_branch ? enquiry.gym_branch.location : undefined,
+          })
+        }
         if (
-            allEnquiries !== undefined &&
-            allEnquiries.length !== 0 &&
-            allEnquiries !== null
+          getAllEnquiries !== undefined &&
+          getAllEnquiries.length !== 0 &&
+          getAllEnquiries !== null
         ) {
           return res.status(200).send({
-            enquiries: allEnquiries ,
+            enquiries: getAllEnquiries ,
             messge: "All Enquiries",
             success: true,
           });

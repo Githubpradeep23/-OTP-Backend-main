@@ -83,13 +83,21 @@ const deleteSubscription = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         let allSubscription = await subscription.find().populate('billing').populate('gym_branch').populate('user').exec();
+        let getAllSubscription = [];
+        for(let subscription of allSubscription) {
+          getAllSubscription.push({
+            ...subscription._doc,
+            branchName: subscription.gym_branch ? subscription.gym_branch.branchName : undefined,
+            branchLocation: subscription.gym_branch ? subscription.gym_branch.location : undefined,
+          })
+        }
         if (
-            allSubscription !== undefined &&
-            allSubscription.length !== 0 &&
-            allSubscription !== null
+          getAllSubscription !== undefined &&
+          getAllSubscription.length !== 0 &&
+          getAllSubscription !== null
         ) {
           return res.status(200).send({
-            subscription: allSubscription ,
+            subscription: getAllSubscription ,
             messge: "All Subscription",
             success: true,
           });
