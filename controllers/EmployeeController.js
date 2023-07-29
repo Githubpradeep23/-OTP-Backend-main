@@ -319,6 +319,7 @@ const loginEmployee = async (req, res) => {
   try {
       const { number, password } = req.body;
       let employeeRes = await Employee.findOne({ number, password });
+      console.log(JSON.stringify(employeeRes._doc));
       if (isEmpty(employeeRes)) {
         return res.status(400).send({
           messge: "Either phone number or password incorrect",
