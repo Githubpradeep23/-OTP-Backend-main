@@ -327,7 +327,8 @@ const loginEmployee = async (req, res) => {
       } else {
         return res.status(200).send({
           messge: "Employee Found",
-          success: false,
+          success: true,
+          employeeRes
         });
       }
     } catch (error) {
