@@ -1061,6 +1061,7 @@ const paymentBuyUser = async (req, res) => {
     // key secrate:CvIX87XzyJbtsZ7CaekLkPat
     try {
         const { service_id, orderDetails, userID,duration,price, copuan_id } = req.body;
+        console.log(`Payment by User : ${req.body}`);
         if (!userID) {
             return res.status(200)
                 .json([{ msg: "userID is required", res: "error", }]);
@@ -1124,6 +1125,7 @@ const paymentBuyUser = async (req, res) => {
             }]);
         }
     } catch (err) {
+        console.log(`Payment by user error : ${{err}}`);
         return res.status(200)
             .json([{ msg: err.message, res: "error" }]);
 
