@@ -1216,15 +1216,12 @@ const getUserOrderList = async (req, res) => {
                         item.branchdata.map((branch)=>{
                             obj["branchName"] = branch.branchName
                             
-                            obj["image"] = branch.image 
-
-                            finaldata.push(obj);
-
-                        
+                            obj["image"] = branch.image;
 
 
                         })
 
+                        finaldata.push(obj);
                         // branchdata.branchName;
 
                         // branchdata.image;
@@ -1282,8 +1279,6 @@ const getUserOrderList = async (req, res) => {
 const getUserActiveOrderList = async (req, res) => {
 
     try {
-
-
         const { userID, } = req.body;
         if (!userID) {
             return res.status(200)
@@ -1329,7 +1324,6 @@ const getUserActiveOrderList = async (req, res) => {
             }
             if (result) {
                 if (result === null || result === undefined || result === "" || result.length === 0) {
-
                     return res.status(200)
                         .json([{ msg: "Data Not found", res: "error" }]);
                 } else {
@@ -1358,29 +1352,18 @@ const getUserActiveOrderList = async (req, res) => {
     
     
                             item.branchdata.map((branch)=>{
-                                obj["branchName"] = branch.branchName
-                                
-                                obj["image"] = branch.image 
-    
-                                finaldata.push(obj);
-    
-                            
+                                obj["branchName"] = branch.branchName;
+                                obj["image"] = branch.image;
                             })
 
+                            finaldata.push(obj);
                         }
-
-                       
-
                     })
-
                     return res.status(200)
                         .json([{ msg: "all Active user Order data!!", data: finaldata, res: "success" }]);
                 }
             }
         });
-
-    
-
     } catch (err) {
         return res.status(200)
             .json([{ msg: err.message, res: "error" }]);
