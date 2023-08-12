@@ -41,9 +41,7 @@ const { isEmpty } = require("lodash");
 
 const signup = async (req, res) => {
     try {
-
         const { number } = req.body;
-
         if (!number) {
             return res.status(200)
                 .json([{ msg: "Number is required", res: "error", }]);
@@ -53,7 +51,6 @@ const signup = async (req, res) => {
         for (let i = 0; i < 4; i++) {
             OTP += digits[Math.floor(Math.random() * 10)];
         }
-
         try {
 
             var msg = `Hi, Your OTP to login Beats Fitness App is ${OTP} This OTP can be used only once and is valid for 10 min only.Thank you.       TeamBeatsFitness`;
@@ -76,7 +73,6 @@ const signup = async (req, res) => {
         }
 
         const existingUser = await User.findOne({ number });
-
         if (existingUser) {
             return res.status(200)
                 .json([{ msg: "User with same number already exists!", number: number, res: "success", }]);
@@ -85,63 +81,41 @@ const signup = async (req, res) => {
                 .json([{ msg: "New User!", number: number, res: "success", }]);
 
         }
-
     } catch (err) {
         return res.status(200)
             .json([{ msg: err.message, res: "error" }]);
     }
 }
 const signupVerify = async (req, res) => {
-
     try {
         const { otp, number } = req.body;
-
         if (!number) {
             return res.status(200)
                 .json([{ msg: "Number is required", res: "error", }]);
         }
-
         if (!otp) {
             return res.status(200)
                 .json([{ msg: "Otp is required", res: "error", }]);
         }
-
-
         const existingUser = await User.findOne({ number });
-
-
-
         const otpData = await Otp.findOne({ number: number })
-        // console.log(otpData)
-
         if (otpData === null || otpData.otp != otp) {
             return res.status(200)
                 .json([{ msg: "Incorrect Otp", res: "error", }]);
         } else {
-            // await Otp.deleteOne({ number: number })
-
             await Otp.deleteMany({ number: number })
-
-
             if (existingUser) {
                 return res.status(200)
                     .json([{ msg: "User with same number already exists & otp has verified & now redirect to homepage!", data: existingUser, res: "success" }]);
-
             } else {
-
                 const user = new User({
                     number: number,
                 })
                 const userData = await user.save()
-                // // await Otp.deleteOne({ number: number })
-
                 return res.status(200)
                     .json([{ msg: "New user & otp verified", data: userData, res: "success" }]);
-
             }
-
         }
-
     } catch (err) {
         return res.status(202)
             .json([{ msg: err.message, res: "error" }]);
@@ -152,26 +126,20 @@ const registerUser = async (req, res) => {
 
     try {
         const { userID, firstName } = req.body;
-
         if (!userID) {
             return res.status(200)
                 .json([{ msg: "userID is required", res: "error", }]);
         }
-
         if (!firstName) {
             return res.status(200)
                 .json([{ msg: "firstName is required", res: "error", }]);
         }
-
-
-
         let updateUser = await User.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(userID) },
             {
                 firstName,
             }
         );
-
         if (
             updateUser === undefined ||
             updateUser === null ||
@@ -185,9 +153,6 @@ const registerUser = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "User registred successfully", data: userData, res: "success" }]);
         }
-
-
-
     } catch (err) {
         return res.status(202)
             .json([{ msg: err.message, res: "error" }]);
@@ -197,7 +162,6 @@ const registerUser = async (req, res) => {
 const signin = async (req, res) => {
     try {
         const { number } = req.body;
-
         if (!number) {
             return res.status(200)
                 .json([{ msg: "Number is required", res: "error", }]);
@@ -213,8 +177,6 @@ const signin = async (req, res) => {
         for (let i = 0; i < 4; i++) {
             OTP += digits[Math.floor(Math.random() * 10)];
         }
-
-
         try {
             var msg = `Hi, Your OTP to login Beats Fitness App is ${OTP} This OTP can be used only once and is valid for 10 min only.Thank you.       TeamBeatsFitness`;
 
@@ -222,14 +184,11 @@ const signin = async (req, res) => {
                 `http://www.smsstanch.in/API/sms.php?username=beats&password=123456&from=BEATSF&to=${number}&msg=${msg}&dnd_check=0&template_id=1007164482764680412`
 
             );
-
             await Otp.deleteOne({ number: number })
-
             const otp = new Otp({
                 number: number,
                 otp: OTP,
             })
-
             await otp.save()
             return res.status(200).json([{
                 message: `Your login verfication. OTP is ${OTP}`,
@@ -250,7 +209,6 @@ const signin = async (req, res) => {
     }
 }
 const signinVerify = async (req, res) => {
-
     try {
         const { otp, number } = req.body;
 
@@ -284,7 +242,6 @@ const signinVerify = async (req, res) => {
             return res.status(200)
 
                 .json([{ msg: "Otp has been verified successfully", data: userData, token: token, res: "success" }]);
-
         }
 
     }
@@ -298,12 +255,6 @@ const allBanners = async (req, res) => {
 
     try {
         const bannersData = await Banner.find();
-        // const bannerImage = [];
-
-        // bannersData.map((item) =>
-        //     bannerImage.push(item.bannerImage)
-        // );
-
         return res.status(200)
             .json([{ msg: "All Banners Data", data: bannersData, res: "success" }]);
     }
@@ -313,7 +264,6 @@ const allBanners = async (req, res) => {
     }
 
 }
-
 const categoryBanner = async (req, res) => {
 
     try {
@@ -325,12 +275,6 @@ const categoryBanner = async (req, res) => {
         }
 
         const bannerData = await Banner.find({ category: category });
-        // const bannerImage = [];
-
-        // bannerData.map((item) =>
-        //     bannerImage.push(item.bannerImage)
-        // );
-        // console.log(bannerData);
         return res.status(200)
             .json([{ msg: "Category Banner Data", data: bannerData, res: "success" }]);
 
@@ -430,150 +374,138 @@ const addTrackTrace = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "User ID is required", res: "error", }]);
         }
-        // if (!weight) {
-        //     return res.status(200)
-        //         .json([{ msg: "Weight is required", res: "error", }]);
-        // }
-
         if (!from) {
             return res.status(200)
                 .json([{ msg: "From Date is required", res: "error", }]);
         }
-        // if (!to) {
-        //     return res.status(200)
-        //         .json([{ msg: "To Date is required", res: "error", }]);
-        // }
-        // console.log("userID, weight, date ", userID, weight, to, from);
-        // try {
-
         const userData = await User.findOne({ _id: mongoose.Types.ObjectId(userID) });
         if (!userData) {
             return res.status(200)
                 .json([{ msg: "User not found!!!", res: "error", }]);
         }
 
-        const trackTraceData = await TrackWeight.find({ userID: mongoose.Types.ObjectId(userID) }).sort({createdBy: -1});
+        const trackTraceData = await TrackWeight.find({ userID: mongoose.Types.ObjectId(userID) }).sort({ createdBy: -1 });
 
 
-        if(trackTraceData[0]!==undefined){
-            if (!weight || weight==null) {
-                var weights=trackTraceData[0].weight;
-            }else{
-                var weights=weight;
-    
+        if (trackTraceData[0] !== undefined) {
+            if (!weight || weight == null) {
+                var weights = trackTraceData[0].weight;
+            } else {
+                var weights = weight;
+
             }
-    
-            if (!ht || ht==null) {
-                var hts=trackTraceData[0].ht;
-            }else{
-                var hts=ht;
-    
+
+            if (!ht || ht == null) {
+                var hts = trackTraceData[0].ht;
+            } else {
+                var hts = ht;
+
             }
-    
-            if (!PBF || PBF==null) {
-                var PBFs=trackTraceData[0].PBF;
-            }else{
-                var PBFs=PBF;
-    
+
+            if (!PBF || PBF == null) {
+                var PBFs = trackTraceData[0].PBF;
+            } else {
+                var PBFs = PBF;
+
             }
-    
-            if (!SMM || SMM==null) {
-                var SMMs=trackTraceData[0].SMM;
-            }else{
-                var SMMs=SMM;
-    
+
+            if (!SMM || SMM == null) {
+                var SMMs = trackTraceData[0].SMM;
+            } else {
+                var SMMs = SMM;
+
             }
-            if (!Waist || Waist==null) {
-                var Waists=trackTraceData[0].Waist;
-            }else{
-                var Waists=Waist;
-    
+            if (!Waist || Waist == null) {
+                var Waists = trackTraceData[0].Waist;
+            } else {
+                var Waists = Waist;
+
             }
-    
-            if (!PushUp || PushUp==null) {
-                var PushUps=trackTraceData[0].PushUp;
-            }else{
-                var PushUps=PushUp;
-    
+
+            if (!PushUp || PushUp == null) {
+                var PushUps = trackTraceData[0].PushUp;
+            } else {
+                var PushUps = PushUp;
+
             }
-    
-            if (!PullUps || PullUps==null) {
-                var PullUpss=trackTraceData[0].PullUps;
-            }else{
-                var PullUpss=PullUps;
-    
+
+            if (!PullUps || PullUps == null) {
+                var PullUpss = trackTraceData[0].PullUps;
+            } else {
+                var PullUpss = PullUps;
+
             }
 
 
-        }else{
-            if (!weight || weight==null) {
-                var weights=0;
-            }else{
-                var weights=weight;
-    
+        } else {
+            if (!weight || weight == null) {
+                var weights = 0;
+            } else {
+                var weights = weight;
+
             }
-    
-            if (!ht || ht==null) {
-                var hts=0;
-            }else{
-                var hts=ht;
-    
+
+            if (!ht || ht == null) {
+                var hts = 0;
+            } else {
+                var hts = ht;
+
             }
-    
-            if (!PBF || PBF==null) {
-                var PBFs=0;
-            }else{
-                var PBFs=PBF;
-    
+
+            if (!PBF || PBF == null) {
+                var PBFs = 0;
+            } else {
+                var PBFs = PBF;
+
             }
-    
-            if (!SMM || SMM==null) {
-                var SMMs=0;
-            }else{
-                var SMMs=SMM;
-    
+
+            if (!SMM || SMM == null) {
+                var SMMs = 0;
+            } else {
+                var SMMs = SMM;
+
             }
-            if (!Waist || Waist==null) {
-                var Waists=0;
-            }else{
-                var Waists=Waist;
-    
+            if (!Waist || Waist == null) {
+                var Waists = 0;
+            } else {
+                var Waists = Waist;
+
             }
-    
-            if (!PushUp || PushUp==null) {
-                var PushUps=0;
-            }else{
-                var PushUps=PushUp;
-    
+
+            if (!PushUp || PushUp == null) {
+                var PushUps = 0;
+            } else {
+                var PushUps = PushUp;
+
             }
-    
-            if (!PullUps || PullUps==null) {
-                var PullUpss=0;
-            }else{
-                var PullUpss=PullUps;
-    
+
+            if (!PullUps || PullUps == null) {
+                var PullUpss = 0;
+            } else {
+                var PullUpss = PullUps;
+
             }
 
 
         }
 
-     
+
         const trackTracedata = await TrackWeight.create({
             userID: mongoose.Types.ObjectId(userID),
-            weight:weights,
+            weight: weights,
             // to,
             from,
-            ht:hts,
-            PBF:PBFs,
-            SMM:SMMs,
-            Waist:Waists,
-            PushUp:PushUps,
-            PullUps:PullUpss,
-            createdBy:moment().format('YYYY-MM-DD HH:mm:ss')
+            ht: hts,
+            PBF: PBFs,
+            SMM: SMMs,
+            Waist: Waists,
+            PushUp: PushUps,
+            PullUps: PullUpss,
+            createdBy: moment().format('YYYY-MM-DD HH:mm:ss')
 
 
         });
-       
+
         return res.status(200)
             .json([{ msg: "Track & Trace data added sucessfully!!", data: trackTracedata, res: "success" }]);
 
@@ -689,23 +621,23 @@ const getUserProfile = async (req, res) => {
 }
 const updateUserProfile = async (req, res) => {
     try {
-        const { userID, firstName, lastName, DOB, gender, number, email, user_Address, city , state,
+        const { userID, firstName, lastName, DOB, gender, number, email, user_Address, city, state,
             country, postal_code, userType } = req.body;
         let image = req?.files?.profilePicture?.tempFilePath;
 
         console.log('image', image)
-        
+
         if (!userID) {
             return res.status(200)
                 .json([{ msg: "User ID is required", res: "error", }]);
         }
         const profile = {}
         const user = await User.findOne({ _id: userID });
-        if(firstName !== null && firstName !== undefined && firstName !== '') { profile.firstName = firstName }
-        if(lastName !== null && lastName !== undefined && lastName !== '') { profile.lastName = lastName }
-        if(DOB !== null && DOB !== undefined && DOB !== '') { profile.DOB = DOB }
-        if(gender !== null && gender !== undefined && gender !== '') { profile.gender = gender }
-        if(email !== null && email !== undefined && email !== '') { profile.email = email }
+        if (firstName !== null && firstName !== undefined && firstName !== '') { profile.firstName = firstName }
+        if (lastName !== null && lastName !== undefined && lastName !== '') { profile.lastName = lastName }
+        if (DOB !== null && DOB !== undefined && DOB !== '') { profile.DOB = DOB }
+        if (gender !== null && gender !== undefined && gender !== '') { profile.gender = gender }
+        if (email !== null && email !== undefined && email !== '') { profile.email = email }
         profile.number = number !== null && number !== undefined && number !== '' ? number : user.number;
 
         if (image !== "" &&
@@ -743,12 +675,12 @@ const updateUserProfile = async (req, res) => {
 
         console.log('imageurl', imageURL)
         profile.profilePicture = imageURL;
-        if(user_Address !== null && user_Address !== undefined && user_Address !== '') { profile.user_Address = user_Address}
-        if(city !== null && city !== undefined && city !== '') { profile.city = city}
-        if(state !== null && state !== undefined && state !== '') { profile.state = state}
-        if(country !== null && country !== undefined && country !== '') { profile.country = country}
-        if(postal_code !== null && postal_code !== undefined && postal_code !== '') { profile.postal_code = postal_code}
-        if(userType !== null && userType !== '' && userType !== undefined) { profile.userType = userType }
+        if (user_Address !== null && user_Address !== undefined && user_Address !== '') { profile.user_Address = user_Address }
+        if (city !== null && city !== undefined && city !== '') { profile.city = city }
+        if (state !== null && state !== undefined && state !== '') { profile.state = state }
+        if (country !== null && country !== undefined && country !== '') { profile.country = country }
+        if (postal_code !== null && postal_code !== undefined && postal_code !== '') { profile.postal_code = postal_code }
+        if (userType !== null && userType !== '' && userType !== undefined) { profile.userType = userType }
         let updateUser = await User.findOneAndUpdate(
             { _id: userID },
             profile
@@ -794,9 +726,9 @@ const branchDetailsBySerivceName = async (req, res) => {
         //     }
         // });
         let updatedService = [];
-        for(let item of singleServiceDetials) {
-            let getManagerByService = await Manager.findOne({service_id: mongoose.Types.ObjectId(item._id)});
-            if(getManagerByService !== null && getManagerByService !== undefined && getManagerByService !== '') {
+        for (let item of singleServiceDetials) {
+            let getManagerByService = await Manager.findOne({ service_id: mongoose.Types.ObjectId(item._id) });
+            if (getManagerByService !== null && getManagerByService !== undefined && getManagerByService !== '') {
                 updatedService.push({
                     ...item._doc,
                     manager_contact_no: getManagerByService.manager_contact_no,
@@ -828,8 +760,8 @@ const branchDetailsBySerivceName = async (req, res) => {
 const addPersonalInfo = async (req, res) => {
     try {
 
-        const { heightInFit, heightInINCH, previous_injury, health_Detials, weight, userID, DOB, age, user_Address, city , state,
-        country, postal_code } = req.body;
+        const { heightInFit, heightInINCH, previous_injury, health_Detials, weight, userID, DOB, age, user_Address, city, state,
+            country, postal_code } = req.body;
         if (!userID) {
             return res.status(200)
                 .json([{ msg: "User ID is required", res: "error", }]);
@@ -990,18 +922,15 @@ const bookingDemoByUser = async (req, res) => {
 // book Package by User
 const bookingPackageByUser = async (req, res) => {
     try {
-
-        const { category, service_id, userID, Date, TimeSlot, duration, price } = req.body;
+        const { category, service_id, userID, bookingDate, TimeSlot, duration, price } = req.body;
         if (!userID) {
             return res.status(200)
                 .json([{ msg: "userID is required", res: "error", }]);
         }
-
         if (!category) {
             return res.status(200)
                 .json([{ msg: "category is required", res: "error", }]);
         }
-
         if (!price) {
             return res.status(200)
                 .json([{ msg: "Price is required", res: "error", }]);
@@ -1010,8 +939,7 @@ const bookingPackageByUser = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "service_id is required", res: "error", }]);
         }
-
-        if (!Date) {
+        if (!bookingDate) {
             return res.status(200)
                 .json([{ msg: "Date is required", res: "error", }]);
         }
@@ -1029,23 +957,33 @@ const bookingPackageByUser = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "User not found!!!", res: "error", }]);
         }
-
+        console.log(bookingDate)
+        const parts = bookingDate.split('-');
+        const day = parseInt(parts[0]);
+        const month = parseInt(parts[1]) - 1;
+        const year = parseInt(parts[2]);
+        const expiryDate = new Date(year, month, day);
+        expiryDate.setFullYear(expiryDate.getFullYear() + Math.floor(duration / 12));
+        expiryDate.setMonth(expiryDate.getMonth() + (duration % 12));
+        const expiryDay = expiryDate.getDate();
+        const expiryMonth = expiryDate.getMonth() + 1;
+        const expiryYear = expiryDate.getFullYear();
+        let expiry = `${expiryDay}-${expiryMonth}-${expiryYear}`
         const bookPackagedata = await bookPackage.create({
             user_id: mongoose.Types.ObjectId(userID),
             service_id: mongoose.Types.ObjectId(service_id),
             category,
-            Date,
+            bookingDate,
             TimeSlot,
             duration,
-            price
-
+            price,
+            expiryDate: expiry
         });
         return res.status(200).json([{
             message: "Now please do payment!!",
             data: bookPackagedata,
             success: true
         }]);
-
     }
     catch (err) {
         return res.status(200)
@@ -1060,7 +998,7 @@ const paymentBuyUser = async (req, res) => {
 
     // key secrate:CvIX87XzyJbtsZ7CaekLkPat
     try {
-        const { service_id, orderDetails, userID,duration,price, copuan_id } = req.body;
+        const { service_id, orderDetails, userID, duration, price, copuan_id } = req.body;
         console.log(`Payment by User : ${req.body}`);
         if (!userID) {
             return res.status(200)
@@ -1114,7 +1052,7 @@ const paymentBuyUser = async (req, res) => {
                 duration,
                 price
             }
-            if(copuan_id !== null && copuan_id !== undefined && copuan_id !== '') {
+            if (copuan_id !== null && copuan_id !== undefined && copuan_id !== '') {
                 paymentObj['copuan_id'] = copuan_id;
             }
             const paymentData = await PAYMENT.create(paymentObj);
@@ -1125,31 +1063,65 @@ const paymentBuyUser = async (req, res) => {
             }]);
         }
     } catch (err) {
-        console.log(`Payment by user error : ${{err}}`);
+        console.log(`Payment by user error : ${{ err }}`);
         return res.status(200)
             .json([{ msg: err.message, res: "error" }]);
 
     }
 }
 
-const getUserOrderList = async (req, res) => {
-
+// get all orders by user
+const getAllOrdersByUser = async (req, res) => {
     try {
+        const { userID } = req.body;
+        if (!userID) {
+            return res.status(200)
+                .json([{ msg: "userID is required", res: "error", }]);
+        }
+        const data = await PAYMENT.find({ userID: mongoose.Types.ObjectId(userID) }).populate("service_id");
+        return res.status(200).json([{
+            message: "All Orders by user!!",
+            data,
+            success: true
+        }]);
+    } catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
+}
 
+// get all book package by user
+const getAllBookPackageByUser = async (req, res) => {
+    try {
+        const { userID } = req.body;
+        if (!userID) {
+            return res.status(200)
+                .json([{ msg: "userID is required", res: "error", }]);
+        }
+        const data = await bookPackage.find({ user_id: mongoose.Types.ObjectId(userID) }).populate("service_id");
+        return res.status(200).json([{
+            message: "All Book Package by user!!",
+            data,
+            success: true
+        }]);
+    } catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
+}
 
+const getUserOrderList = async (req, res) => {
+    try {
         const { userID, } = req.body;
         if (!userID) {
             return res.status(200)
                 .json([{ msg: "userID is required", res: "error", }]);
         }
-        // const demoData = await demoBooking.find({ userID: mongoose.Types.ObjectId(userID) }).populate("service_id");
-
-
         const data = await PAYMENT.aggregate([
             {
                 $match: {
                     // "title": serviceTitle
-                    "userID": mongoose.Types.ObjectId(userID) 
+                    "userID": mongoose.Types.ObjectId(userID)
                 }
             },
 
@@ -1162,18 +1134,18 @@ const getUserOrderList = async (req, res) => {
 
             {
                 $lookup: {
-                  from: "gym_services",
-                  localField: "packageData.service_id",
-                  foreignField: "_id",
-                  as: "servicedata",
+                    from: "gym_services",
+                    localField: "packageData.service_id",
+                    foreignField: "_id",
+                    as: "servicedata",
                 }
             },
             {
                 $lookup: {
-                  from: "gym_branches",
-                  localField: "servicedata.branch_id",
-                  foreignField: "_id",
-                  as: "branchdata",
+                    from: "gym_branches",
+                    localField: "servicedata.branch_id",
+                    foreignField: "_id",
+                    as: "branchdata",
                 }
             }
         ]).exec((err, result) => {
@@ -1188,90 +1160,25 @@ const getUserOrderList = async (req, res) => {
                     return res.status(200)
                         .json([{ msg: "Data Not found", res: "error" }]);
                 } else {
-                    // console.log('orderdata',data);
-
-                    // const branchdata = [];
-                    // const packageData = [];
-                    // const servicedata = [];
-                    // const durationdata = [];
-                    // const pricedata = [];
-                    // const orderDetailsdata = [];
-                    const finaldata=[];
-
-
-
-
-                   
-                    // const arrayTime = singleServiceDetials[0].slotTime.split(',');
-        
+                    const finaldata = [];
                     result.map((item) => {
-        
-
                         var obj = {};
-
-                        obj["price"] = item.price 
+                        obj["price"] = item.price
                         obj["duration"] = item.duration
-                        // obj["servicedata"] = item.servicedata
-
-                        item.branchdata.map((branch)=>{
+                        item.branchdata.map((branch) => {
                             obj["branchName"] = branch.branchName
-                            
                             obj["image"] = branch.image;
-
-
                         })
-
                         finaldata.push(obj);
-                        // branchdata.branchName;
-
-                        // branchdata.image;
-
-
-
-                        
-                        // finaldata.push(obj);
-                        // branchdata.push(item.branchdata);
-                        // packageData.push(item.packageData);
-                        // servicedata.push(item.servicedata);
-                        // durationdata.push(item.duration);
-                        // pricedata.push(item.price);
-                        // orderDetailsdata.push(item.orderDetails);
-
-
-                        
-
-
-
-
-
-        
                     })
-
-                    // console.log('branchdata',branchdata)
-                    // console.log('packageData',packageData)
-                    // console.log('servicedata',servicedata)
-                    // console.log('durationdata',durationdata)
-                    // console.log('pricedata',pricedata)
-                    // console.log('orderDetailsdata',orderDetailsdata)
-
-
-                    // var d = branchdata.concat(packageData, servicedata,durationdata,pricedata,orderDetailsdata);
-                    
-
-                    // return res.status(200)
-                    // .json([{ msg: "alll user Order data!!", data: finaldata,branchdata:branchdata,packageData:packageData,servicedata:servicedata,durationdata:durationdata,pricedata:pricedata,orderDetailsdata:orderDetailsdata, res: "success" }]);
                     return res.status(200)
                         .json([{ msg: "alll user Order data!!", data: finaldata, res: "success" }]);
                 }
             }
         });
-
-    
-
     } catch (err) {
         return res.status(200)
             .json([{ msg: err.message, res: "error" }]);
-
     }
 
 }
@@ -1284,12 +1191,12 @@ const getUserActiveOrderList = async (req, res) => {
             return res.status(200)
                 .json([{ msg: "userID is required", res: "error", }]);
         }
-       
+
 
         const data = await PAYMENT.aggregate([
             {
                 $match: {
-                    "userID": mongoose.Types.ObjectId(userID) 
+                    "userID": mongoose.Types.ObjectId(userID)
                 }
             },
 
@@ -1302,18 +1209,18 @@ const getUserActiveOrderList = async (req, res) => {
 
             {
                 $lookup: {
-                  from: "gym_services",
-                  localField: "packageData.service_id",
-                  foreignField: "_id",
-                  as: "servicedata",
+                    from: "gym_services",
+                    localField: "packageData.service_id",
+                    foreignField: "_id",
+                    as: "servicedata",
                 }
             },
             {
                 $lookup: {
-                  from: "gym_branches",
-                  localField: "servicedata.branch_id",
-                  foreignField: "_id",
-                  as: "branchdata",
+                    from: "gym_branches",
+                    localField: "servicedata.branch_id",
+                    foreignField: "_id",
+                    as: "branchdata",
                 }
             }
         ]).exec((err, result) => {
@@ -1327,31 +1234,28 @@ const getUserActiveOrderList = async (req, res) => {
                     return res.status(200)
                         .json([{ msg: "Data Not found", res: "error" }]);
                 } else {
-                   
-                    const finaldata=[];
+
+                    const finaldata = [];
 
 
                     result.map((item) => {
-                       
+
                         let d = new Date(item.createdAt); //Christmas
 
                         d.setMonth(d.getMonth() + 1);
-                        // d.getMonth()+1
-                        // console.log(d.toString()); //Wed Jan 25 2023
+                        const expiryDate = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
 
-                        const expiryDate=d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
-
-                        const currentdate=moment().format('YYYY-MM-DD');
+                        const currentdate = moment().format('YYYY-MM-DD');
                         if (currentdate <= expiryDate) {
                             var obj = {};
 
-                            obj["price"] = item.price 
+                            obj["price"] = item.price
                             obj["duration"] = item.duration
                             obj["startDate"] = item.createdAt
                             obj["expiryDate"] = expiryDate
-    
-    
-                            item.branchdata.map((branch)=>{
+
+
+                            item.branchdata.map((branch) => {
                                 obj["branchName"] = branch.branchName;
                                 obj["image"] = branch.image;
                             })
@@ -1900,7 +1804,7 @@ const updateGymBranches = async (req, res) => {
 
 }
 
-const getPushNotificationData=async(req,res)=>{
+const getPushNotificationData = async (req, res) => {
 
     try {
         const { userID } = req.body;
@@ -1928,12 +1832,12 @@ const getPushNotificationData=async(req,res)=>{
 
 }
 
-const updatePushNotificationToken=async (req, res) => {
+const updatePushNotificationToken = async (req, res) => {
 
     try {
 
         const { userID, token } = req.body;
-       
+
         if (!userID) {
             return res.status(200)
                 .json([{ msg: "userID is required", res: "error" }]);
@@ -1952,7 +1856,7 @@ const updatePushNotificationToken=async (req, res) => {
             token: token,
 
         });
-        
+
         return res.status(200).json([{
             message: "Push Notification Token updated Successfully!!",
             data: pushNotificationData,
@@ -1968,12 +1872,12 @@ const updatePushNotificationToken=async (req, res) => {
 
 }
 
-const updatePushNotificationData=async(req,res)=>{
+const updatePushNotificationData = async (req, res) => {
 
     try {
 
-        const { userID, push_notification,service_notification } = req.body;
-       
+        const { userID, push_notification, service_notification } = req.body;
+
         if (!userID) {
             return res.status(200)
                 .json([{ msg: "userID is required", res: "error" }]);
@@ -1989,7 +1893,7 @@ const updatePushNotificationData=async(req,res)=>{
         }
 
 
-     
+
 
         let updateUser = await User.findOneAndUpdate(
             { _id: mongoose.Types.ObjectId(userID) },
@@ -2012,11 +1916,11 @@ const updatePushNotificationData=async(req,res)=>{
             return res.status(200)
                 .json([{ msg: "Push Notification Data updated successfully", data: userData, res: "success" }]);
         }
-        
 
 
 
-      
+
+
 
     }
     catch (err) {
@@ -2027,109 +1931,109 @@ const updatePushNotificationData=async(req,res)=>{
 
 }
 
-const applyCoin =async (req, res) => {
+const applyCoin = async (req, res) => {
     try {
-      const { id, coin, amount } = req.body;
-      if (
-        id !== undefined &&
-        id !== "" &&
-        id !== null &&
-        coin !== undefined &&
-        coin !== null &&
-        coin !== ""
-      ) {
-        console.log("id,coin", id, coin);
-        let checkUser = await User.findById({ _id: id });
-        if (checkUser !== null && checkUser !== undefined) {
-          let currentCoins = checkUser["coin"];
-          if(coin > currentCoins) {
-            return res.status(400).json({
-                message: "Coin Balance is low",
+        const { id, coin, amount } = req.body;
+        if (
+            id !== undefined &&
+            id !== "" &&
+            id !== null &&
+            coin !== undefined &&
+            coin !== null &&
+            coin !== ""
+        ) {
+            console.log("id,coin", id, coin);
+            let checkUser = await User.findById({ _id: id });
+            if (checkUser !== null && checkUser !== undefined) {
+                let currentCoins = checkUser["coin"];
+                if (coin > currentCoins) {
+                    return res.status(400).json({
+                        message: "Coin Balance is low",
+                        success: false,
+                    });
+                }
+                await User.findOneAndUpdate(
+                    { _id: id },
+                    { coin: currentCoins - coin }
+                );
+                const updatedAmount = amount - (coin / 10);
+                return res.status(200).json({
+                    message: "Coins Deducted successfully",
+                    success: true,
+                    data: {
+                        updatedAmount,
+                        coinBalance: currentCoins - coin
+                    }
+                });
+            } else {
+                return res.status(200).json({
+                    id,
+                    message: "User Not Found !!!",
+                    success: false,
+                });
+            }
+        } else {
+            return res.status(200).json({
+                message: "Empty Field found",
                 success: false,
-              });
-          }
-          await User.findOneAndUpdate(
-            { _id: id },
-            { coin: currentCoins - coin }
-          );
-          const updatedAmount = amount - (coin/10);
-          return res.status(200).json({
-            message: "Coins Deducted successfully",
-            success: true,
-            data: {
-                updatedAmount,
-                coinBalance: currentCoins - coin
-            }
-          });
-        } else {
-          return res.status(200).json({
-            id,
-            message: "User Not Found !!!",
-            success: false,
-          });
+            });
         }
-      } else {
-        return res.status(200).json({
-          message: "Empty Field found",
-          success: false,
-        });
-      }
     } catch (error) {
-      return res.status(400).json({
-        message: "Something went wrong ",
-        success: false,
-      });
+        return res.status(400).json({
+            message: "Something went wrong ",
+            success: false,
+        });
     }
-  };
+};
 
-  const removeCoin =async (req, res) => {
+const removeCoin = async (req, res) => {
     try {
-      const { id, coin, amount } = req.body;
-      if (
-        id !== undefined &&
-        id !== "" &&
-        id !== null &&
-        coin !== undefined &&
-        coin !== null &&
-        coin !== ""
-      ) {
-        console.log("id,coin", id, coin);
-        let checkUser = await User.findById({ _id: id });
-        if (checkUser !== null && checkUser !== undefined) {
-          let currentCoins = checkUser["coin"];
-          await User.findOneAndUpdate(
-            { _id: id },
-            { coin: currentCoins + coin }
-          );
-          const updatedAmount = amount + (coin/10);
-          return res.status(200).json({
-            message: "Coins Added Back successfully",
-            success: true,
-            data: {
-                updatedAmount,
-                coinBalance: currentCoins + coin
+        const { id, coin, amount } = req.body;
+        if (
+            id !== undefined &&
+            id !== "" &&
+            id !== null &&
+            coin !== undefined &&
+            coin !== null &&
+            coin !== ""
+        ) {
+            console.log("id,coin", id, coin);
+            let checkUser = await User.findById({ _id: id });
+            if (checkUser !== null && checkUser !== undefined) {
+                let currentCoins = checkUser["coin"];
+                await User.findOneAndUpdate(
+                    { _id: id },
+                    { coin: currentCoins + coin }
+                );
+                const updatedAmount = amount + (coin / 10);
+                return res.status(200).json({
+                    message: "Coins Added Back successfully",
+                    success: true,
+                    data: {
+                        updatedAmount,
+                        coinBalance: currentCoins + coin
+                    }
+                });
+            } else {
+                return res.status(200).json({
+                    id,
+                    message: "User Not Found !!!",
+                    success: false,
+                });
             }
-          });
         } else {
-          return res.status(200).json({
-            id,
-            message: "User Not Found !!!",
-            success: false,
-          });
+            return res.status(200).json({
+                message: "Empty Field found",
+                success: false,
+            });
         }
-      } else {
-        return res.status(200).json({
-          message: "Empty Field found",
-          success: false,
-        });
-      }
     } catch (error) {
-      return res.status(400).json({
-        message: "Something went wrong ",
-        success: false,
-      });
+        return res.status(400).json({
+            message: "Something went wrong ",
+            success: false,
+        });
     }
-  };
+};
 
 const addTempUser = async (req, res) => {
     try {
@@ -2140,30 +2044,30 @@ const addTempUser = async (req, res) => {
             number,
             email,
             userType: "TEMPORARY"
-          });
-          return res.status(200).json({
+        });
+        return res.status(200).json({
             user,
             message: "Temporary User added Successfully",
             success: true,
-          });
+        });
     } catch (error) {
         return res.status(400).json({
-          message: "Something went wrong ",
-          success: false,
+            message: "Something went wrong ",
+            success: false,
         });
-      }
+    }
 };
 
 const getUserByType = async (req, res) => {
     try {
         const type = req.params['type'];
-        if(type === null || type === undefined || type === '' ) {
+        if (type === null || type === undefined || type === '') {
             return res.status(400).json({
                 message: "Type is missing in params",
                 success: false,
-              });
+            });
         }
-        if(type === 'ALL') {
+        if (type === 'ALL') {
             let users = await User.find();
             return res.status(200).json({
                 users,
@@ -2183,17 +2087,17 @@ const getUserByType = async (req, res) => {
         });
     } catch (error) {
         return res.status(400).json({
-          message: "Something went wrong ",
-          success: false,
+            message: "Something went wrong ",
+            success: false,
         });
-      }
+    }
 };
 
 
 const getUserByPhoneNumber = async (req, res) => {
     try {
         const number = req.params['number'];
-        if(isEmpty(number)) {
+        if (isEmpty(number)) {
             return res.status(400).json({
                 message: "number is missing in params",
                 success: false,
@@ -2209,12 +2113,14 @@ const getUserByPhoneNumber = async (req, res) => {
         });
     } catch (error) {
         return res.status(400).json({
-          message: "Something went wrong ",
-          success: false,
+            message: "Something went wrong ",
+            success: false,
         });
-      }
+    }
 }
 
 
-module.exports = { signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach, registerUser,getUserOrderList,updatePushNotificationToken,getPushNotificationData,updatePushNotificationData,getUserActiveOrderList,allUserComplains,createUserComplain, applyCoin, removeCoin
-    ,addTempUser, getUserByType, getUserByPhoneNumber };
+module.exports = {
+    signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach, registerUser, getUserOrderList, updatePushNotificationToken, getPushNotificationData, updatePushNotificationData, getUserActiveOrderList, allUserComplains, createUserComplain, applyCoin, removeCoin
+    , addTempUser, getUserByType, getUserByPhoneNumber, getAllOrdersByUser, getAllBookPackageByUser
+};
