@@ -49,6 +49,7 @@ router.post('/branchDetailsBySerivceName',  userController.branchDetailsBySerivc
 router.get('/allGymBranches',  userController.allGymBranches)
 router.post('/addPersonalInfo',  userController.addPersonalInfo)
 router.post('/bookingDemoByUser',  userController.bookingDemoByUser)
+router.get('/demoBooking/service',  userController.demoBookingByService)
 router.post('/bookingPackageByUser',  userController.bookingPackageByUser)
 router.post('/paymentBuyUser',  userController.paymentBuyUser)
 router.post('/GymBranchesByServiceName',  userController.GymBranchesByServiceName)
