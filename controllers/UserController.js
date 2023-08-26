@@ -919,6 +919,54 @@ const bookingDemoByUser = async (req, res) => {
 
 }
 
+const demoBookingByService = async (req, res) => {
+    try {
+        let date = new Date();
+        let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+        let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        let allDemoBookings = await demoBooking.find({
+             createdAt: {
+                $gte: firstDay, 
+                $lt: lastDay
+            }
+        }).populate('service_id').exec();
+        let getAllDemosBookingMap = new Map();
+        let totalCount = 0;
+        for(let demoBooking of allDemoBookings) {
+            if(!getAllDemosBookingMap.has(demoBooking.service_id[0]._id)) {
+                getAllDemosBookingMap.set(demoBooking.service_id[0]._id, {
+                serviceId: demoBooking.service_id[0]._id,
+                serviceName: demoBooking.service_id[0].title,
+                count: 1
+              })
+            } else {
+              serviceCount = getAllDemosBookingMap.get(demoBooking.service_id[0]._id);
+              getAllDemosBookingMap.set(demoBooking.service_id[0]._id, {
+                serviceId: serviceCount.serviceId,
+                serviceName: demoBooking.service_id[0].title,
+                count: serviceCount.count + 1
+              })
+            }
+            totalCount++;
+        }
+        let services = [];
+        for(let demoBookingValue of [...getAllDemosBookingMap.values()]) {
+            services.push({
+                ...demoBookingValue,
+                percentage : (demoBookingValue.count * 100) / totalCount
+            })
+        }
+        return res.status(200).send({
+        bookingDemo: services ,
+        messge: "All Demo Bookings",
+        success: true,
+        });
+    } catch (err) {
+        return res.status(200)
+            .json([{ msg: err.message, res: "error" }]);
+    }
+}
+
 // book Package by User
 const bookingPackageByUser = async (req, res) => {
     try {
@@ -2122,5 +2170,5 @@ const getUserByPhoneNumber = async (req, res) => {
 
 module.exports = {
     signup, signupVerify, signin, signinVerify, categoryBanner, allTestimonials, categoryTestimonials, allBanners, allServices, addTrackTrace, userTrackTraceList, getUserProfile, branchDetailsBySerivceName, categoryServices, addPersonalInfo, allGymBranches, bookingDemoByUser, bookingPackageByUser, paymentBuyUser, userTrackTraceListGraph, updateUserProfile, test, allFaqs, createFaq, termCondtionAndPrivacyPolicy, createTermCondtionAndPrivacyPolicy, createUserQuery, allUserQueries, UserActivityAndRecords, serviceSlottimeById, GymBranchesByServiceName, updateGymBranches, bookingConsultantByUser, addCoach, bookingCoach, registerUser, getUserOrderList, updatePushNotificationToken, getPushNotificationData, updatePushNotificationData, getUserActiveOrderList, allUserComplains, createUserComplain, applyCoin, removeCoin
-    , addTempUser, getUserByType, getUserByPhoneNumber, getAllOrdersByUser, getAllBookPackageByUser
+    , addTempUser, getUserByType, getUserByPhoneNumber, demoBookingByService, getAllOrdersByUser, getAllBookPackageByUser
 };

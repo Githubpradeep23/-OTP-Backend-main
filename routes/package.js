@@ -190,6 +190,53 @@ packageRouter.post("/getPackageByUserId", async (req, res) => {
     }
 });
 
+packageRouter.get("/getRenewalsByService", async (req, res) => {
+    try {
+      let date = new Date();
+      let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+      let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+      let allPackages = await Package.find({
+            createdAt: {
+              $gte: firstDay, 
+              $lte: lastDay
+          }
+      }).populate('service_id').exec();
+      let getAllPackageMap = new Map();
+      let totalCount = 0;
+      for(let package of allPackages) {
+          if(!getAllPackageMap.has(package.service_id[0]._id)) {
+            getAllPackageMap.set(package.service_id[0]._id, {
+              serviceId: package.service_id[0]._id,
+              serviceName: package.service_id[0].title,
+              count: 1
+            })
+          } else {
+            serviceCount = getAllPackageMap.get(package.service_id[0]._id);
+            getAllPackageMap.set(package.service_id[0]._id, {
+                serviceId: serviceCount.serviceId,
+                serviceName: package.service_id[0].title,
+                count: serviceCount.count + 1
+            })
+          }
+          totalCount = totalCount + 1;
+      }
+      let services = [];
+      for(let packageValue of [...getAllPackageMap.values()]) {
+          services.push({
+              ...packageValue,
+              percentage : (packageValue.count * 100) / totalCount
+          })
+      }
+      return res.status(200).send({
+      renewals: services ,
+      messge: "All Renewals by service",
+      success: true,
+      });
+  } catch (err) {
+      return res.status(200)
+          .json([{ msg: err.message, res: "error" }]);
+  }
+});
 
 
 

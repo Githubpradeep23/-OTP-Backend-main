@@ -14,6 +14,7 @@ router.get('/filters/all', filtersController.getAll);
 router.post('/enquiry', enquiriesController.submit);
 router.delete('/enquiry', enquiriesController.deleteEnquiry)
 router.get('/enquiry/all', enquiriesController.getAll);
+router.get('/enquiry/source', enquiriesController.getEnquiriesByService);
 // Billing/Renewal
 router.post('/billing', billingController.submit);
 router.delete('/billing', billingController.deleteBilling)

@@ -177,4 +177,52 @@ paymentRouter.get("/getPaymentByUser/:userId", async (req, res) => {
   }
 });
 
+paymentRouter.get("/getRevenueByService", async (req, res) => {
+    try {
+      let date = new Date();
+      let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+      let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+      let allpayments = await Payment.find({
+          createdAt: {
+              $gte: firstDay, 
+              $lte: lastDay
+          }
+      }).populate('service_id').exec();
+      let getAllPaymentsMap = new Map();
+      let totalCount = 0;
+      for(let payment of allpayments) {
+          if(!getAllPaymentsMap.has(payment.service_id[0]._id)) {
+              getAllPaymentsMap.set(payment.service_id[0]._id, {
+              serviceId: payment.service_id[0]._id,
+              serviceName: payment.service_id[0].title,
+              price: Number(payment.price)
+            })
+          } else {
+            serviceCount = getAllPaymentsMap.get(payment.service_id[0]._id);
+              getAllPaymentsMap.set(payment.service_id[0]._id, {
+                serviceId: serviceCount.serviceId,
+                serviceName: payment.service_id[0].title,
+                price: Number(serviceCount.price) + Number(payment.price)
+            })
+          }
+          totalCount = totalCount + Number(payment.price);
+      }
+      let services = [];
+      for(let paymentValue of [...getAllPaymentsMap.values()]) {
+          services.push({
+              ...paymentValue,
+              percentage : (paymentValue.price * 100) / totalCount
+          })
+      }
+      return res.status(200).send({
+      revenue: services ,
+      messge: "All Revenues by service",
+      success: true,
+      });
+  } catch (err) {
+      return res.status(200)
+          .json([{ msg: err.message, res: "error" }]);
+  }
+});
+
 module.exports = paymentRouter;

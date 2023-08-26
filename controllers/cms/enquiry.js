@@ -98,4 +98,44 @@ const getAll = async (req, res) => {
       }
 }
 
-module.exports = { submit, deleteEnquiry, getAll };
+const getEnquiriesByService = async (req, res) => {
+  try {
+    let allEnquiries = await enquiry.find().populate('gymService').exec();
+    let getAllEnquiriesMap = new Map();
+    let totalCount = 0;
+    for(let enquiry of allEnquiries) {
+      if(!getAllEnquiriesMap.has(enquiry.source)) {
+        getAllEnquiriesMap.set(enquiry.source, {
+          sourceName: enquiry.source,
+          count: 1
+        })
+      } else {
+        enquiryCount = getAllEnquiriesMap.get(enquiry.source);
+        getAllEnquiriesMap.set(enquiry.source, {
+          sourceName: enquiryCount.source,
+          count: enquiryCount.count + 1
+        })
+      }
+      totalCount++;
+    }
+    let enquiries = [];
+    for(let enquiryValue of [...getAllEnquiriesMap.values()]) {
+      enquiries.push({
+        ...enquiryValue,
+        percentage : (enquiryValue.count * 100) / totalCount
+      })
+    }
+    return res.status(200).send({
+      enquiries: enquiries ,
+      messge: "All Enquiries by Source",
+      success: true,
+    });
+  } catch (error) {
+    return res.status(400).send({
+      messge: "Somethig went wrong",
+      success: false,
+    });
+  }
+}
+
+module.exports = { submit, deleteEnquiry, getAll, getEnquiriesByService };

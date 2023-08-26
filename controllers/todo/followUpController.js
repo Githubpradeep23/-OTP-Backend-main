@@ -163,4 +163,5 @@ const getAllByType = async (req, res) => {
       });
     }
 }
+
 module.exports = { submit, deleteTodo, getAll, getAllByType };
