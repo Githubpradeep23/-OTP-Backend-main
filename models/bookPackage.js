@@ -15,10 +15,14 @@ const bookPackageSchema = new mongoose.Schema(
         },
         package_status: {
             type: Boolean,
-            default: false
+            default: true
 
         },
-        Date: {
+        bookingDate: {
+            type: String,
+            required: true
+        },
+        expiryDate: {
             type: String,
             required: true
         },
