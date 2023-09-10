@@ -7,8 +7,8 @@ const leaveSchema = new mongoose.Schema(
         type: String,
         required: true
     },
-    approver1: { type: mongoose.Schema.Types.ObjectId, ref: 'Employee' },
-    approver2: { type: mongoose.Schema.Types.ObjectId, ref: 'Employee' },
+    approver1: { type: mongoose.Schema.Types.ObjectId, ref: 'Approver' },
+    approver2: { type: mongoose.Schema.Types.ObjectId, ref: 'Approver' },
     gymService: { type: mongoose.Schema.Types.ObjectId, ref: 'GYM_SERVICE'},
     leaveType: { type: mongoose.Schema.Types.ObjectId, ref: 'LeaveType'},
     status:{
